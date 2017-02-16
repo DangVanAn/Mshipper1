@@ -1,0 +1,8 @@
+diff a/Client Android/MShiper1/app/src/main/res/layout/content_mshipper1.xml b/Client Android/MShiper1/app/src/main/res/layout/content_mshipper1.xml	(rejected hunks)
+@@ -16,5 +16,5 @@
+     <TextView
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+-        android:text="Hello World!" />
++        android:text="Hello Worldeeeee!" />
+ </RelativeLayout>
