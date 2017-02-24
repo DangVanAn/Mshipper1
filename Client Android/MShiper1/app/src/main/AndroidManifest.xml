@@ -48,6 +48,7 @@
             android:name=".Activity_login"
             android:theme="@style/FullScreen">
 
+
         </activity>
 
         <activity

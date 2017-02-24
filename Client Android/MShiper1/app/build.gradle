@@ -30,4 +30,5 @@ dependencies {
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
     testCompile 'junit:junit:4.12'
     compile 'com.google.android.gms:play-services:10.2.0'
+    compile 'com.google.maps.android:android-maps-utils:0.4+'
 }
