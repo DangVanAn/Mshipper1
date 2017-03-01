@@ -55,6 +55,12 @@
             android:name=".fragment.Fragment_Maps"
             android:theme="@style/FullScreen">
 
+        </activity>
+
+        <activity
+            android:name=".fragment.FragmentChart"
+            android:theme="@style/FullScreen">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
