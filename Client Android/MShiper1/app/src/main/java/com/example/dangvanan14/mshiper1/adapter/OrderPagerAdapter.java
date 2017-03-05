@@ -10,7 +10,7 @@ import com.example.dangvanan14.mshiper1.fragment.OrderListFragment;
 /**
  * Created by Sherman on 2/24/2017.
  */
-public class OrderPagerAdapter extends FragmentStatePagerAdapter{
+public class OrderPagerAdapter extends FragmentStatePagerAdapter {
     public OrderPagerAdapter(FragmentManager fm) {
         super(fm);
     }
@@ -21,20 +21,13 @@ public class OrderPagerAdapter extends FragmentStatePagerAdapter{
             case 0:
                 return OrderListFragment.newInstance();
             case 1:
-
-            case 2:
-
+                return OrderListFragment.newInstance();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 1;
-    }
-
-    @Override
-    public CharSequence getPageTitle(int position) {
-        return "Tab" + position;
+        return 2;
     }
 }

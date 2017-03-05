@@ -39,16 +39,35 @@ public class OrderListFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
 
-
         View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
         Spinner spinner = (Spinner) v.findViewById(R.id.spinner);
+
         List<String> list = new ArrayList<>();
         list.add("list 1");
         list.add("list 2");
         list.add("list 3");
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, list);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi"));
+
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new OrderListRecyclerAdapter(listOfOrder);
