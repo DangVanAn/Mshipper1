@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +54,7 @@ import java.util.List;
 public class Fragment_Maps extends FragmentActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, DirectionFinderListener {
 
+    private static final int MY_PERMISSIONS_REQUEST_READ_CONTACTS = 1;
     private GoogleMap mMap;
     String lat, lon;
     Marker markerLocation;
@@ -95,7 +97,6 @@ public class Fragment_Maps extends FragmentActivity
         listLocation.add("Công viên nước đầm sen");
         listLocation.add("Công viên tân phước, quận 11");
 
-
         FloatingActionButton fab_loca = (FloatingActionButton) findViewById(R.id.fab_location);
         fab_loca.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,14 +121,40 @@ public class Fragment_Maps extends FragmentActivity
 //                    sendRequest(listLocation.get(i), listLocation.get(i + 1));
 //                }
 
-                sendRequest(listLocation.get(numMakers), listLocation.get(numMakers + 1));
-
-                numMakers+=1;
-
+                if (numMakers < listLocation.size() - 1)
+                    sendRequest(listLocation.get(numMakers), listLocation.get(numMakers + 1));
+                numMakers += 1;
             }
         });
+    }
 
+    private void showPermissionDialog() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
 
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+        }
     }
 
     @Override
