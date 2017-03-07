@@ -12,10 +12,14 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,7 +54,7 @@ import java.util.List;
  * Created by dangvanan14 on 2/22/2017.
  */
 
-public class Fragment_Maps extends FragmentActivity
+public class Fragment_Maps extends Fragment
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, DirectionFinderListener {
 
     private GoogleMap mMap;
@@ -75,17 +79,23 @@ public class Fragment_Maps extends FragmentActivity
     private int numMakers = 0;
     private List<String> listLocation = new ArrayList<String>();
 
+    public static Fragment newInstance() {
+        Fragment_Maps fr = new Fragment_Maps();
+        return fr;
+    }
+
+    @Nullable
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_maps);
+        View v = inflater.inflate(R.layout.fragment_maps, container, false);
 
         buildGoogleApiClient();
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+        SupportMapFragment mapFragment = (SupportMapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        mIconGenerator = new IconGenerator(getApplicationContext());
+        mIconGenerator = new IconGenerator(getContext());
         mIconGenerator.setStyle(IconGenerator.STYLE_GREEN);
 
         listLocation.add("Đại học kinh tế thành phố hồ chí minh");
@@ -96,7 +106,7 @@ public class Fragment_Maps extends FragmentActivity
         listLocation.add("Công viên tân phước, quận 11");
 
 
-        FloatingActionButton fab_loca = (FloatingActionButton) findViewById(R.id.fab_location);
+        FloatingActionButton fab_loca = (FloatingActionButton) v.findViewById(R.id.fab_location);
         fab_loca.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -113,7 +123,7 @@ public class Fragment_Maps extends FragmentActivity
                     mMap.animateCamera(cameraUpdate);
                 }
 
-                Toast.makeText(Fragment_Maps.this, "lat: " + lat + ", lon: " + lon,
+                Toast.makeText(getContext(), "lat: " + lat + ", lon: " + lon,
                         Toast.LENGTH_LONG).show();
 
 //                for (int i = 0; i < listLocation.size() - 1; i++) {
@@ -122,12 +132,10 @@ public class Fragment_Maps extends FragmentActivity
 
                 sendRequest(listLocation.get(numMakers), listLocation.get(numMakers + 1));
 
-                numMakers+=1;
-
+                numMakers += 1;
             }
         });
-
-
+        return v;
     }
 
     @Override
@@ -137,9 +145,9 @@ public class Fragment_Maps extends FragmentActivity
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
         mLocationRequest.setInterval(100); // Update location every second
 
-        if (ActivityCompat.checkSelfPermission(this,
+        if (ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this,
+                && ActivityCompat.checkSelfPermission(getContext(),
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
@@ -186,7 +194,7 @@ public class Fragment_Maps extends FragmentActivity
     }
 
     synchronized void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
+        mGoogleApiClient = new GoogleApiClient.Builder(getContext())
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
@@ -199,28 +207,33 @@ public class Fragment_Maps extends FragmentActivity
         LatLng hcmus = new LatLng(10.762963, 106.682394);
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(hcmus, 3));
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
     @Override
-    protected void onDestroy() {
+    public void onDestroy() {
         super.onDestroy();
         mGoogleApiClient.disconnect();
     }
 
     @Override
-    protected void onStop() {
+    public void onStop() {
         super.onStop();
 
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -246,7 +259,7 @@ public class Fragment_Maps extends FragmentActivity
 
     public void getLocationFromAddress(String strAddress) {
 
-        Geocoder coder = new Geocoder(this);
+        Geocoder coder = new Geocoder(getContext());
         List<Address> address;
         try {
             address = coder.getFromLocationName(strAddress, 1);
@@ -272,11 +285,11 @@ public class Fragment_Maps extends FragmentActivity
     // Direction 1
     private void sendRequest(String origin, String destination) {
         if (origin.isEmpty()) {
-            Toast.makeText(this, "Please enter origin address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter origin address!", Toast.LENGTH_SHORT).show();
             return;
         }
         if (destination.isEmpty()) {
-            Toast.makeText(this, "Please enter destination address!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "Please enter destination address!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -290,7 +303,7 @@ public class Fragment_Maps extends FragmentActivity
 
     @Override
     public void onDirectionFinderStart() {
-        progressDialog = ProgressDialog.show(this, "Please wait.",
+        progressDialog = ProgressDialog.show(getContext(), "Please wait.",
                 "Finding direction..!", true);
 
 //        if (marker_Find != null)
@@ -354,7 +367,9 @@ public class Fragment_Maps extends FragmentActivity
     // Direction 2
 
     private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
     }
+
+
 }

@@ -22,4 +22,8 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="CustomTabTexStyle" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+    </style>
+
 </resources>

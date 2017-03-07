@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
-        android:orderInCategory="100"
-        android:icon="@drawable/ic_menu_scan"
-        android:title="Sreach"
-        app:showAsAction="ifRoom" />
+        android:icon="@android:drawable/ic_menu_search"
+        app:showAsAction="always"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        android:title="Search"/>
 </menu>
