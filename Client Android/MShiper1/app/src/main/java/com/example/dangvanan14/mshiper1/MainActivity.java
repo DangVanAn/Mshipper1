@@ -19,7 +19,7 @@ import com.example.dangvanan14.mshiper1.activity.SearchActivity;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-
+import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -113,8 +113,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
+        
+        if (id == R.id.nav_chart) {
+            Intent intent = new Intent(this, FragmentChart.class);
+            this.startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
