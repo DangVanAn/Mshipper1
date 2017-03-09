@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.dangvanan14.mshiper1">
 
     <permission
@@ -38,16 +39,15 @@
             </intent-filter>
         </activity>
         <activity
+            android:name="com.journeyapps.barcodescanner.CaptureActivity"
+            android:screenOrientation="fullUser"
+            tools:replace="screenOrientation" />
+        <activity
             android:name=".Activity_Splash"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".Activity_login"
             android:theme="@style/FullScreen" />
-
-        <!-- <activity -->
-        <!-- android:name=".fragment.Fragment_Maps" -->
-        <!-- android:theme="@style/FullScreen" /> -->
-
         <activity
             android:name=".fragment.FragmentChart"
             android:theme="@style/FullScreen" />

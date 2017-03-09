@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecyclerAdapter.ViewHolder> {
     private List<Order> listOfOrder;
+    private String Id = "123";
 
     public OrderListRecyclerAdapter() {
     }
@@ -62,6 +63,7 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                    intent.putExtra("ID",Id);
                     v.getContext().startActivity(intent);
                 }
             });

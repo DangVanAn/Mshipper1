@@ -3,14 +3,19 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/action_search"
+        android:icon="@drawable/ic_search"
+        app:showAsAction="always"
+        android:title="Search"/>
+    <item
+        android:id="@+id/action_encode"
         android:orderInCategory="100"
-        android:icon="@drawable/ic_menu_scan"
+        android:icon="@drawable/ic_finance_10"
         android:title="Sreach"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/action_notify"
         android:orderInCategory="100"
         android:icon="@drawable/ic_bell"
         android:title="Sreach"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
 </menu>

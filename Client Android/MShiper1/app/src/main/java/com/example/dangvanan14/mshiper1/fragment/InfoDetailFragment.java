@@ -33,7 +33,7 @@ public class InfoDetailFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 //        Bundle args = getArguments();
-        View v = inflater.inflate(R.layout.fragment_order, container, false);
+        View v = inflater.inflate(R.layout.fragment_info_detail, container, false);
 
         return v;
     }

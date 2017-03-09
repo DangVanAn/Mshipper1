@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:padding="4dp">
 
-    <fragment android:id="@+id/map"
+    <fragment
+        android:id="@+id/map"
+        class="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment"></fragment>
+        android:layout_height="match_parent" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_location"
@@ -17,8 +18,8 @@
         android:layout_gravity="bottom|right"
         android:layout_marginBottom="16dp"
         android:layout_marginRight="16dp"
-        android:scaleType="center"
         android:elevation="8dp"
+        android:scaleType="center"
         android:src="@drawable/ic_placeholder" />
 
     <View

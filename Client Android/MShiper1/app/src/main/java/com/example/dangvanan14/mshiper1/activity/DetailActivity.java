@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.DetailPagerAdapter;
@@ -32,6 +34,8 @@ public class DetailActivity extends BaseActivity {
         });
 
         setupTabLayout();
+        String strId = getIntent().getStringExtra("ID");
+        Toast.makeText(this, strId + " của Detail", Toast.LENGTH_SHORT).show();
     }
 
     @Override
