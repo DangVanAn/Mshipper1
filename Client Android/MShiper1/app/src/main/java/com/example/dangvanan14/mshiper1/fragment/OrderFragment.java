@@ -3,27 +3,18 @@ package com.example.dangvanan14.mshiper1.fragment;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
-import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
 import com.example.dangvanan14.mshiper1.model.Order;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by Sherman on 3/6/2017.
