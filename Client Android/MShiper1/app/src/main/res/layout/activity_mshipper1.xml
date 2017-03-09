@@ -17,9 +17,7 @@
             android:background="@color/colorPrimary"
             android:fitsSystemWindows="true"
             android:minHeight="?attr/actionBarSize"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:logo="@mipmap/ic_launcher"
-            app:title="@string/app_name" />
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.DrawerLayout
