@@ -13,8 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.example.dangvanan14.mshiper1.activity.DetailActivity;
 import com.example.dangvanan14.mshiper1.activity.SearchActivity;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
+import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
+
+import static java.security.AccessController.getContext;
 
 
 public class MainActivity extends AppCompatActivity
@@ -89,8 +93,9 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
+        if (id == R.id.nav_chart) {
+            Intent intent = new Intent(this, FragmentChart.class);
+            this.startActivity(intent);
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
