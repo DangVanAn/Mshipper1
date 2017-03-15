@@ -2,20 +2,30 @@ package com.example.dangvanan14.mshiper1.activity;
 
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.DetailPagerAdapter;
+import com.example.dangvanan14.mshiper1.dialog.CancelOrderDialogFragment;
+import com.example.dangvanan14.mshiper1.dialog.PayDialogFragment;
+import com.example.dangvanan14.mshiper1.dialog.ProgressDialogFragment;
 
-public class DetailActivity extends BaseActivity {
+public class DetailActivity extends BaseActivity implements View.OnClickListener {
+    private static final String TAG_CANCEL_ORDER_DIALOG = "CANCEL ORDER";
+    private static final String TAG_PAY_DIALOG = "PAY DIALOG";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,8 +34,8 @@ public class DetailActivity extends BaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("Chi tiết");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -36,25 +46,11 @@ public class DetailActivity extends BaseActivity {
         setupTabLayout();
         String strId = getIntent().getStringExtra("ID");
         Toast.makeText(this, strId + " của Detail", Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mshipper1, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_search) {
-            Intent intent = new Intent(this, SearchActivity.class);
-            startActivity(intent);
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
+        Button btnCancel = (Button) findViewById(R.id.btnCancel);
+        Button btnPay = (Button) findViewById(R.id.btnPay);
+        btnCancel.setOnClickListener(this);
+        btnPay.setOnClickListener(this);
     }
 
     public void setupTabLayout() {
@@ -68,5 +64,35 @@ public class DetailActivity extends BaseActivity {
         tabLayout.getTabAt(2).setIcon(android.R.drawable.ic_dialog_map);
         tabLayout.getTabAt(0).setIcon(android.R.drawable.ic_dialog_info);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_package);
+    }
+
+    @Override
+    public void onClick(View v) {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        Fragment prevFrag;
+        switch (v.getId()) {
+            case R.id.btnCancel:
+                prevFrag = getSupportFragmentManager().findFragmentByTag(TAG_CANCEL_ORDER_DIALOG);
+                if (prevFrag == null) {
+                    CancelOrderDialogFragment newFrag = CancelOrderDialogFragment.newInstance();
+
+                    ft.add(newFrag, TAG_CANCEL_ORDER_DIALOG);
+                } else {
+                    ft.remove(prevFrag);
+                }
+                ft.commitAllowingStateLoss();
+                break;
+            case R.id.btnPay:
+                prevFrag = getSupportFragmentManager().findFragmentByTag(TAG_PAY_DIALOG);
+                if (prevFrag == null) {
+                    PayDialogFragment newFrag = PayDialogFragment.newInstance();
+
+                    ft.add(newFrag, TAG_PAY_DIALOG);
+                } else {
+                    ft.remove(prevFrag);
+                }
+                ft.commitAllowingStateLoss();
+                break;
+        }
     }
 }

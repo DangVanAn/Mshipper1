@@ -1,11 +1,13 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
 import android.content.Intent;
+import android.media.Image;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -51,6 +53,7 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
     public class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtId;
         private TextView txtTime;
+        private ImageView imageView;
         private TextView txtAddress;
         private CardView cardView;
         public ViewHolder(View itemView) {

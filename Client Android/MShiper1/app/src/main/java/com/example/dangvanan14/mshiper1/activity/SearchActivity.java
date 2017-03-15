@@ -44,13 +44,14 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        getSupportActionBar().setTitle("Tìm kiếm");
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+
         listOfOrder.add(new Order("13", "19:00", "19/24 binh thơi"));
         listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi"));
         listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi"));
@@ -86,7 +87,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         searchView.setFocusable(true);
         searchView.setIconified(false);
         searchView.requestFocusFromTouch();
-        return super.onCreateOptionsMenu(menu);
+        return true;
     }
 
     @Override
@@ -101,14 +102,14 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                 return true;
         }
 
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
+        if (result != null) {
+            if (result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
@@ -117,6 +118,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     @Override
     public boolean onQueryTextSubmit(String query) {
         return false;

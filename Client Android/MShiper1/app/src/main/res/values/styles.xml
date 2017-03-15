@@ -31,4 +31,8 @@
         <item name="android:background">#E91E63</item>
     </style>
 
+    <style name="textInfo">
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

@@ -14,14 +14,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
+import com.example.dangvanan14.mshiper1.activity.NotifyActivity;
 import com.example.dangvanan14.mshiper1.activity.SearchActivity;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     @Override
@@ -51,8 +53,8 @@ public class MainActivity extends AppCompatActivity
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tablayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setIcon(R.mipmap.ic_launcher);
-        tabLayout.getTabAt(1).setIcon(android.R.drawable.ic_dialog_map);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_order);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_map);
 
     }
 
@@ -66,38 +68,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.mshipper1, menu);
-        return true;
-    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                Intent intent = new Intent(this, SearchActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.action_encode:
-                IntentIntegrator integrator = new IntentIntegrator(this);
-                integrator.setDesiredBarcodeFormats(IntentIntegrator.ALL_CODE_TYPES);
-                integrator.setPrompt("Scan a barcode");
-                integrator.setCameraId(0);  // Use a specific camera of the device
-                integrator.setBeepEnabled(false);
-                integrator.setBarcodeImageEnabled(true);
-                integrator.setOrientationLocked(false);
-                integrator.initiateScan();
-                return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if(result != null) {
-            if(result.getContents() == null) {
+        if (result != null) {
+            if (result.getContents() == null) {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
@@ -109,11 +85,12 @@ public class MainActivity extends AppCompatActivity
             super.onActivityResult(requestCode, resultCode, data);
         }
     }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
-        
+
         if (id == R.id.nav_chart) {
             Intent intent = new Intent(this, FragmentChart.class);
             this.startActivity(intent);
