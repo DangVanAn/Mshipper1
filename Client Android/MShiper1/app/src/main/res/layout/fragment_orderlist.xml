@@ -3,36 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="4dp">
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:background="#FFE0B2"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="4dp">
 
         <TextView
-            android:id="@+id/txtngay"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
-            android:text="Đơn hàng của ngày :" />
+            android:layout_height="match_parent"
+            android:layout_marginEnd="16dp"
+            android:gravity="center"
+            android:text="20/20/2010"
+            android:textSize="18sp" />
 
         <TextView
-            android:id="@+id/btnDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textSize="18sp"
-            android:background="@android:color/darker_gray"
-            android:gravity="center"
-            android:text="dd/mm/yyyy"
-            android:textColor="@color/colorAccent" />
+            android:text="-"
+            android:textSize="24sp" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="20/20/2010"
+            android:textSize="18sp" />
     </LinearLayout>
 
     <LinearLayout
