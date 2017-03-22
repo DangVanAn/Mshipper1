@@ -9,16 +9,20 @@ import android.os.Parcelable;
 public class Order implements Parcelable {
     private String id;
     private String time;
+    private String address;
+    private int state;
 
-    public Order(String id, String time, String address) {
+    public Order(String id, String time, String address, int state) {
         this.id = id;
         this.time = time;
         this.address = address;
+        this.state = state;
     }
 
     protected Order(Parcel in) {
         id = in.readString();
         time = in.readString();
+        state = in.readInt();
         address = in.readString();
     }
 
@@ -26,6 +30,7 @@ public class Order implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(time);
+        dest.writeInt(state);
         dest.writeString(address);
     }
 
@@ -45,6 +50,14 @@ public class Order implements Parcelable {
             return new Order[size];
         }
     };
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 
     public String getId() {
         return id;
@@ -70,5 +83,4 @@ public class Order implements Parcelable {
         this.address = address;
     }
 
-    private String address;
 }

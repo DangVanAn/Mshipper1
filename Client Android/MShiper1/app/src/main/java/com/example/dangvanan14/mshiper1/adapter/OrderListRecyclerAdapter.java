@@ -1,7 +1,6 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
 import android.content.Intent;
-import android.media.Image;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,9 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.dangvanan14.mshiper1.MainActivity;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
 import com.example.dangvanan14.mshiper1.model.Order;
@@ -56,17 +53,19 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
         private ImageView imageView;
         private TextView txtAddress;
         private CardView cardView;
+
         public ViewHolder(View itemView) {
             super(itemView);
             txtId = (TextView) itemView.findViewById(R.id.id);
             txtTime = (TextView) itemView.findViewById(R.id.time);
             txtAddress = (TextView) itemView.findViewById(R.id.address);
+            imageView = (ImageView) itemView.findViewById(R.id.icOrder);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                    intent.putExtra("ID",Id);
+                    intent.putExtra("ID", Id);
                     v.getContext().startActivity(intent);
                 }
             });
@@ -76,6 +75,14 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
             txtId.setText(order.getId());
             txtTime.setText(order.getTime());
             txtAddress.setText(order.getAddress());
+            int ic = R.drawable.ic_time;
+            if (order.getState() == 2) {
+                ic = R.drawable.ic_ok;
+            } else if (order.getState() == 3) {
+                ic = R.drawable.ic_cancel;
+            }
+
+            imageView.setImageResource(ic);
         }
     }
 }

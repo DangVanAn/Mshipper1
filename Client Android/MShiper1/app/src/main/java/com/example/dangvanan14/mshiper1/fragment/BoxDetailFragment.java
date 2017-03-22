@@ -10,7 +10,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.adapter.DetailsRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.Order;
 
 import java.util.ArrayList;
@@ -19,8 +21,8 @@ import java.util.List;
 public class BoxDetailFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private RecyclerView recyclerView;
-    private OrderListRecyclerAdapter mAdapter;
-    private List<Order> listProduct = new ArrayList<>();
+    private DetailsRecyclerAdapter mAdapter;
+    private List<Detail> details = new ArrayList<>();
 
     public BoxDetailFragment() {
     }
@@ -43,15 +45,15 @@ public class BoxDetailFragment extends Fragment {
         TextView txtTotal = (TextView) v.findViewById(R.id.totalMoney);
         txtTotal.setText("100000000 VNĐ");
 
-        listProduct.add(new Order("13", "19:00", "19/24 binh thơi"));
-        listProduct.add(new Order("3", "19:00", "19/24 binh thơi"));
-        listProduct.add(new Order("2", "19:00", "19/24 binh thơi"));
-        listProduct.add(new Order("3", "19:00", "19/24 binh thơi"));
-        listProduct.add(new Order("4", "19:00", "19/24 binh thơi"));
+        details.add(new Detail("13", "19:00", 1, "Điện thoại", "1,200,000VNĐ"));
+        details.add(new Detail("1", "19:00", 2, "Điện thoại", "1,200,000VNĐ"));
+        details.add(new Detail("3", "19:00", 3, "Điện thoại", "1,200,000VNĐ"));
+        details.add(new Detail("153", "19:00", 2, "Điện thoại", "1,200,000VNĐ"));
+        details.add(new Detail("63", "19:00", 1, "Điện thoại", "1,200,000VNĐ"));
 
         recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new OrderListRecyclerAdapter(listProduct);
+        mAdapter = new DetailsRecyclerAdapter(details);
         recyclerView.setAdapter(mAdapter);
 
         return v;

@@ -21,7 +21,7 @@ import java.util.List;
  */
 
 public class InfoDetailFragment extends BaseFragment {
-    Order order = new Order("","","");
+    Order order = new Order("","","",1);
     public static InfoDetailFragment newInstance() {
         InfoDetailFragment order = new InfoDetailFragment();
         return order;
