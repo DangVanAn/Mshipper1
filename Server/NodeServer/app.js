@@ -2,18 +2,27 @@ var url = 'mongodb://mshipper1:12345678@ds129090.mlab.com:29090/mshipper';
 
 var express = require('express');
 var app = express();
+
 var multer = require('multer');
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
+
 app.use(express.static('public'));
+
 app.listen(9999, function () {
     console.log('connect thanh cong');
 });
 
 var User = require('./model/user');
+var users = require('./routes/users');
 
 var bodyParser = require('body-parser');
-var urlencodeParser = bodyParser.urlencoded({extended: false});
+var cookieParser = require('cookie-parser');
+
+app.use(bodyParser.json());
+app.use( bodyParser.urlencoded({extended: false}));
+app.use(cookieParser());
 var mongoose = require('mongoose');
 
 mongoose.connect(url);
@@ -23,26 +32,33 @@ dbMongo.once('open', function () {
     console.log('MongoDb connect');
 });
 
+app.use('/users', users);
 
-app.get('/sent', function (req, res) {
+app.post('/sent', function (req, res) {
 
-    var newUser = User({
-        _id: '003',
-        _identify_card: '152130543',
-        _first_name: 'Hưng',
-        _last_name: 'Diệp Minh',
-        _email: 'diepminhhung14@gmail.com'
-    });
+    var newUser1 = new User(req.body);
 
-// save the user
-    newUser.save(function (err) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send('User created!');
-            console.log('User created!');
-        }
-    });
+    console.log(newUser1);
+    console.log(req.body);
+
+//     var newUser = User({
+//         _id: '003',
+//         _identify_card: '152130543',
+//         _first_name: 'Hưng',
+//         _last_name: 'Diệp Minh',
+//         _email: 'diepminhhung14@gmail.com'
+//     });
+//
+// // save the user
+//     newUser.save(function (err) {
+//         if (err)
+//             return console.error(err);
+//         else {
+//             res.status(200).send('User created!');
+//             console.log('User created!');
+//         }
+//     });
+    res.status(200).send('User created!');
 });
 
 
