@@ -10,6 +10,9 @@ app.config(function($routeProvider) {
         .when("/dashboard", {
             templateUrl : "dashboard.html",
         })
+        .when("/tabledsdonhang", {
+            templateUrl : "tableDsDonHang.html",
+        })
         .when("/flot", {
             templateUrl : "flot.html",
         })
