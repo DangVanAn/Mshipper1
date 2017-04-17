@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 //User Schema
-var package_typeSchema = mongoose.Schema({
+var packageTypeSchema = mongoose.Schema({
     _id: {
         type: String,
         required: true
@@ -17,6 +17,6 @@ var package_typeSchema = mongoose.Schema({
 });
 
 
-var Package_type = mongoose.model('Package_type',package_typeSchema);
+var PackageType = mongoose.model('Package_type',packageTypeSchema);
 
-module.exports = Package_type;
+module.exports = PackageType;

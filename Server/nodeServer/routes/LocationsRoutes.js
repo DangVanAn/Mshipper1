@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/User');
+var Locations = require('../models/Locations');
 
 router.get('/getall', function (req, res) {
 
-// get all the users
-    User.find({}, function (err, users) {
+// get all
+    Locations.find({}, function (err, locations) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send(users);
+            res.status(200).send(locations);
             console.log('Find all success!!!');
         }
     });
 });
 
 module.exports = router;
-
-

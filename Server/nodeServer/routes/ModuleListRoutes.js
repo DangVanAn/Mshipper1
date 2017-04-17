@@ -1,20 +1,18 @@
 var express = require('express');
 var router = express.Router();
-var User = require('../models/User');
+var ModuleList = require('../models/ModuleList');
 
 router.get('/getall', function (req, res) {
 
-// get all the users
-    User.find({}, function (err, users) {
+// get all
+    ModuleList.find({}, function (err, moduleLists) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send(users);
+            res.status(200).send(moduleLists);
             console.log('Find all success!!!');
         }
     });
 });
 
 module.exports = router;
-
-
