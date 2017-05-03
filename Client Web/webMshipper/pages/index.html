@@ -45,17 +45,30 @@
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.7/angular-cookies.js"></script>
     <script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyDbOcgovjIcORWoiZJs2mLGpjvgYKBHjZY"></script>
+    <script src="../js/vendor.js"></script>
 
     <script src="../vendor/datatables/js/jquery.dataTables.min.js"></script>
     <script src="../vendor/datatables-plugins/dataTables.bootstrap.min.js"></script>
     <script src="../vendor/datatables-responsive/dataTables.responsive.js"></script>
 
+    <script src="../bower_components/angular-csv-import/angular-csv-import.js"></script>
+
     <script src="../dist/js/ng-map.min.js"></script>
-    <script src="../js/vendor.js"></script>
     <script src="../js/app.js"></script>
     <script src="../js/mapquanly.js"></script>
     <script src="../js/dsdonhang.js"></script>
+    <script src="../js/dsdonhang_add.js"></script>
+    <script src="../js/taikhoan.js"></script>
+    <script src="../js/thongbao.js"></script>
+    <script src="../js/bieudo.js"></script>
 
+    <!-- Morris Charts JavaScript -->
+    <script src="../vendor/raphael/raphael.min.js"></script>
+    <script src="../vendor/morrisjs/morris.min.js"></script>
+    <script src="../data/morris-data.js"></script>
+    <script src="../js/acount_add.js"></script>
+
+    <script src="../bower_components/dropdown/bsDropdown.js"></script>
 </head>
 
 <body ng-app="mShipperApp">
@@ -310,7 +323,19 @@
                         <a href="#tabledsdonhang"><i class="fa fa-dashboard fa-fw"></i> Danh sách đơn hàng</a>
                     </li>
                     <li>
+                        <a href="#addtabledsdonhang"><i class="fa fa-dashboard fa-fw"></i> Thêm danh sách đơn hàng</a>
+                    </li>
+                    <li>
+                        <a href="#tabletaikhoan"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
+                    </li>
+                    <li>
+                        <a href="#tablethongbao"><i class="fa fa-dashboard fa-fw"></i> Quản lý thông báo</a>
+                    </li>
+                    <li>
                         <a href="#mapquanly"><i class="fa fa-dashboard fa-fw"></i> Bản đồ</a>
+                    </li>
+                    <li>
+                        <a href="#bieudo"><i class="fa fa-dashboard fa-fw"></i> Biểu đồ thống kê</a>
                     </li>
                     <li>
                         <a href="#flot"><i class="fa fa-bar-chart-o fa-fw"></i> Flot Charts</a>

@@ -7,6 +7,20 @@ var bodyParser = require('body-parser');
 
 var index = require('./routes/index');
 var users = require('./routes/UserRoutes');
+var areas = require('./routes/AreaRoutes');
+var assigns = require('./routes/AssignRoutes');
+var details = require('./routes/DetailsRoutes');
+var locations = require('./routes/LocationsRoutes');
+var modulelists = require('./routes/ModuleListRoutes');
+var notifications = require('./routes/NotificationRoutes');
+var orders = require('./routes/OrderRoutes');
+var packagetypes = require('./routes/PackageTypeRoutes');
+var permissionidlists = require('./routes/PermissionIdListRoutes');
+var permissions = require('./routes/PermissionRoutes');
+var permissiontypelists = require('./routes/PermissionTypeList');
+var teamleads = require('./routes/TeamLeadRoutes');
+var teamlists = require('./routes/TeamListRoutes');
+var userteamlists = require('./routes/UserTeamListRoutes');
 
 var app = express();
 
@@ -43,6 +57,20 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
+app.use('/areas', areas);
+app.use('/assigns', assigns);
+app.use('/details', details);
+app.use('/locations', locations);
+app.use('/modulelists', modulelists);
+app.use('/notifications', notifications);
+app.use('/packagetypes', packagetypes);
+app.use('/orders', orders);
+app.use('/permissionidlists', permissionidlists);
+app.use('/permissions', permissions);
+app.use('/permissiontypelists', permissiontypelists);
+app.use('/teamleads', teamleads);
+app.use('/teamlists', teamlists);
+app.use('/userteamlists', userteamlists);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

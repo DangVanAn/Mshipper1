@@ -6,12 +6,12 @@ var OrdersSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    _order_date  : {
-        type: Date,
+    _created_date  : {
+        type: Number,
         required: true
     },
-    _expected_datetime  : {
-        type: Date,
+    _expected_date  : {
+        type: Number,
         required: true
     },
     _address   : {
@@ -23,24 +23,23 @@ var OrdersSchema = mongoose.Schema({
         required: true
     },
     _latitude : {
-        type: Number,
+        type: String,
         required: true
     },
     _longitude  : {
-        type: Number,
+        type: String,
         required: true
     },
     _order_status  : {
         type: String,
         required: true
     },
-     _delivery_type  : {
+     _payment_status  : {
         type: String,
         required: true
     },
      _note : {  
         type: String,
-        required: true
     },
 });
 

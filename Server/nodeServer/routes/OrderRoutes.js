@@ -15,4 +15,23 @@ router.get('/getall', function (req, res) {
     });
 });
 
+router.post('/add', function (req, res) {
+
+    var newOrder = new Orders(req.body);
+
+
+    console.log(newOrder);
+    console.log(req.body);
+
+// save
+    newOrder.save(function (err) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send('Order created!');
+            console.log('Order created!');
+        }
+    });
+});
+
 module.exports = router;

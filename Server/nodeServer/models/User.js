@@ -2,10 +2,7 @@ var mongoose = require('mongoose');
 
 //User Schema
 var userSchema = mongoose.Schema({
-    _id: {
-        type: String,
-        required: true
-    },
+
     _identify_card: {
         type: String,
         required: true

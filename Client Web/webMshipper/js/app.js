@@ -1,4 +1,4 @@
-angular.module('mShipperApp', ['ngRoute', 'ngCookies','ui.bootstrap', 'ngMap'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies','ui.bootstrap', 'ng.bs.dropdown', 'ngMap', 'ngCsvImport', 'hljs'])
     .config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider, ngMap) {
             $routeProvider
@@ -12,10 +12,25 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies','ui.bootstrap', 'ngMap'])
                     templateUrl : "dashboard.html",
                 })
                 .when("/tabledsdonhang", {
-                    templateUrl : "tableDsDonHang.html",
+                    template : '<danh-sach-don-hang></danh-sach-don-hang>',
+                })
+                .when("/addtabledsdonhang", {
+                    template : '<add-danh-sach-don-hang></add-danh-sach-don-hang>',
+                })
+                .when("/tabletaikhoan", {
+                    template : '<tai-khoan></tai-khoan>',
+                })
+                .when("/tablethongbao", {
+                    template : '<thong-bao></thong-bao>',
+                })
+                .when("/bieudo", {
+                    template : '<bieu-do></bieu-do>',
                 })
                 .when("/mapquanly", {
                     template : '<map-quan-ly></map-quan-ly>',
+                })
+                .when("/addacount", {
+                    template : '<add-account></add-account>',
                 })
                 .when("/flot", {
                     templateUrl : "flot.html",
@@ -59,3 +74,22 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies','ui.bootstrap', 'ngMap'])
                     controller : "parisCtrl"
                 });
         }])
+        .directive("fileread",[function ()
+            {
+                return {
+                    scope: {
+                        fileread: "="
+                    },
+                    link: function (scope, element, attributes) {
+                        element.bind("change", function (changeEvent) {
+                            var reader = new FileReader();
+                            reader.onload = function (loadEvent) {
+                                scope.$apply(function () {
+                                    scope.fileread = loadEvent.target.result;
+                                });
+                            }
+                            reader.readAsDataURL(changeEvent.target.files[0]);
+                        });
+                    }
+                }
+            }])
