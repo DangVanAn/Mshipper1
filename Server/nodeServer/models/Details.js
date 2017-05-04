@@ -2,15 +2,11 @@ var mongoose = require('mongoose');
 
 //User Schema
 var detailsSchema = mongoose.Schema({
-    _id: {
+    _id_package : {
         type: String,
         required: true
     },
     _order_id : {
-        type: String,
-        required: true
-    },
-    _id_package : {
         type: String,
         required: true
     },
@@ -24,7 +20,6 @@ var detailsSchema = mongoose.Schema({
     },
     _weight: {
         type: String,
-        required: true
     },
     _package_type: {
         type: String,
@@ -32,19 +27,15 @@ var detailsSchema = mongoose.Schema({
     },
     _delivery_daytime: {
         type: String,
-        required: true
     },
     _latitude_update: {
         type: String,
-        required: true
     },
     _longitude_update: {
         type: String,
-        required: true
     },
     _signature: {
         type: String,
-        required: true
     },
     _status: {
         type: String,
@@ -52,7 +43,6 @@ var detailsSchema = mongoose.Schema({
     },
     _photo: {
         type: String,
-        required: true
     },
 });
 
