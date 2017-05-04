@@ -1,0 +1,95 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Danh sách đơn hàng</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Bảng dữ liệu
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div>
+                                <label class="control-label col-sm-12"><strong>Ngày bắt đầu:</strong></label>
+                                <input id="beginDate" type="text" class="form-control datepicker"
+                                       data-date-format="dd/mm/yyyy">
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div>
+                                <label class="control-label col-sm-12"><strong>Ngày kết thúc:</strong></label>
+                                <input id="beginDate1" type="text" class="form-control datepicker"
+                                       data-date-format="dd/mm/yyyy">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label class="control-label col-sm-12"><strong>Trạng thái:</strong></label>
+                            <div bs-dropdown
+                                 bs-dropdown-display="MyDropDown"
+                                 bs-dropdown-items="status"
+                                 ng-model="selectStatus">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2">
+                            <label class="control-label col-sm-12"><strong>Khu vực:</strong></label>
+                            <div bs-dropdown
+                                 bs-dropdown-display="MyDropDown"
+                                 bs-dropdown-items="area"
+                                 ng-model="selectArea">
+                            </div>
+                        </div>
+
+                    </div>
+                    <br>
+
+                    <!-- /.panel-heading -->
+                    <div class="panel-body">
+                        <table width="100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Created day</th>
+                                <th>Expected day</th>
+                                <th>Adress</th>
+                                <th>Area id</th>
+                                <th>Location maps</th>
+                                <th>Oder status</th>
+                                <th>Payment status</th>
+                                <th>Note</th>
+                                <th>Detail</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="pointer" ng-repeat="x in orders">
+                                <td>{{x._id}}</td>
+                                <td>{{x._created_date}}</td>
+                                <td>{{x._expected_date}}</td>
+                                <td>{{x._address}}</td>
+                                <td>{{x._area_id}}</td>
+                                <td align="center"><button ng-click="loadMaps(x)" type="button" class="btn btn-info btn-circle"><i class="fa fa-map-marker"></i></button></td>
+                                <td>{{x._order_status}}</td>
+                                <td>{{x._payment_status}}</td>
+                                <td>{{x._note}}</td>
+                                <td>detail</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>

@@ -1,95 +1,98 @@
-angular.module('mShipperApp', ['ngRoute', 'ngCookies','ui.bootstrap', 'ng.bs.dropdown', 'ngMap', 'ngCsvImport', 'hljs'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngMap', 'ngCsvImport', 'hljs'])
     .config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider, ngMap) {
             $routeProvider
                 .when("/table", {
-                    templateUrl : "tables.html",
+                    templateUrl: "tables.html",
                 })
                 .when("/", {
-                    templateUrl : "dashboard.html",
+                    templateUrl: "dashboard.html",
                 })
                 .when("/dashboard", {
-                    templateUrl : "dashboard.html",
+                    templateUrl: "dashboard.html",
                 })
                 .when("/tabledsdonhang", {
-                    template : '<danh-sach-don-hang></danh-sach-don-hang>',
+                    template: '<danh-sach-don-hang></danh-sach-don-hang>',
                 })
                 .when("/addtabledsdonhang", {
-                    template : '<add-danh-sach-don-hang></add-danh-sach-don-hang>',
+                    template: '<add-danh-sach-don-hang></add-danh-sach-don-hang>',
                 })
                 .when("/tabletaikhoan", {
-                    template : '<tai-khoan></tai-khoan>',
+                    template: '<tai-khoan></tai-khoan>',
                 })
                 .when("/tablethongbao", {
-                    template : '<thong-bao></thong-bao>',
+                    template: '<thong-bao></thong-bao>',
                 })
                 .when("/bieudo", {
-                    template : '<bieu-do></bieu-do>',
+                    template: '<bieu-do></bieu-do>',
                 })
                 .when("/mapquanly", {
-                    template : '<map-quan-ly></map-quan-ly>',
+                    template: '<map-quan-ly></map-quan-ly>',
                 })
                 .when("/addacount", {
-                    template : '<add-account></add-account>',
+                    template: '<add-account></add-account>',
                 })
                 .when("/flot", {
-                    templateUrl : "flot.html",
+                    templateUrl: "flot.html",
                 })
                 .when("/morris", {
-                    templateUrl : "morris.html",
+                    templateUrl: "morris.html",
                 })
                 .when("/forms", {
-                    templateUrl : "forms.html",
+                    templateUrl: "forms.html",
                 })
                 .when("/panels-wells", {
-                    templateUrl : "panels-wells.html",
+                    templateUrl: "panels-wells.html",
                 })
                 .when("/buttons", {
-                    templateUrl : "buttons.html",
+                    templateUrl: "buttons.html",
                 })
                 .when("/notifications", {
-                    templateUrl : "notifications.html",
+                    templateUrl: "notifications.html",
                 })
                 .when("/typography", {
-                    templateUrl : "typography.html",
+                    templateUrl: "typography.html",
                 })
                 .when("/icons", {
-                    templateUrl : "icons.html",
+                    templateUrl: "icons.html",
                 })
                 .when("/grid", {
-                    templateUrl : "grid.html",
+                    templateUrl: "grid.html",
                 })
                 .when("/blank", {
-                    templateUrl : "blank.html",
+                    templateUrl: "blank.html",
                 })
                 .when("/login", {
-                    templateUrl : "login.html",
+                    templateUrl: "login.html",
                 })
                 .when("/london", {
-                    templateUrl : "london.htm",
-                    controller : "londonCtrl"
+                    templateUrl: "london.htm",
+                    controller: "londonCtrl"
                 })
                 .when("/paris", {
-                    templateUrl : "paris.htm",
-                    controller : "parisCtrl"
+                    templateUrl: "paris.htm",
+                    controller: "parisCtrl"
                 });
         }])
-        .directive("fileread",[function ()
-            {
-                return {
-                    scope: {
-                        fileread: "="
-                    },
-                    link: function (scope, element, attributes) {
-                        element.bind("change", function (changeEvent) {
-                            var reader = new FileReader();
-                            reader.onload = function (loadEvent) {
-                                scope.$apply(function () {
-                                    scope.fileread = loadEvent.target.result;
-                                });
-                            }
-                            reader.readAsDataURL(changeEvent.target.files[0]);
-                        });
+    .service('modalShowMap', ['$uibModal', '$http', function ($uibModal) {
+        this.show = function (data, callback) {
+            /*begin modal*/
+            var modalInstance = $uibModal.open({
+                templateUrl: './Orders/ModalShow.html',
+                controller: 'modal.selectDate',
+                backdrop: 'static',
+                windowClass: 'app-modal-window',
+                resolve: {
+                    data: function () {
+                        return data;
                     }
                 }
-            }])
+            });
+
+            modalInstance.result.then(function (selected) {
+                return callback(selected);
+            }, function () {
+                return callback(false);
+            });
+        };
+    }])
