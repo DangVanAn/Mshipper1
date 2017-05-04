@@ -78,9 +78,8 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
         this.show = function (data, callback) {
             /*begin modal*/
             var modalInstance = $uibModal.open({
-                templateUrl: './Orders/ModalShow.html',
+                templateUrl: './Orders/ModalShow.map.html',
                 controller: 'modal.selectDate',
-                backdrop: 'static',
                 windowClass: 'app-modal-window',
                 resolve: {
                     data: function () {

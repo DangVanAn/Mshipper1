@@ -1,0 +1,28 @@
+<div class="row">
+    <div class="col-lg-12">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                Google maps
+            </div>
+            <!-- /.panel-heading -->
+            <div class="panel-body">
+                <h2>Select cities:</h2>
+                <select multiple ng-model="selectedValues" ng-change="selectionsChanged()">
+                    <option ng:repeat="c in cities" selected value="{{c.id}}">{{c.name}}</option>
+                </select>
+
+                <!--tt> selectedValues = {{selectedCities}}</tt-->
+
+                <ng-map zoom="5" center="{{center}}"
+                        scrollwheel="false"
+                        zoom-to-include-markers="true">
+                    <marker ng-repeat="c in selectedCities"
+                            position="{{c.pos}}" title="{{c.name}}"></marker>
+                </ng-map>
+            </div>
+            <!-- /.panel-body -->
+        </div>
+        <!-- /.panel -->
+    </div>
+    <!-- /.col-lg-12 -->
+</div>

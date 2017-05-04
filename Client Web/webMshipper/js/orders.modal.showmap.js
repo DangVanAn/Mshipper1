@@ -9,90 +9,41 @@ angular.module('mShipperApp')
             '3',
             '4'
         ];
-        $(function () {
-            $('.select2').select2();
-        });
-
-        $scope.selectRoom = $scope.rooms[0];
 
 
-        $scope.selectedUsers = [];
-        $scope.users = [];
+        $scope.selectedCities = [];
+        $scope.cities = [
+            {id: 1,name: 'Oslo', pos:[59.923043, 10.752839]},
+            {id: 2,name: 'Stockholm',pos:[59.339025, 18.065818]},
+            {id: 3,name: 'Copenhagen',pos:[55.675507, 12.574227]},
+            {id: 4,name: 'Berlin',pos:[52.521248, 13.399038]},
+            {id: 5,name: 'Paris',pos:[48.856127, 2.346525]}
+        ];
 
-        var tmp = "123456789";
-        var rs = tmp.slice(0, 3) + "-" + tmp.slice(3);
+        $scope.selectionsChanged = function(){
+            $scope.selectedCities = [];
+            $scope.selectedValues.forEach(function(cid){
+                var city = $scope.cities.filter(function(c){
+                    if(c.id == parseInt(cid))
+                        return c;
+                })[0];
+                $scope.selectedCities.push(city);
+            });
 
-        console.log("rs:" + rs);
+            $scope.zoomToIncludeMarkers();
+        };
 
-        var selectH = -1, selectM = -1;
-        var boolH = 1, boolM = 0;
-        
-        $scope.c_hour = function (h) {
-            console.log("hour::" + h);
-            var ch = '#h' + h;
-            $(ch.toString()).css('background-color', 'blue');
-
-            if(selectH !== -1 && selectH !== h)
-            {
-                ch = '#h' + selectH;
-                $(ch.toString()).css('background-color', '');
+        $scope.zoomToIncludeMarkers = function() {
+            var bounds = new google.maps.LatLngBounds();
+            $scope.selectedCities.forEach(function(c) {
+                var latLng = new google.maps.LatLng(c.pos[0],c.pos[1]);
+                bounds.extend(latLng);
+            });
+            $scope.map.fitBounds(bounds);
+            if($scope.selectedCities.length == 1){
+                $scope.map.setZoom(5);
             }
-            selectH = h;
-
-
-        }
-
-        $scope.c_minute = function (m) {
-            console.log("minute::" + m);
-            var cm = '#m' + m;
-            $(cm.toString()).css('background-color', 'blue');
-
-            if(selectM !== -1 && selectM !== m)
-            {
-                cm = '#m' + selectM;
-                $(cm.toString()).css('background-color', '');
-            }
-            selectM = m;
-
-            if(selectH !== -1 && selectM !== -1)
-            {
-                console.log("gio hien tai:" + selectH + ":" + selectM);
-
-                var countClose = 0, findClose = -1;
-                for(var i = 0; i < $scope.data.length; i++)
-                {
-                    if($scope.data[i] === ')')
-                    {
-                        countClose++;
-                        console.log("countClose:" + countClose);
-                        console.log("selectRoom:" + $scope.selectRoom);
-                        if(countClose == $scope.selectRoom)
-                        {
-                            findClose = i;
-                            break;
-                        }
-                    }
-                }
-
-                console.log("findClose:" + findClose);
-
-                if(findClose !== -1)
-                {
-                    var sH = selectH, sM = selectM;
-                    if(selectH < 10) sH = '0' + selectH;
-                    if(selectM < 10) sM = '0' + selectM;
-                    // chen chuoi vao vi tri
-                    if($scope.data[findClose - 1] === '(')
-                    {
-                        $scope.data = $scope.data.slice(0, findClose) + sH + ":" + sM + $scope.data.slice(findClose);
-                    }
-                    else
-                    {
-                        $scope.data = $scope.data.slice(0, findClose) + ',' + sH + ":" + sM + $scope.data.slice(findClose);
-                    }
-                }
-            }
-        }
+        };
 
 
         $scope.ok = function () {

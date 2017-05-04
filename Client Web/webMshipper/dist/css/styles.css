@@ -78,6 +78,20 @@
 }
 
 table {
-
     overflow-x: auto;
+}
+
+.modal-dialog {
+    width: 90%;
+    height: 90%;
+}
+
+.app-modal-window .modal-dialog {
+    width: 50%;
+    height: 50%;
+}
+.modal-content {
+    height: auto;
+    min-height: 100%;
+    /*border-radius: 0;*/
 }
