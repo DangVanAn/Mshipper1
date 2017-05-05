@@ -29,4 +29,19 @@ router.post('/add', function (req, res) {
     });
 });
 
+router.post('/getbyidorder', function (req, res) {
+
+    console.log(req.body);
+    console.log(req.body._id);
+    //get
+    Details.find({_order_id: req.body._id}, function (err, details) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send(details);
+            console.log('Find one success!!!');
+        }
+    });
+});
+
 module.exports = router;

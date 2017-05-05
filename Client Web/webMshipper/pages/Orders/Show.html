@@ -13,40 +13,56 @@
                     <div class="panel-heading">
                         Bảng dữ liệu
                     </div>
+
+                    <ng-map center="{{ center }}" zoom="10">
+                        <marker position="{{ position }}"></marker>
+                    </ng-map>
+
+                    <br>
+
                     <div class="row">
-                        <div class="col-sm-2">
-                            <div>
-                                <label class="control-label col-sm-12"><strong>Ngày bắt đầu:</strong></label>
-                                <input id="beginDate" type="text" class="form-control datepicker"
-                                       data-date-format="dd/mm/yyyy">
+                        <div class="col-sm-12">
+                            <div class="col-sm-2">
+                                <div>
+                                    <label class="control-label col-sm-12"><strong>Ngày bắt đầu:</strong></label>
+                                    <div class="input-group">
+                                        <input readonly id="beginDate" type="text" class="form-control datepicker"
+                                               data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                        <span class="input-group-addon" id="basic-addon0"><i class="fa fa-calendar"
+                                                                                             aria-hidden="true"></i></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-sm-2">
-                            <div>
-                                <label class="control-label col-sm-12"><strong>Ngày kết thúc:</strong></label>
-                                <input id="beginDate1" type="text" class="form-control datepicker"
-                                       data-date-format="dd/mm/yyyy">
+                            <div class="col-sm-2">
+                                <div>
+                                    <label class="control-label col-sm-12"><strong>Ngày kết thúc:</strong></label>
+                                    <div class="input-group">
+                                        <input readonly id="endDate" type="text" class="form-control datepicker"
+                                               data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                        <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar"
+                                                                                             aria-hidden="true"></i></span>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-sm-2">
-                            <label class="control-label col-sm-12"><strong>Trạng thái:</strong></label>
-                            <div bs-dropdown
-                                 bs-dropdown-display="MyDropDown"
-                                 bs-dropdown-items="status"
-                                 ng-model="selectStatus">
+                            <div class="col-sm-2 text-center">
+                                <label class="control-label col-sm-12"><strong>Trạng thái:</strong></label>
+                                <div bs-dropdown
+                                     bs-dropdown-display="MyDropDown"
+                                     bs-dropdown-items="status"
+                                     ng-model="selectStatus"
+                                     ng-change="changeStatus()">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="col-sm-2">
-                            <label class="control-label col-sm-12"><strong>Khu vực:</strong></label>
-                            <div bs-dropdown
-                                 bs-dropdown-display="MyDropDown"
-                                 bs-dropdown-items="area"
-                                 ng-model="selectArea">
+                            <div class="col-sm-2 text-center">
+                                <label class="control-label col-sm-12"><strong>Khu vực</strong></label>
+                                <div ng-dropdown-multiselect="" options="example6data" selected-model="example6model"
+                                     extra-settings="example6settings" events = "myEventListeners"></div>
                             </div>
-                        </div>
 
+
+                        </div>
                     </div>
                     <br>
 
@@ -60,7 +76,6 @@
                                 <th>Expected day</th>
                                 <th>Adress</th>
                                 <th>Area id</th>
-                                <th>Location maps</th>
                                 <th>Oder status</th>
                                 <th>Payment status</th>
                                 <th>Note</th>
@@ -74,11 +89,13 @@
                                 <td>{{x._expected_date}}</td>
                                 <td>{{x._address}}</td>
                                 <td>{{x._area_id}}</td>
-                                <td align="center"><button ng-click="loadMaps(x)" type="button" class="btn btn-info btn-circle"><i class="fa fa-map-marker"></i></button></td>
                                 <td>{{x._order_status}}</td>
                                 <td>{{x._payment_status}}</td>
                                 <td>{{x._note}}</td>
-                                <td>detail</td>
+                                <td align="center">
+                                    <button ng-click="loadMaps(x)" type="button" class="btn btn-info btn-circle"><i
+                                            class="fa fa-plus-circle"></i></button>
+                                </td>
                             </tr>
                             </tbody>
                         </table>

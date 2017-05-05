@@ -1,54 +1,6 @@
-function iAlert(ngDialog, $scope) {
-    ngDialog.open({
-        template: "<div class='alert alert-{{type}}'' role='alert'>{{show}}</div>",
-        showClose: false,
-        width: '30%',
-        overlay: false,
-        plain: true,
-        scope: $scope
-    });
-
-    setTimeout(function () {
-        ngDialog.close();
-    }, 2000);
-}
-
-function notifyIsNull(data, show, type, ngDialog, $scope) {
-    if (!data) {
-        $scope.show = show;
-        $scope.type = type;
-        iAlert(ngDialog, $scope);
-        return true;
-    }
-    return false;
-}
-
-function httpPost($http, url, data, successCB, errorCB) {
-    $http({
-        method: 'POST',
-        url: url,
-        headers: {'Content-Type': 'application/json'},
-        data: data
-    }).then(function successCallback(response) {
-        successCB(response);
-    }, function errorCallback(response) {
-        errorCB(response);
-    });
-}
-function httpGet($http, url, success, error) {
-    $http({
-        method: 'GET',
-        url: url,
-        headers: {'Content-Type': 'application/json'}
-    }).then(function successCallback(response) {
-        success(response);
-    }, function errorCallback(response) {
-        error(response);
-    });
-}
-angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngMap', 'ngCsvImport', 'hljs', 'ngDialog'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'angularjs-dropdown-multiselect'])
     .config(['$locationProvider', '$routeProvider',
-        function config($locationProvider, $routeProvider, ngMap) {
+        function config($locationProvider, $routeProvider) {
             $routeProvider
                 .when("/table", {
                     templateUrl: "tables.html",
@@ -111,7 +63,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     templateUrl: "blank.html",
                 })
                 .when("/login", {
-                    template: "<login></login>",
+                    templateUrl: "login.html",
                 })
                 .when("/london", {
                     templateUrl: "london.htm",
@@ -121,41 +73,6 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     templateUrl: "paris.htm",
                     controller: "parisCtrl"
                 });
-        }])
-    .run(['$rootScope', '$location', '$cookieStore', '$http',
-        function ($rootScope, $location, $cookieStore) {
-            $rootScope.api_url = {
-                postUserLogin: "http://localhost:9999/users/login",
-            }
-
-            $rootScope.globals = $cookieStore.get('globals') || {};
-            if ($rootScope.globals.currentUser) {
-                // $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
-            }
-            var roleUser = ["/SellTicket/Show", "/SellTicket/sellChair", '/SellTicket/chooseChair', '/login'];
-            // $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            //     if (!$rootScope.globals.currentUser) {
-            //         $location.path('/login');
-            //         return;
-            //     }
-            //     if ($rootScope.globals.currentUser.role === "USER") {
-            //         if ($location.path() === "") {
-            //             $location.path('/dashboard');
-            //         }
-            //         // if (roleUser.indexOf($location.path()) === -1) {
-            //         //     console.log("Bạn không có đủ quyền");
-            //         //     event.preventDefault();
-            //         // }
-            //         return;
-            //     }
-            //     if ($rootScope.globals.currentUser.role === "ADMIN") {
-            //         if ($location.path() === "") {
-            //             $location.path('/dashboard');
-            //         }
-            //         return;
-            //     }
-            //     event.preventDefault();
-            // });
         }])
     .service('modalShowMap', ['$uibModal', '$http', function ($uibModal) {
         this.show = function (data, callback) {

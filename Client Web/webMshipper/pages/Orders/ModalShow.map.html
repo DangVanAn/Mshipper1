@@ -2,23 +2,34 @@
     <div class="col-lg-12">
         <div class="panel panel-default">
             <div class="panel-heading">
-                Google maps
+                Details
             </div>
             <!-- /.panel-heading -->
             <div class="panel-body">
-                <h2>Select cities:</h2>
-                <select multiple ng-model="selectedValues" ng-change="selectionsChanged()">
-                    <option ng:repeat="c in cities" selected value="{{c.id}}">{{c.name}}</option>
-                </select>
-
-                <!--tt> selectedValues = {{selectedCities}}</tt-->
-
-                <ng-map zoom="5" center="{{center}}"
-                        scrollwheel="false"
-                        zoom-to-include-markers="true">
-                    <marker ng-repeat="c in selectedCities"
-                            position="{{c.pos}}" title="{{c.name}}"></marker>
-                </ng-map>
+                <table width="100%" class="table table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Total pay</th>
+                        <th>Pay type</th>
+                        <th>Package type</th>
+                        <th>Delivery day</th>
+                        <th>Status</th>
+                        <th>Photo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="pointer" ng-repeat="x in details">
+                        <td>{{x._id_package}}</td>
+                        <td>{{x._total_pay}}</td>
+                        <td>{{x._pay_type}}</td>
+                        <td>{{x._package_type}}</td>
+                        <td>{{x._delivery_daytime}}</td>
+                        <td>{{x._status}}</td>
+                        <td align="center"><button ng-click="loadMaps(x)" type="button" class="btn btn-info btn-circle"><i class="fa fa-plus-circle"></i></button></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
             <!-- /.panel-body -->
         </div>
