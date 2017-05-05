@@ -5,15 +5,12 @@ var userSchema = mongoose.Schema({
 
     _identify_card: {
         type: String,
-        required: true
     },
     _first_name: {
         type: String,
-        required: true
     },
     _last_name: {
         type: String,
-        required: true
     },
     _email: {
         type: String,
@@ -43,6 +40,9 @@ var userSchema = mongoose.Schema({
         type: String,
     },
     _permission_id: {
+        type: String,
+    },
+    _is_enabled : {
         type: String,
     }
 });

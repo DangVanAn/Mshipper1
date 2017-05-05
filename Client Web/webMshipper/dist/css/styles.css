@@ -95,3 +95,10 @@ table {
     min-height: 100%;
     /*border-radius: 0;*/
 }
+.ngdialog.ngdialog-theme-default {
+    padding-top: 20px;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    padding: 0px !important;
+}
