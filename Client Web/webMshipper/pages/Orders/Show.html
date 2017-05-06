@@ -14,8 +14,9 @@
                         Bảng dữ liệu
                     </div>
 
-                    <ng-map center="{{ center }}" zoom="10">
-                        <marker position="{{ position }}"></marker>
+                    <ng-map center="{{ center }}" zoom="10" scrollwheel="false" zoom-to-include-markers="auto">
+                        <marker zoom="10" ng-repeat="p in markers"
+                                position="{{p.pos}}" title="pos: {{p.pos}}"></marker>
                     </ng-map>
 
                     <br>

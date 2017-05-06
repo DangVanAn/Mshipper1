@@ -10,7 +10,12 @@ angular.module('mShipperApp').component('danhSachDonHang', {
         });
 
         $scope.center = [51.5285578, -0.242023];
-        $scope.position = [51.5285578, -0.242023];
+
+        $scope.markers =[];
+
+        function addMarker(event) {
+            $scope.markers.push({pos:[event._latitude, event._longitude]});
+        }
 
         $scope.status = [
             "Tất cả",
@@ -63,8 +68,7 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             var listTemp = [];
             for (var i = 0; i < listOrders.length; i++) {
                 var d = new Date(getY(listOrders[i]._created_date), getM(listOrders[i]._created_date) - 1, getD(listOrders[i]._created_date));
-                if(d.getTime() >= timeBeginDate && d.getTime() <= timeEndDate)
-                {
+                if (d.getTime() >= timeBeginDate && d.getTime() <= timeEndDate) {
                     console.log("Sao ma bang duoc nhi");
                     listTemp.push(listOrders[i]);
                 }
@@ -88,8 +92,7 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             if ($scope.selectStatus != 'Tất cả') {
                 listTemp = [];
                 for (var i = 0; i < listOrders.length; i++) {
-                    if(listOrders[i]._order_status == $scope.selectStatus)
-                    {
+                    if (listOrders[i]._order_status == $scope.selectStatus) {
                         listTemp.push(listOrders[i]);
                     }
                 }
@@ -97,7 +100,13 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             }
 
             $scope.orders = listOrders;
-            $scope.$apply();
+            $scope.$evalAsync();
+
+            $scope.markers = [];
+            for(var i = 0; i < $scope.orders.length; i++)
+            {
+                addMarker($scope.orders[i]);
+            }
         }
 
         var timeBeginDate, timeEndDate;
