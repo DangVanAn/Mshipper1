@@ -53,6 +53,11 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
         btnPay.setOnClickListener(this);
     }
 
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
+    }
+
     public void setupTabLayout() {
         DetailPagerAdapter mAdapter = new DetailPagerAdapter(getSupportFragmentManager());
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);

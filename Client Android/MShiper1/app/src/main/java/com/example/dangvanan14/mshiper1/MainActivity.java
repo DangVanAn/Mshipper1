@@ -1,6 +1,10 @@
 package com.example.dangvanan14.mshiper1;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -8,28 +12,30 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
+import android.Manifest;
 
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
-import com.example.dangvanan14.mshiper1.activity.NotifyActivity;
-import com.example.dangvanan14.mshiper1.activity.SearchActivity;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
+import com.example.dangvanan14.mshiper1.service.LocationService;
+import com.google.android.gms.location.LocationListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+    BroadcastReceiver receiver = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mshipper1);
+//        alowPermission();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -40,9 +46,17 @@ public class MainActivity extends BaseActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        setupTabLayout();
+        MainActivity.super.requestAppPermissions(new
+                        String[]{Manifest.permission.INTERNET,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_COARSE_LOCATION,
+                        com.example.dangvanan14.mshiper1.Manifest.permission.MAPS_RECEIVE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_NETWORK_STATE}, R.string
+                        .runtime_permissions_txt
+                , REQUEST_PERMISSIONS);
+
     }
 
     public void setupTabLayout() {
@@ -108,5 +122,34 @@ public class MainActivity extends BaseActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        setupTabLayout();
+        IntentFilter filter = new IntentFilter(LocationService.BROADCAST_ACTION);
+        receiver = new BroadcastReceiver() {
+            public void onReceive(Context arg0, Intent arg1) {
+                processReceive(arg0, arg1);
+            }
+        };
+        registerReceiver(receiver, filter);
+        Intent intent = new Intent(this, LocationService.class);
+        startService(intent);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
+    }
+
+    public void processReceive(Context context, Intent intent) {
+        double latitude = intent.getDoubleExtra("Latitude", 0.0);
+        double longitude = intent.getDoubleExtra("Longitude", 0.0);
+
+        Toast.makeText(context, "GPS thay đổi nè : " + latitude + " , " + longitude, Toast.LENGTH_LONG).show();
     }
 }

@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
@@ -21,7 +22,10 @@ public class FragmentChart extends BaseActivity {
 
     private CirclePercentView mCirclePercentView;
     private TextView viewX;
-
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

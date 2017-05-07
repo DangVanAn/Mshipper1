@@ -35,7 +35,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private OrderListRecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
-
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

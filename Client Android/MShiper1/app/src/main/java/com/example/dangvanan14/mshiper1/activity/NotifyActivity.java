@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
@@ -19,7 +20,10 @@ public class NotifyActivity extends BaseActivity {
     private RecyclerView recyclerView;
     private OrderListRecyclerAdapter mAdapter;
     private List<Order> listNotify = new ArrayList<>();
-
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
