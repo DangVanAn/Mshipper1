@@ -53,6 +53,7 @@ public class MainActivity extends BaseActivity
 
         MainActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.INTERNET,
+                        Manifest.permission.WAKE_LOCK,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.ACCESS_COARSE_LOCATION,
@@ -152,10 +153,10 @@ public class MainActivity extends BaseActivity
 //
     }
 
-    public static class AlarmReceiver extends BroadcastReceiver {
+    public static class AlarmReceiver extends WakefulBroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Intent i= new Intent(context, LocationService.class);
+            Intent i = new Intent(context, LocationService.class);
             context.startService(i);
         }
     }
