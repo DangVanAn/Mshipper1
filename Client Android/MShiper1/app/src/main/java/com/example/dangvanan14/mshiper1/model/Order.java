@@ -3,9 +3,6 @@ package com.example.dangvanan14.mshiper1.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Sherman on 2/23/2017.
- */
 public class Order implements Parcelable {
     private String id;
     private String time;

@@ -64,5 +64,6 @@
             android:name=".activity.NotifyActivity"
             android:theme="@style/FullScreen"/>
         <service android:name=".service.LocationService"/>
+        <receiver android:name=".MainActivity$AlarmReceiver"/>
     </application>
 </manifest>

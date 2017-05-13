@@ -1,5 +1,7 @@
 package com.example.dangvanan14.mshiper1;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +9,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -25,6 +28,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
+
+import java.util.Calendar;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -130,14 +135,29 @@ public class MainActivity extends BaseActivity
         navigationView.setNavigationItemSelectedListener(this);
         setupTabLayout();
         IntentFilter filter = new IntentFilter(LocationService.BROADCAST_ACTION);
-        receiver = new BroadcastReceiver() {
+        receiver = new WakefulBroadcastReceiver() {
             public void onReceive(Context arg0, Intent arg1) {
                 processReceive(arg0, arg1);
             }
         };
         registerReceiver(receiver, filter);
-        Intent intent = new Intent(this, LocationService.class);
-        startService(intent);
+
+        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
+        //myAlarm.putExtra("project_id", project_id); //Put Extra if needed
+        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Calendar updateTime = Calendar.getInstance();
+        //updateTime.setWhatever(0);    //set time to start first occurence of alarm
+        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
+//
+    }
+
+    public static class AlarmReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Intent i= new Intent(context, LocationService.class);
+            context.startService(i);
+        }
     }
 
     @Override

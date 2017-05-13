@@ -1,4 +1,4 @@
-angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'angularjs-dropdown-multiselect'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'angular-table', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'angularjs-dropdown-multiselect'])
     .config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider) {
             $routeProvider

@@ -1,29 +1,23 @@
 var mongoose = require('mongoose');
 
-//User Schema
 var locationsSchema = mongoose.Schema({
-    _id: {
+    _latitude : {
         type: String,
         required: true
     },
-    _latitude : {
-        type: Number,
-        required: true
-    },
     _longitude : {
-        type: Number,
+        type: String,
         required: true
     },
     _timestamp  : {
-        type: Date,
+        type: String,
         required: true
     },
     _delivery_man  : {
         type: String,
         required: true
-    },
+    }
 });
-
 
 var Locations = mongoose.model('Locations', locationsSchema);
 

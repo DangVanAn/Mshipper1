@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -14,16 +13,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.example.dangvanan14.mshiper1.MainActivity;
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.dialog.ProgressDialogFragment;
 import com.google.zxing.integration.android.IntentIntegrator;
+
+import okhttp3.logging.HttpLoggingInterceptor;
 
 /**
  * Created by Sherman on 3/6/2017.
@@ -96,7 +96,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         ft.commitAllowingStateLoss();
     }
-
+    public static HttpLoggingInterceptor newDefaultLogging() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        if (App.isInDebugMode()) {
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        } else {
+            logging.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        }
+        return logging;
+    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
