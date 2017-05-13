@@ -15,13 +15,28 @@ router.get('/getall', function (req, res) {
 });
 
 router.post('/add', function (req, res) {
-    var newUser = new User(req.body);
-    newUser.save(function (err) {
+
+    User.findOne({_email: req.body._email
+    }).select().exec(function (err, user) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send('User created!');
-            console.log('User created!');
+            if (!user) {
+                var newUser = new User(req.body);
+                newUser.save(function (err) {
+                    if (err)
+                        return console.error(err);
+                    else {
+                        res.status(200).send('User created!');
+                        console.log('User created!');
+                    }});
+            }
+            else
+            {
+                res.status(200).send("Email đã tồn tại, vui vòng điền email khác!");
+            }
+
+
         }
     });
 });
@@ -32,6 +47,30 @@ router.post('/update', function (req, res) {
             return console.error(err);
         else {
             res.status(200).send(user);
+            console.log('User successfully updated!');
+        }
+    });
+});
+
+router.post('/getbyemail', function (req, res) {
+    console.log(req.body);
+
+    User.find({_email: req.body.email}, function (err, user) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send(user);
+            console.log('Find one success!!!');
+        }
+    });
+});
+
+router.post('/updatebyemail', function (req, res) {
+    User.findOneAndUpdate({_email: req.body._email}, req.body, function (err, user) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send('User successfully updated!');
             console.log('User successfully updated!');
         }
     });

@@ -15,4 +15,21 @@ router.get('/getall', function (req, res) {
     });
 });
 
+
+router.post('/add', function (req, res) {
+
+    var newAssign = new Assign(req.body);
+    console.log(newAssign);
+    console.log(req.body);
+
+    newAssign.save(function (err) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send('Details created!');
+            console.log('Details created!');
+        }
+    });
+});
+
 module.exports = router;

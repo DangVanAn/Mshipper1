@@ -34,4 +34,21 @@ router.post('/add', function (req, res) {
     });
 });
 
+router.post('/adds', function (req, res) {
+
+    var newOrders = req.body;
+    console.log(newOrders);
+
+    for(var i = 0; i < newOrders.length; i++)
+    {
+        console.log(newOrders[i]._id);
+        var newOrder = new Orders(newOrders[i]);
+        // save
+        newOrder.save();
+    }
+
+    res.status(200).send('Order created!');
+
+});
+
 module.exports = router;

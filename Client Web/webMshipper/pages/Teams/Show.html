@@ -1,0 +1,56 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Danh sách đội</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Bảng dữ liệu
+                    </div>
+                    <br>
+
+                    <div >
+                        <div class="col-lg-12">
+                            <button ng-click="addTeam()" type="button" class="btn btn-primary">Thêm đội</button>
+                        </div>
+                    </div>
+                    <br>
+                    <br>
+                    <div class="panel-body">
+                        <table width="100%" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Tên</th>
+                                <th>Khu vực quản lý</th>
+                                <th>Trạng thái</th>
+                                <th>Mô tả</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr class="pointer" ng-repeat="x in teams">
+                                <td><a href="#/teamscreate/{{x._team_id}}">{{x._team_id}}</a></td>
+                                <td>{{x._name}}</td>
+                                <td>{{x._area}}</td>
+                                <td>{{x._status}}</td>
+                                <td>{{x._description}}</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.panel-body -->
+                </div>
+                <!-- /.panel -->
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>

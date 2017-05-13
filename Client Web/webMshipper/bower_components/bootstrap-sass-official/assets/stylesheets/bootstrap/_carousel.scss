@@ -18,7 +18,7 @@
     position: relative;
     @include transition(.6s ease-in-out left);
 
-    // Account for jankitude on images
+    // Accounts for jankitude on images
     > img,
     > a > img {
       @include img-responsive;

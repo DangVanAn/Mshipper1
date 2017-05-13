@@ -1,5 +1,5 @@
 angular.module('mShipperApp')
-    .controller('modal.selectDate', ['$scope', '$http', '$uibModalInstance', 'data', function ($scope, $http, $uibModalInstance, data) {
+    .controller('modal.orders.show', ['$scope', '$http', '$uibModalInstance', 'data', function ($scope, $http, $uibModalInstance, data) {
         // $scope.data = data.toString();
         console.log(data._id);
 

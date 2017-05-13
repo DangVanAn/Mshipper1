@@ -23,18 +23,16 @@
                     <br>
                     <br>
                     <div class="panel-body">
-                        <table width="100%" class="table table-striped table-bordered table-hover"
-                               id="dataTables-example">
+                        <table width="100%" class="table table-bordered table-hover">
                             <thead>
                             <tr>
-                                <th>Id</th>
                                 <th>Email</th>
-                                <th>Identify card</th>
-                                <th>First name</th>
                                 <th>Last name</th>
+                                <th>First name</th>
+                                <th>Identify card</th>
                                 <th>Date of birth</th>
-                                <th>Adress</th>
                                 <th>Phone</th>
+                                <th>Adress</th>
                                 <th>Gender</th>
                                 <th>Image</th>
                                 <th>Permission</th>
@@ -44,21 +42,20 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
-                                <td>a</td>
+                            <tr  ng-repeat="x in accounts">
+                                <td><a href="#/accountscreate/{{x._email}}">{{x._email}}</a></td>
+                                <td>{{x._last_name}}</td>
+                                <td>{{x._first_name}}</td>
+                                <td>{{x._identify_card}}</td>
+                                <td>{{x._date_of_birth}}</td>
+                                <td>{{x._phone}}</td>
+                                <td>{{x._address}}</td>
+                                <td>{{x._gender}}</td>
+                                <td>{{x._image_url}}</td>
+                                <td>{{x._permission_id}}</td>
+                                <td>{{x._team}}</td>
+                                <td>{{x._is_enabled}}</td>
+                                <td>{{x._note}}</td>
                             </tr>
                             </tbody>
                         </table>
