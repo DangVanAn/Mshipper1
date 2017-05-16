@@ -16,7 +16,6 @@ var detailsSchema = mongoose.Schema({
     },
     _pay_type  : {
         type: String,
-        required: true
     },
     _weight: {
         type: String,
@@ -39,7 +38,6 @@ var detailsSchema = mongoose.Schema({
     },
     _status: {
         type: String,
-        required: true
     },
     _photo: {
         type: String,

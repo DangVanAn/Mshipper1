@@ -97,3 +97,20 @@ table {
 }
 
 .google-map {  height: 100%; }
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.9;
+}
+
+.ngdialog.ngdialog-theme-default {
+    padding-top: 20px;
+}
+
+.ngdialog.ngdialog-theme-default .ngdialog-content {
+    padding: 0;
+}
+
+.pointer {
+    cursor: pointer;
+}

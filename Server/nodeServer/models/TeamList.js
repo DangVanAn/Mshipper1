@@ -12,7 +12,6 @@ var teamListSchema = mongoose.Schema({
     },
     _area : {
         type: String,
-        required: true
     },
     _status  : {
         type: String,
@@ -20,7 +19,6 @@ var teamListSchema = mongoose.Schema({
     },
     _description  : {
         type: String,
-        required: true
     },
 });
 

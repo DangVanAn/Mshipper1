@@ -69,10 +69,10 @@ public class LoadData<E> {
             fragmentWeakReference = new WeakReference<>(fragment);
         }
 
-        public CallbackDelegate(WeakReference<Activity> activityWeakReference, ICallbackApi<E> callback) {
+        public CallbackDelegate(Activity activity, ICallbackApi<E> callback) {
             isActivity = true;
             this.callback = callback;
-            this.activityWeakReference = activityWeakReference;
+            this.activityWeakReference = new WeakReference<>(activity);
         }
 
         public CallbackDelegate(ICallbackApi<E> callback) {

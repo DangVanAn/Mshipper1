@@ -1,80 +1,433 @@
-angular.module('mShipperApp').
-component('addDanhSachDonHang',{
+angular.module('mShipperApp').component('addDanhSachDonHang', {
     templateUrl: './Orders/Create.html',
-    controller: function DsDonHangController($scope, $http, $filter,$location, $timeout, $parse){
+    controller: function DsDonHangController($rootScope, $scope, $http, $filter, $location, $timeout, $parse, modalOrderCreate, NgMap) {
         $(document).ready(function () {
-            $('#dataTables-example').DataTable({
-                responsive: true
-            });
+            init();
         });
 
+        var listAreas = [];
+        function init() {
+            $url = $rootScope.api_url.getAreaShow;
+
+            httpGet($http, $url,
+                function (response) {
+                    console.log("info::" + response.data);
+                    listAreas = response.data;
+                }, function (response) {
+                    $scope.statustext = 'error';
+                });
+        }
+
+        $scope.uploadFile = function () {
+            $("#fileButton").val('');
+            $scope.excel = '';
+        };
+
+
+        var listOrders, rootListOrders;
+        $scope.GetImport = function () {
+
+            var tempOrders = [];
+            var json = $scope.excel;
+
+            for (var i = 0; i < json.Sheet1.length; i++) {
+                var obj = json.Sheet1[i];
+                var objStr = JSON.stringify(json.Sheet1[i]);
+                console.log("object :" + i + " : " + objStr);
+                if (i !== 0 && json.Sheet1[i].Id !== json.Sheet1[i - 1].Id || i == 0)
+                    tempOrders.push({
+                        _id: obj.Id,
+                        _created_date: formatDate(obj.CreatedDay),
+                        _expected_date: formatDate(obj.ExpectedDay),
+                        _address: obj.Address,
+                        _latitude: '0',
+                        _longitude: '0',
+                        _area_id: obj.AreaId,
+                        _order_status: 'Đang vận chuyển',
+                        _payment_status: obj.PaymentStatus,
+                        _note: obj.Note
+                    })
+
+            }
+
+            rootListOrders = tempOrders;
+            $scope.orders = tempOrders;
+
+            addDetails();
+            convertAddressToLatLng();
+        };
+
+        var details = [];
+
+        function addDetails() {
+            var json = $scope.excel;
+
+            for (var i = 0; i < json.Sheet1.length; i++) {
+                var obj = json.Sheet1[i];
+
+                details.push({
+                    _order_id: obj.Id,
+                    _id_package: obj.IdPackage,
+                    _total_pay: obj.TotalPay,
+                    _pay_type: obj.PayType,
+                    _package_type: obj.PackageType
+                })
+
+                console.log("detail : " + details[i]);
+            }
+        }
+
+        var countListLatLng = 0;
+
+        function convertAddressToLatLng() {
+            countListLatLng = 0;
+            getLatLng();
+        }
+
+        function getLatLng() {
+            if (countListLatLng < $scope.orders.length) {
+                $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
+                    $scope.orders[countListLatLng]._address + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
+                    .then(function (coord_results) {
+                            $scope.queryResults = coord_results.data.results;
+                            $scope.geodata = $scope.queryResults[0].geometry;
+
+                            console.log($scope.queryResults[0].formatted_address);
+
+                            //Chuyển đổi lấy quận và thành phố.
+                            var area = getArea($scope.queryResults[0].formatted_address);
+                            $scope.orders[countListLatLng]._area_id = '';
+                            for(var i = 0; i < listAreas.length; i++)
+                            {
+                                if(listAreas[i]._city === area.city && listAreas[i]._district === area.district)
+                                {
+                                    $scope.orders[countListLatLng]._area_id = listAreas[i]._area
+                                }
+                            }
+
+                            if($scope.orders[countListLatLng]._area_id === '') $scope.orders[countListLatLng]._area_id = "Chưa xác định";
+
+                            console.log("geo : " + JSON.stringify($scope.queryResults[0].geometry.location));
+
+                            $scope.orders[countListLatLng]._latitude = JSON.stringify($scope.queryResults[0].geometry.location.lat);
+                            $scope.orders[countListLatLng]._longitude = JSON.stringify($scope.queryResults[0].geometry.location.lng);
+
+                            countListLatLng++;
+                            getLatLng();
+
+                        },
+                        function error(_error) {
+                            $scope.queryError = _error;
+                            countListLatLng++;
+                            getLatLng();
+                        });
+            }
+            else {
+                $scope.markers = [];
+                for (var i = 0; i < $scope.orders.length; i++) {
+                    console.log("add marker nhieu hon nao");
+                    addMarker($scope.orders[i]);
+                }
+            }
+
+        }
+
+
+        function getArea(fullAdress) {
+            var city = '';
+            var district = '';
+            var nation = '';
+            var count = 0;
+            for (var i = fullAdress.length - 1; i >= 0; i--) {
+                if (fullAdress[i] !== ',') {
+                    if (count === 0) nation += fullAdress[i];
+                    if (count === 1) city += fullAdress[i];
+                    if (count === 2) district += fullAdress[i];
+                }
+                else {
+                    count++;
+                }
+            }
+
+            nation = nation.split("").reverse().join("");
+            city = city.split("").reverse().join("");
+            district = district.split("").reverse().join("");
+
+            if (nation[0] === ' ') nation = nation.substring(1);
+            if (city[0] === ' ') city = city.substring(1);
+            if (district[0] === ' ') district = district.substring(1);
+
+            return {city: city, district: district};
+        }
+
+        NgMap.getMap().then(function (map) {
+            google.maps.event.trigger(map, "resize");
+        });
+
+        $scope.center = [51.5285578, -0.242023];
+
+        $scope.markers = [];
+
+        function addMarker(event) {
+            $scope.markers.push({pos: [event._latitude, event._longitude]});
+        }
+
         $scope.status = [
+            "Tất cả",
             "Hoàn thành",
             "Đang vận chuyển",
             "Hủy"
         ];
         $scope.selectStatus = $scope.status[0];
 
-        $scope.area = [
-            "Khu vực 1",
-            "Khu vực 2",
-            "Khu vực 3",
-            "Khu vực 4",
-            "Khu vực 5",
-            "Khu vực 6",
-            "Khu vực 7",
-        ];
-        $scope.selectArea = $scope.area[0];
 
-        $scope.csv = {
-            content: null,
-            header: true,
-            headerVisible: true,
-            separator: ',',
-            separatorVisible: false,
-            result: null,
-            encodingVisible: true
-        };
-
-        $scope.GetImport = function () {
-
-            var json = $scope.csv.result;
-
-            var objStr = JSON.stringify(json);
-            var obj = null;
-            try {
-                obj = $parse(objStr)({});
-            } catch(e){
-                // eat $parse error
-                return _lastGoodResult;
-            }
-
-            var result = JSON.stringify(obj, null, Number(1));
-            _lastGoodResult = result;
-
-            $scope.DonHangs = JSON.parse(result.toString());
-
-            console.log(result);
+        $scope.changeStatus = function () {
+            console.log('change Trang thai');
+            filterAll();
         }
 
-        var _lastGoodResult = '';
-        $scope.toPrettyJSON = function (json, tabWidth) {
-            var objStr = JSON.stringify(json);
-            var obj = null;
-            try {
-                obj = $parse(objStr)({});
-            } catch(e){
-                // eat $parse error
-                return _lastGoodResult;
+
+        $scope.example6data = [
+            {id: 1, label: 'Khu vực 1'},
+            {id: 2, label: 'Khu vực 2'},
+            {id: 3, label: 'Khu vực 3'},
+            {id: 4, label: 'Khu vực 4'},
+            {id: 5, label: 'Khu vực 5'},
+            {id: 6, label: 'Khu vực 6'},
+            {id: 7, label: 'Khu vực 7'},
+            {id: 8, label: 'Khu vực 8'},
+            {id: 9, label: 'Khu vực 9'},
+            {id: 10, label: 'Khu vực 10'},
+            {id: 11, label: 'Khu vực 11'},
+            {id: 12, label: 'Khu vực 12'}];
+        $scope.example6model = [];
+        $scope.example6settings = {
+            showCheckAll: false,
+            showUncheckAll: false
+        };
+
+        $scope.myEventListeners = {
+            onSelectionChanged: onSelectionChanged
+        };
+
+        function onSelectionChanged() {
+            console.log('select all : ' + $scope.example6model);
+
+            filterAll();
+        }
+
+        function formatDate(inDate) {
+            var dd = '';
+            var mm = '';
+            var yy = '';
+            var count = 0;
+            for (var i = 0; i < inDate.length; i++) {
+                if (inDate[i] === '/') {
+                    count++;
+                }
+                else {
+                    if (count === 0) {
+                        dd += inDate[i];
+                    }
+
+                    if (count === 1) {
+                        mm += inDate[i];
+                    }
+
+                    if (count === 2) {
+                        yy += inDate[i];
+                    }
+                }
+            }
+            if (dd.length === 1) dd = '0' + dd;
+            if (mm.length === 1) mm = '0' + mm;
+            if (yy.length === 2) yy = '20' + yy;
+            return dd + '/' + mm + '/' + yy;
+        }
+
+        function filterAll() {
+            listOrders = rootListOrders;
+
+            // timeBeginDate = $("#beginDate").datepicker('getDate').getTime();
+            // timeEndDate = $("#endDate").datepicker('getDate').getTime();
+            // var listTemp = [];
+            // for (var i = 0; i < listOrders.length; i++) {
+            //     var d = new Date(getY(listOrders[i]._created_date), getM(listOrders[i]._created_date) - 1, getD(listOrders[i]._created_date));
+            //     if (d.getTime() >= timeBeginDate && d.getTime() <= timeEndDate) {
+            //         console.log("Sao ma bang duoc nhi");
+            //         listTemp.push(listOrders[i]);
+            //     }
+            // }
+            // listOrders = listTemp;
+            // console.log('begin : ' + timeBeginDate + " : " + 'end : ' + timeEndDate);
+
+            if ($scope.example6model.length != 0) {
+                listTemp = [];
+                for (var i = 0; i < listOrders.length; i++) {
+                    for (var j = 0; j < $scope.example6model.length; j++) {
+                        if ($scope.example6model[j].id == listOrders[i]._area_id) {
+                            listTemp.push(listOrders[i]);
+                            break;
+                        }
+                    }
+                }
+                listOrders = listTemp;
             }
 
-            var result = JSON.stringify(obj, null, Number(tabWidth));
-            _lastGoodResult = result;
+            // if ($scope.selectStatus != 'Tất cả') {
+            //     listTemp = [];
+            //     for (var i = 0; i < listOrders.length; i++) {
+            //         if (listOrders[i]._order_status == $scope.selectStatus) {
+            //             listTemp.push(listOrders[i]);
+            //         }
+            //     }
+            //     listOrders = listTemp;
+            // }
 
-            console.log("Nhay vao doc csv");
-            console.log(result);
+            $scope.orders = listOrders;
+            $scope.$evalAsync();
 
-            return result;
+            $scope.markers = [];
+            for (var i = 0; i < $scope.orders.length; i++) {
+                addMarker($scope.orders[i]);
+            }
+        }
+
+        var timeBeginDate, timeEndDate;
+
+        var dateFormat = "dd/mm/yy",
+            from = $("#beginDate")
+                .datepicker({
+                    defaultDate: "+1w",
+                    changeMonth: true,
+                    changeYear: true,
+                    maxDate: "+0D",
+                    dateFormat: "dd/mm/yy",
+                    onSelect: function () {
+                        var dateObject = $(this).datepicker('getDate');
+                        console.log('beginDate: ' + dateObject.getTime());
+                        filterAll();
+                    }
+                }).datepicker("setDate", new Date())
+                .on("change", function () {
+                    to.datepicker("option", "minDate", getDate(this));
+                }),
+            to = $("#endDate").datepicker({
+                defaultDate: "+1w",
+                changeMonth: true,
+                changeYear: true,
+                maxDate: "+0D",
+                dateFormat: "dd/mm/yy",
+                onSelect: function () {
+                    var dateObject = $(this).datepicker('getDate');
+                    console.log('endDate: ' + dateObject.getTime());
+                    filterAll();
+                }
+            }).datepicker("setDate", new Date())
+                .on("change", function () {
+                    from.datepicker("option", "maxDate", getDate(this));
+                });
+
+        function getDate(element) {
+            var date;
+            try {
+                date = $.datepicker.parseDate(dateFormat, element.value);
+            } catch (error) {
+                date = null;
+            }
+
+            return date;
         };
+
+        $scope.loadMaps = function (x) {
+            console.log(x._latitude);
+            console.log(x._longitude);
+
+            // Show modal
+            var listDetailModal = [];
+            for (var i = 0; i < details.length; i++) {
+                if (details[i]._order_id === x._id) {
+                    listDetailModal.push(details[i]);
+                }
+            }
+
+            modalOrderCreate.show(listDetailModal, function (selected) {
+                if (selected) {
+                    console.log("Nhan duoc::" + selected.toString());
+
+                }
+                else {
+                    console.log("không có");
+                }
+            });
+        }
+
+        $scope.saveOrders = function () {
+            //Save toàn bộ thông tin.
+            if ($scope.orders.length === 0) {}
+            else {
+                var tempOr = JSON.stringify($scope.orders);
+                tempOr = JSON.parse(tempOr);
+
+                for (var i = 0; i < tempOr.length; i++) {
+
+                    console.log("Created : " + tempOr[i]._created_date + " : " + tempOr[i]._expected_date);
+                    tempOr[i]._created_date = new Date(getY(tempOr[i]._created_date), getM(tempOr[i]._created_date) - 1, getD(tempOr[i]._created_date)).getTime();
+                    tempOr[i]._expected_date = new Date(getY(tempOr[i]._expected_date), getM(tempOr[i]._expected_date) - 1, getD(tempOr[i]._expected_date)).getTime();
+                }
+
+                $urll = 'http://localhost:9999/orders/adds'
+
+                $http({
+                    method: 'POST',
+                    url: $urll,
+                    headers: {'Content-Type': 'application/json'},
+                    data: tempOr
+                }).then(function successCallback(response) {
+                    console.log(response.data);
+                }, function errorCallback(response) {
+                    $scope.statustext = 'error';
+                });
+
+                $urll = 'http://localhost:9999/details/adds'
+
+                $http({
+                    method: 'POST',
+                    url: $urll,
+                    headers: {'Content-Type': 'application/json'},
+                    data: details
+                }).then(function successCallback(response) {
+                    console.log(response.data);
+                }, function errorCallback(response) {
+                    $scope.statustext = 'error';
+                });
+            }
+        }
+
+        function towWordNumber(number) {
+            if (number < 10) {
+                return ("0" + number.toString());
+            }
+            return number.toString();
+        }
+
+        function getD(date) {
+            var temp = date.charAt(0) + date.charAt(1);
+            temp = Number(temp);
+            return temp;
+        }
+
+        function getM(date) {
+            var temp = date.charAt(3) + date.charAt(4);
+            temp = Number(temp);
+            return temp;
+        }
+
+        function getY(date) {
+            var temp = date.charAt(6) + date.charAt(7) + date.charAt(8) + date.charAt(9);
+            temp = Number(temp);
+            return temp;
+        }
+
     }
 });

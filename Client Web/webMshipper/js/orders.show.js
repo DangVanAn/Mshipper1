@@ -1,6 +1,6 @@
 angular.module('mShipperApp').component('danhSachDonHang', {
     templateUrl: './Orders/Show.html',
-    controller: function DsDonHangController($scope, $http, modalShowMap, NgMap, $filter, $location, $timeout) {
+    controller: function DsDonHangController($scope, $http, modalOrderShow, NgMap, $filter, $location, $timeout) {
         $(document).ready(function () {
 
         });
@@ -350,6 +350,19 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             filterAll();
         }
 
+        //Get latLong from address
+        $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
+            '150 Nguyễn Thị Nhỏ, Phường 15, Quận 11, TP.HCM' + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
+            .then(function(coord_results){
+                    $scope.queryResults = coord_results.data.results;
+                    $scope.geodata = $scope.queryResults[0].geometry;
+
+                    console.log("geo : " + JSON.stringify($scope.queryResults[0].geometry.location));
+                },
+                function error(_error){
+                    $scope.queryError = _error;
+                });
+
         $scope.example6data = [
             {id: 1, label: 'Khu vực 1'},
             {id: 2, label: 'Khu vực 2'},
@@ -516,7 +529,7 @@ angular.module('mShipperApp').component('danhSachDonHang', {
 
             // Show modal
 
-            modalShowMap.show(x, function (selected) {
+            modalOrderShow.show(x, function (selected) {
                 if (selected) {
                     console.log("Nhan duoc::" + selected.toString());
                     x.session = selected.toString();

@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,6 +19,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
 import org.slf4j.Logger;
@@ -33,7 +35,6 @@ public class LocationService extends Service {
     public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
-    String idUser = "HƯNG";
     Intent intent;
     int counter = 0;
     public LoadData<RepPost> loadData;
@@ -48,16 +49,36 @@ public class LocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("START_SERVICE", "DONE");
+        PowerManager mgr = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
+        wakeLock.acquire();
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         listener = new MyLocationListener();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             super.onStartCommand(intent, flags, startId);
         }
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 10000, 10, listener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 10, listener);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, listener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, listener);
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                int i = 0;
+                try {
+                    while(true) {
+                        sleep(1000);
+                        Log.d("***************", "run: " + i++);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        thread.start();
         return super.onStartCommand(intent, flags, startId);
     }
+    private PowerManager.WakeLock wakeLock;
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
@@ -111,9 +132,13 @@ public class LocationService extends Service {
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
         locationManager.removeUpdates(listener);
+        if(locationManager != null){
+            locationManager.removeUpdates(listener);
+            wakeLock.release();
+        }
     }
 
-    class MyLocationListener implements LocationListener {
+    public class MyLocationListener implements LocationListener {
         public void onLocationChanged(final Location loc) {
             Log.i("***************", "Location changed");
             if (isBetterLocation(loc, previousBestLocation)) {
@@ -123,13 +148,14 @@ public class LocationService extends Service {
                 intent.putExtra("Latitude", loc.getLatitude());
                 intent.putExtra("Longitude", loc.getLongitude());
                 intent.putExtra("Provider", loc.getProvider());
-                loadData.loadData(new Callable<Call<RepPost>>() {
-                    @Override
-                    public Call<RepPost> call() throws Exception {
-                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location("" + loc.getLatitude(), "" + loc.getLongitude(), "" + System.currentTimeMillis(), idUser));
-                    }
-                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
-                sendBroadcast(intent);
+//                loadData.loadData(new Callable<Call<RepPost>>() {
+//                    @Override
+//                    public Call<RepPost> call() throws Exception {
+//                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
+//                    }
+//                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
+//                sendBroadcast(intent);
+
             }
         }
 

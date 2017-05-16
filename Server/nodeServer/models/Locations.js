@@ -2,15 +2,15 @@ var mongoose = require('mongoose');
 
 var locationsSchema = mongoose.Schema({
     _latitude : {
-        type: String,
+        type: Number,
         required: true
     },
     _longitude : {
-        type: String,
+        type: Number,
         required: true
     },
     _timestamp  : {
-        type: String,
+        type: Number,
         required: true
     },
     _delivery_man  : {

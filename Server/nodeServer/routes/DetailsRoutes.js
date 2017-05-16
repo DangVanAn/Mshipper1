@@ -29,6 +29,21 @@ router.post('/add', function (req, res) {
     });
 });
 
+router.post('/adds', function (req, res) {
+
+    console.log(req.body);
+
+    for(var i = 0; i < req.body.length; i++)
+    {
+        console.log(req.body[i]._order_id);
+        var newDetails = new Details(req.body[i]);
+        // save
+        newDetails.save();
+    }
+
+    res.status(200).send('Order created!');
+});
+
 router.post('/getbyidorder', function (req, res) {
 
     console.log(req.body);

@@ -30,6 +30,9 @@
     <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="../dist/css/styles.css" rel="stylesheet">
 
+    <link rel="stylesheet" href="../bower_components/ng-dialog/css/ngDialog.min.css">
+    <link rel="stylesheet" href="../bower_components/ng-dialog/css/ngDialog-theme-default.min.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -54,19 +57,17 @@
     <script src="../bower_components/angular-csv-import/angular-csv-import.js"></script>
     <script src="../js/app.js"></script>
     <script src="../js/mapquanly.js"></script>
-    <script src="../js/orders.show.js"></script>
-    <script src="../js/orders.create.js"></script>
-    <script src="../js/taikhoan.js"></script>
+
     <script src="../js/thongbao.js"></script>
     <script src="../js/bieudo.js"></script>
 
-    <script src="../js/orders.modal.showmap.js"></script>
+    <script src="../js/orders.modal.show.js"></script>
+    <script src="../js/orders.modal.create.js"></script>
 
     <!-- Morris Charts JavaScript -->
     <script src="../vendor/raphael/raphael.min.js"></script>
     <script src="../vendor/morrisjs/morris.min.js"></script>
     <script src="../data/morris-data.js"></script>
-    <script src="../js/acount_add.js"></script>
 
     <script src="../bower_components/dropdown/bsDropdown.js"></script>
 
@@ -79,6 +80,25 @@
     <script src="http://samu.github.io/angular-table/js/angular-tabs.min.js"></script>
 
     <script src="../dist/js/angularjs-dropdown-multiselect.min.js"></script>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.full.min.js"></script>
+    <script src="../dist/xlsx-model/xlsx-model.js"></script>
+
+    <script src="../bower_components/ng-dialog/js/ngDialog.min.js"></script>
+
+    <script src="../js/areas.create.js"></script>
+    <script src="../js/areas.show.js"></script>
+
+    <script src="../js/teams.create.js"></script>
+    <script src="../js/teams.show.js"></script>
+    <script src="../js/teams.update.js"></script>
+
+    <script src="../js/orders.show.js"></script>
+    <script src="../js/orders.create.js"></script>
+    <script src="../js/accounts.show.js"></script>
+    <script src="../js/accounts.create.js"></script>
+    <script src="../js/accounts.update.js"></script>
+    <script src="../js/User/login.js"></script>
 
 </head>
 
@@ -337,7 +357,13 @@
                         <a href="#addtabledsdonhang"><i class="fa fa-dashboard fa-fw"></i> Thêm danh sách đơn hàng</a>
                     </li>
                     <li>
-                        <a href="#tabletaikhoan"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
+                        <a href="#accountsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
+                    </li>
+                    <li>
+                        <a href="#areasshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý khu vực vận chuyển</a>
+                    </li>
+                    <li>
+                        <a href="#teamsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý đội</a>
                     </li>
                     <li>
                         <a href="#tablethongbao"><i class="fa fa-dashboard fa-fw"></i> Quản lý thông báo</a>

@@ -36,7 +36,7 @@
 
   // [converter] extracted a& to a.badge
 
-  // Account for badges in navs
+  // Accounts for badges in navs
   .list-group-item.active > &,
   .nav-pills > .active > a > & {
     color: $badge-active-color;

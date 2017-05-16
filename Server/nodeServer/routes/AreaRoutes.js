@@ -14,4 +14,20 @@ router.get('/getall', function (req, res) {
         }
     });
 });
+
+router.post('/add', function (req, res) {
+
+    var newArea = new Area(req.body);
+    console.log(newArea);
+// save
+    newArea.save(function (err) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send('Area created!');
+            console.log('Area created!');
+        }
+    });
+});
+
 module.exports = router;

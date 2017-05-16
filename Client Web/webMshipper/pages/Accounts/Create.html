@@ -1,0 +1,96 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Thêm tài khoản mới</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        Thêm dữ liệu
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <form role="form">
+
+                                    <div id="emailForm" class="form-group">
+                                        <label>Email</label>
+                                        <input ng-model="email" class="form-control" placeholder="dangvan@gmail.com">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tên</label>
+                                        <input ng-model="firstName" class="form-control" placeholder="An">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Họ và tên</label>
+                                        <input ng-model="lastName" class="form-control" placeholder="Đặng Văn">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Ngày sinh</label>
+                                        <input readonly id="birthday" type="text" class="form-control datepicker"
+                                               data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                    </div>
+
+                                </form>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group">
+                                    <label>Số chứng minh</label>
+                                    <input ng-model="identityNumber" class="form-control" placeholder="1521333558">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Địa chỉ</label>
+                                    <input ng-model="address" class="form-control" placeholder="150A Nguyễn Thị Nhỏ,...">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Số điện thoại</label>
+                                    <input ng-model="phoneNumber" class="form-control" placeholder="0968899988">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group col-lg-4 text-center">
+                                            <label>Giới tính</label>
+                                            <div bs-dropdown
+                                                 bs-dropdown-display="MyDropDown"
+                                                 bs-dropdown-items="gender"
+                                                 ng-model="selectGender">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group col-lg-4 text-center">
+                                            <label>Vai trò</label>
+                                            <div bs-dropdown
+                                                 bs-dropdown-display="MyDropDown"
+                                                 bs-dropdown-items="role"
+                                                 ng-model="selectRole"
+                                                 ng-change="changeRole()">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <br>
+                                <br>
+                                <div style="float: right">
+                                    <button type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu thông tin</button>
+                                </div>
+                            </div>
+                            <!-- /.col-lg-6 (nested) -->
+                        </div>
+                        <!-- /.row (nested) -->
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

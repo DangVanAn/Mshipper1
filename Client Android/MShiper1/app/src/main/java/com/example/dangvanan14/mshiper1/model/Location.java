@@ -5,63 +5,30 @@ import android.os.Parcelable;
 
 public class Location implements Parcelable {
 
-    private String _latitude;
-    private String _longitude;
-    private String _timestamp;
+    private double _latitude;
+    private double _longitude;
+    private long _timestamp;
     private String _delivery_man;
 
-    public Location(String _latitude, String _longitude, String _timestamp, String _delivery_man) {
+    public Location(double _latitude, double _longitude, long _timestamp, String _delivery_man) {
         this._latitude = _latitude;
         this._longitude = _longitude;
         this._timestamp = _timestamp;
-        this._delivery_man = _delivery_man;
-    }
-
-    public String get_latitude() {
-
-        return _latitude;
-    }
-
-    public void set_latitude(String _latitude) {
-        this._latitude = _latitude;
-    }
-
-    public String get_longitude() {
-        return _longitude;
-    }
-
-    public void set_longitude(String _longitude) {
-        this._longitude = _longitude;
-    }
-
-    public String get_timestamp() {
-        return _timestamp;
-    }
-
-    public void set_timestamp(String _timestamp) {
-        this._timestamp = _timestamp;
-    }
-
-    public String get_delivery_man() {
-        return _delivery_man;
-    }
-
-    public void set_delivery_man(String _delivery_man) {
         this._delivery_man = _delivery_man;
     }
 
     protected Location(Parcel in) {
-        _latitude = in.readString();
-        _longitude = in.readString();
-        _timestamp = in.readString();
+        _latitude = in.readDouble();
+        _longitude = in.readDouble();
+        _timestamp = in.readLong();
         _delivery_man = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_latitude);
-        dest.writeString(_longitude);
-        dest.writeString(_timestamp);
+        dest.writeDouble(_latitude);
+        dest.writeDouble(_longitude);
+        dest.writeLong(_timestamp);
         dest.writeString(_delivery_man);
     }
 
@@ -81,4 +48,36 @@ public class Location implements Parcelable {
             return new Location[size];
         }
     };
+
+    public double get_latitude() {
+        return _latitude;
+    }
+
+    public void set_latitude(double _latitude) {
+        this._latitude = _latitude;
+    }
+
+    public double get_longitude() {
+        return _longitude;
+    }
+
+    public void set_longitude(double _longitude) {
+        this._longitude = _longitude;
+    }
+
+    public long get_timestamp() {
+        return _timestamp;
+    }
+
+    public void set_timestamp(long _timestamp) {
+        this._timestamp = _timestamp;
+    }
+
+    public String get_delivery_man() {
+        return _delivery_man;
+    }
+
+    public void set_delivery_man(String _delivery_man) {
+        this._delivery_man = _delivery_man;
+    }
 }

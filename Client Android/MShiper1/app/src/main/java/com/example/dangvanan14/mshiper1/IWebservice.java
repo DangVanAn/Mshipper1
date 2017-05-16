@@ -1,6 +1,7 @@
 package com.example.dangvanan14.mshiper1;
 
 import com.example.dangvanan14.mshiper1.model.Location;
+import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
 import java.util.List;
@@ -26,4 +27,7 @@ public interface IWebservice {
 
     @POST("locations/postLocation")
     Call<RepPost> postLocation(@Body Location location);
+
+    @GET("orders/getOrderByIdDeliveryMan")
+    Call<List<Order>> getOrderByIdDeliveryMan(@Query("_id_delivery_man") String _id_delivery_man);
 }

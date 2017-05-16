@@ -35,22 +35,22 @@ public class NotifyActivity extends BaseActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Thông báo");
 
-        listNotify.add(new Order("13", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("4", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("5", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("6", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("11", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("123", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("7", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("12", "19:00", "19/24 binh thơi", 1));
-        listNotify.add(new Order("11", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("13", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("3", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("3", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("4", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("1", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("5", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("6", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("1", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("11", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("123", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("7", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("12", "19:00", "19/24 binh thơi", 1));
+//        listNotify.add(new Order("11", "19:00", "19/24 binh thơi", 1));
 
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

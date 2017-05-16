@@ -2,11 +2,7 @@ var mongoose = require('mongoose');
 
 //User Schema
 var assignSchema = mongoose.Schema({
-    _id: {
-        type: String,
-        required: true
-    },
-    _order_id : {
+    _id_detail : {
         type: String,
         required: true
     },
@@ -19,16 +15,14 @@ var assignSchema = mongoose.Schema({
         required: true
     },
     _datetime : {
-        type: Date,
+        type: Number,
         required: true
     },
     _status : {
         type: String,
-        required: true
     },
     _note : {
         type: String,
-        required: true
     },
 });
 

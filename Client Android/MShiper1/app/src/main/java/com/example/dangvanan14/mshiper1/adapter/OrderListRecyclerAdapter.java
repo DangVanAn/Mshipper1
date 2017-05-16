@@ -13,13 +13,12 @@ import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
 import com.example.dangvanan14.mshiper1.model.Order;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Sherman on 2/23/2017.
- */
 public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecyclerAdapter.ViewHolder> {
-    private List<Order> listOfOrder;
+    private List<Order> orders;
     private String Id = "123";
 
     public OrderListRecyclerAdapter() {
@@ -33,18 +32,18 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Order order = listOfOrder.get(position);
+        Order order = orders.get(position);
         holder.bind(order);
     }
 
     @Override
     public int getItemCount() {
-        return listOfOrder.size();
+        return orders.size();
     }
 
 
-    public OrderListRecyclerAdapter(List<Order> listOfOrder) {
-        this.listOfOrder = listOfOrder;
+    public OrderListRecyclerAdapter(List<Order> orders) {
+        this.orders = orders;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -61,27 +60,29 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
             txtAddress = (TextView) itemView.findViewById(R.id.address);
             imageView = (ImageView) itemView.findViewById(R.id.icOrder);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
+
+        }
+
+        void bind(final Order order) {
+            txtId.setText(order.get_id());
+            Date date=new Date(order.get_created_date());
+            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
+            txtTime.setText(df2.format(date));
+            txtAddress.setText(order.get_address());
+            int ic = R.drawable.ic_time;
+            if (order.get_order_status().equals("Hoàn thành")) {
+                ic = R.drawable.ic_ok;
+            } else if (order.get_order_status().equals("Hủy")) {
+                ic = R.drawable.ic_cancel;
+            }
             cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                    intent.putExtra("ID", Id);
+                    intent.putExtra("ID", order.get_id());
                     v.getContext().startActivity(intent);
                 }
             });
-        }
-
-        void bind(Order order) {
-            txtId.setText(order.getId());
-            txtTime.setText(order.getTime());
-            txtAddress.setText(order.getAddress());
-            int ic = R.drawable.ic_time;
-            if (order.getState() == 2) {
-                ic = R.drawable.ic_ok;
-            } else if (order.getState() == 3) {
-                ic = R.drawable.ic_cancel;
-            }
-
             imageView.setImageResource(ic);
         }
     }
