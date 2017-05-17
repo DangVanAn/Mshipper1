@@ -12,7 +12,6 @@ var packageTypeSchema = mongoose.Schema({
     },
     _description : {
         type: String,
-        required: true
     },
 });
 

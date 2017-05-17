@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 
 //User Schema
 var assignSchema = mongoose.Schema({
-    _order_id : {
+    _id_detail : {
         type: String,
         required: true
     },
