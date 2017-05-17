@@ -26,11 +26,6 @@
         <item name="android:textColor">@android:color/holo_red_light</item>
     </style>
 
-    <style name="button_alert">
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:background">#E91E63</item>
-    </style>
-
     <style name="textInfo">
         <item name="android:textSize">18sp</item>
     </style>

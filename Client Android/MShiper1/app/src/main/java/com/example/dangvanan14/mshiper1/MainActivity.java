@@ -1,22 +1,17 @@
 package com.example.dangvanan14.mshiper1;
 
 import android.app.Activity;
-import android.app.AlarmManager;
 import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.view.ViewPager;
@@ -36,9 +31,7 @@ import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Order;
-import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.example.dangvanan14.mshiper1.service.LocationService;
-import com.google.android.gms.location.LocationListener;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
@@ -46,7 +39,6 @@ import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -171,6 +163,8 @@ public class MainActivity extends BaseActivity
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra("ID", result.getContents());
+                Order order = orders.stream().filter(o -> o.get_id().equals(result.getContents())).findFirst().get();
+                intent.putExtra("Order", order);
                 startActivity(intent);
             }
         } else {

@@ -1,5 +1,6 @@
 package com.example.dangvanan14.mshiper1;
 
+import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.Location;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.response.RepPost;
@@ -30,4 +31,7 @@ public interface IWebservice {
 
     @GET("orders/getOrderByIdDeliveryMan")
     Call<List<Order>> getOrderByIdDeliveryMan(@Query("_id_delivery_man") String _id_delivery_man);
+
+    @GET("details/getbyidorder")
+    Call<List<Detail>> getDetailByIdOrder(@Query("_id") String _id_order);
 }

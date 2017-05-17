@@ -4,10 +4,13 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="runtime_permissions_txt">\"Enable Permissions from settings\"</string>
     <string name="open_location_settings">abc</string>
     <string name="gps_network_not_enabled">abc</string>
     <string name="Cancel">cancel</string>
+    <string name="completeOrder">\"Hoàn thành\"</string>
+    <string name="cancelOrder">\"Hủy\"</string>
+    <string name="completeDetail">2</string>
+    <string name="cancelDetail">3</string>
 
 </resources>

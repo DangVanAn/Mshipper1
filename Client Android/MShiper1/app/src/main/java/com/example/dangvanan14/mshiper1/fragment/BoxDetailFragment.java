@@ -1,6 +1,7 @@
 package com.example.dangvanan14.mshiper1.fragment;
 
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -27,8 +28,11 @@ public class BoxDetailFragment extends Fragment {
     public BoxDetailFragment() {
     }
 
-    public static BoxDetailFragment newInstance() {
+    public static BoxDetailFragment newInstance(List<Detail> details) {
         BoxDetailFragment fragment = new BoxDetailFragment();
+        Bundle args = new Bundle();
+        args.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) details);
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -41,15 +45,12 @@ public class BoxDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_box_detail, container, false);
+        Bundle args = getArguments();
+        details = args.getParcelableArrayList("data");
 
         TextView txtTotal = (TextView) v.findViewById(R.id.totalMoney);
-        txtTotal.setText("100000000 VNĐ");
 
-        details.add(new Detail("13", "19:00", 1, "Điện thoại", "1,200,000VNĐ"));
-        details.add(new Detail("1", "19:00", 2, "Điện thoại", "1,200,000VNĐ"));
-        details.add(new Detail("3", "19:00", 3, "Điện thoại", "1,200,000VNĐ"));
-        details.add(new Detail("153", "19:00", 2, "Điện thoại", "1,200,000VNĐ"));
-        details.add(new Detail("63", "19:00", 1, "Điện thoại", "1,200,000VNĐ"));
+        txtTotal.setText("" + Charged(details));
 
         recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -59,4 +60,11 @@ public class BoxDetailFragment extends Fragment {
         return v;
     }
 
+    float Charged(List<Detail> details) {
+        float sum = 0;
+        for (int i = 0; i < details.size(); i++) {
+            sum += details.get(i).get_total_pay();
+        }
+        return sum;
+    }
 }

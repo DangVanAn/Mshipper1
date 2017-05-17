@@ -25,7 +25,7 @@ import static com.example.dangvanan14.mshiper1.activity.BaseActivity.newDefaultL
 
 // E : kiểu trả về từ server
 public class LoadData<E> {
-    public static String url = "http://192.168.137.1:9999/";
+    public static String url = "https://mshipperserver.herokuapp.com/";
 
     public IWebservice CreateRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()

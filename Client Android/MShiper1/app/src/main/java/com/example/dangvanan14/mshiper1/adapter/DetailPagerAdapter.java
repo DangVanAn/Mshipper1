@@ -8,23 +8,29 @@ import com.example.dangvanan14.mshiper1.fragment.BoxDetailFragment;
 import com.example.dangvanan14.mshiper1.fragment.Fragment_Maps;
 import com.example.dangvanan14.mshiper1.fragment.InfoDetailFragment;
 import com.example.dangvanan14.mshiper1.fragment.OrderFragment;
+import com.example.dangvanan14.mshiper1.model.Detail;
+import com.example.dangvanan14.mshiper1.model.Order;
 
-/**
- * Created by Sherman on 3/7/2017.
- */
+import java.util.ArrayList;
+import java.util.List;
 
 public class DetailPagerAdapter extends FragmentStatePagerAdapter{
-    public DetailPagerAdapter(FragmentManager fm) {
+    private Order order;
+    private List<Detail> details = new ArrayList<>();
+
+    public DetailPagerAdapter(FragmentManager fm, List<Detail> details, Order order) {
         super(fm);
+        this.details = details;
+        this.order = order;
     }
     private static final int NUM_ITEMS = 3;
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return InfoDetailFragment.newInstance();
+                return InfoDetailFragment.newInstance(details, order);
             case 1:
-                return BoxDetailFragment.newInstance();
+                return BoxDetailFragment.newInstance(details);
             case 2:
                 return Fragment_Maps.newInstance();
         }

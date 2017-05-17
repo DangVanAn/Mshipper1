@@ -28,10 +28,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Created by Sherman on 2/23/2017.
- */
-
 public class OrderListFragment extends BaseFragment implements View.OnClickListener {
     private TextView txtNgay;
     List<Order> orders;
@@ -54,13 +50,12 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
         View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
         txtNgay = (TextView) v.findViewById(R.id.btnDate);
 
-        txtNgay.setOnClickListener(this);
-
         cal = Calendar.getInstance();
-        SimpleDateFormat dft = null;
-        dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String strDate = dft.format(cal.getTime());
         txtNgay.setText(strDate);
+
+        txtNgay.setOnClickListener(this);
 
         setupTabLayout(v);
         return v;

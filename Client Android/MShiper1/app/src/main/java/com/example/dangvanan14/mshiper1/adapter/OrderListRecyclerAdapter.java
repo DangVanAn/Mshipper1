@@ -19,7 +19,6 @@ import java.util.List;
 
 public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecyclerAdapter.ViewHolder> {
     private List<Order> orders;
-    private String Id = "123";
 
     public OrderListRecyclerAdapter() {
     }
@@ -60,19 +59,18 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
             txtAddress = (TextView) itemView.findViewById(R.id.address);
             imageView = (ImageView) itemView.findViewById(R.id.icOrder);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
-
         }
 
         void bind(final Order order) {
             txtId.setText(order.get_id());
-            Date date=new Date(order.get_created_date());
+            Date date = new Date(order.get_created_date());
             SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
             txtTime.setText(df2.format(date));
             txtAddress.setText(order.get_address());
             int ic = R.drawable.ic_time;
-            if (order.get_order_status().equals("Hoàn thành")) {
+            if (order.get_order_status().equals(R.string.completeOrder)) {
                 ic = R.drawable.ic_ok;
-            } else if (order.get_order_status().equals("Hủy")) {
+            } else if (order.get_order_status().equals(R.string.cancelOrder)) {
                 ic = R.drawable.ic_cancel;
             }
             cardView.setOnClickListener(new View.OnClickListener() {

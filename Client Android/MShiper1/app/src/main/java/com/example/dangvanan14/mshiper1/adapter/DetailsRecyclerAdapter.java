@@ -12,11 +12,10 @@ import android.widget.TextView;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.model.Detail;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Sherman on 2/23/2017.
- */
 public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecyclerAdapter.ViewHolder> {
     private List<Detail> details;
     private String Id = "123";
@@ -78,14 +77,16 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
         }
 
         void bind(Detail detail) {
-            txtId.setText(detail.getId());
-            txtMoney.setText(detail.getMoney());
-            txtName.setText(detail.getName());
-            txtTime.setText(detail.getTime());
+            txtId.setText(detail.get_id_package());
+            txtMoney.setText(detail.get_pay_type());
+            txtName.setText("");
+            Date date = new Date(detail.get_delivery_daytime());
+            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
+            txtTime.setText(df2.format(date));
 
-            if (detail.getState() == 2)
+            if (detail.get_status().equals(R.string.completeDetail))
                 cardView.setCardBackgroundColor(Color.parseColor("#C8E6C9"));
-            else if (detail.getState() == 3)
+            else if (detail.get_status().equals(R.string.cancelDetail))
                 cardView.setCardBackgroundColor(Color.parseColor("#FFCDD2"));
         }
     }
