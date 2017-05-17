@@ -26,36 +26,26 @@
                         <table width="100%" class="table table-bordered table-hover">
                             <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Email</th>
-                                <th>Last name</th>
-                                <th>First name</th>
-                                <th>Identify card</th>
-                                <th>Date of birth</th>
-                                <th>Phone</th>
-                                <th>Adress</th>
-                                <th>Gender</th>
-                                <th>Image</th>
-                                <th>Permission</th>
-                                <th>Team</th>
-                                <th>Status</th>
-                                <th>Note</th>
+                                <th>Họ tên</th>
+                                <th>SĐT</th>
+                                <th>Địa chỉ</th>
+                                <th>Vai trò</th>
+                                <th>Đội</th>
+                                <th>Trạng thái</th>
                             </tr>
                             </thead>
                             <tbody>
                             <tr  ng-repeat="x in accounts">
+                                <td>{{x.stt}}</td>
                                 <td><a href="#/accountscreate/{{x._email}}">{{x._email}}</a></td>
-                                <td>{{x._last_name}}</td>
-                                <td>{{x._first_name}}</td>
-                                <td>{{x._identify_card}}</td>
-                                <td>{{x._date_of_birth}}</td>
+                                <td>{{x._last_name}} {{x._first_name}}</td>
                                 <td>{{x._phone}}</td>
                                 <td>{{x._address}}</td>
-                                <td>{{x._gender}}</td>
-                                <td>{{x._image_url}}</td>
                                 <td>{{x._permission_id}}</td>
                                 <td>{{x._team}}</td>
                                 <td>{{x._is_enabled}}</td>
-                                <td>{{x._note}}</td>
                             </tr>
                             </tbody>
                         </table>

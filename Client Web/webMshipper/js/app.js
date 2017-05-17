@@ -12,16 +12,6 @@ function iAlert(ngDialog, $scope) {
         ngDialog.close();
     }, 2000);
 }
-
-function notifyIsNull(data, show, type, ngDialog, $scope) {
-    if (!data) {
-        $scope.show = show;
-        $scope.type = type;
-        iAlert(ngDialog, $scope);
-        return true;
-    }
-    return false;
-}
 function httpPost($http, url, data, successCB, errorCB) {
     $http({
         method: 'POST',
@@ -69,6 +59,15 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 })
                 .when("/addtabledsdonhang", {
                     template: '<add-danh-sach-don-hang></add-danh-sach-don-hang>',
+                })
+                .when("/packagetypesshow", {
+                    template: '<packagetype-show></packagetype-show>',
+                })
+                .when("/packagetypescreate", {
+                    template: '<packagetype-create></packagetype-create>',
+                })
+                .when("/packagetypescreate/:id", {
+                    template: '<packagetype-update></packagetype-update>',
                 })
                 .when("/accountsshow", {
                     template: '<account-show></account-show>',
@@ -134,7 +133,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     templateUrl: "blank.html",
                 })
                 .when("/login", {
-                    template: "<login></login>",
+                    templateUrl: "login.html",
                 })
                 .when("/london", {
                     templateUrl: "london.htm",
@@ -150,7 +149,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
             /*begin modal*/
             var modalInstance = $uibModal.open({
                 templateUrl: './Orders/ModalShow.details.html',
-                controller: 'modal.selectDate',
+                controller: 'modal.orders.show',
                 windowClass: 'app-modal-window',
                 resolve: {
                     data: function () {
@@ -174,6 +173,50 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 templateUrl: './Orders/ModalShow.details.html',
                 controller: 'modal.orders.create',
                 windowClass: 'app-modal-window',
+                resolve: {
+                    data: function () {
+                        return data;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selected) {
+                return callback(selected);
+            }, function () {
+                return callback(false);
+            });
+        };
+    }])
+
+    .service('modalTeamShowAccount', ['$uibModal', '$http', function ($uibModal) {
+        this.show = function (data, callback) {
+            /*begin modal*/
+            var modalInstance = $uibModal.open({
+                templateUrl: './Teams/ModalShow.team.accounts.html',
+                controller: 'modal.teams.show.account',
+                windowClass: 'app-modal-window',
+                resolve: {
+                    data: function () {
+                        return data;
+                    }
+                }
+            });
+
+            modalInstance.result.then(function (selected) {
+                return callback(selected);
+            }, function () {
+                return callback(false);
+            });
+        };
+    }])
+
+    .service('modalYesNo', ['$uibModal', '$http', function ($uibModal) {
+        this.show = function (data, callback) {
+            /*begin modal*/
+            var modalInstance = $uibModal.open({
+                templateUrl: './Teams/ModalShow.team.delete.yesno.html',
+                controller: 'modal.teams.delete.yesno',
+                windowClass: 'app-modal-window-yes-no',
                 resolve: {
                     data: function () {
                         return data;
@@ -219,6 +262,11 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 getTeamShow: 'http://localhost:9999/teamlists/getall',
                 postTeamCreate: 'http://localhost:9999/teamlists/adds',
                 getTeamUpdate: 'http://localhost:9999/teamlists/getbyid',
+
+                postPackageTypeCreate: 'http://localhost:9999/packagetypes/add',
+                postPackageTypeGetById: 'http://localhost:9999/packagetypes/getbyid',
+                postPackageTypeUpdate: 'http://localhost:9999/packagetypes/update',
+                postPackageTypeRemove: 'http://localhost:9999/packagetypes/remove',
 
             }
 

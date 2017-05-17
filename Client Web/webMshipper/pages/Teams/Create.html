@@ -2,7 +2,7 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Thêm đội vận chuyển</h1>
+                <h1 class="page-header">{{mainLabel}}</h1>
             </div>
         </div>
         <div class="row">
@@ -53,15 +53,71 @@
                                     <input ng-model="description" class="form-control" placeholder="Mô tả">
                                 </div>
                                 <div style="padding-top: 20px">
-                                    <button type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu
+                                    <button style="width: 110px" type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu
                                         thông tin
                                     </button>
-                                    <button type="reset" ng-click="reset()" class="btn btn-outline btn-primary">Làm
-                                        mới
+                                    <button style="width: 110px" id="btnDelete" type="reset" ng-click="deleteTeam()" class="btn btn-outline btn-danger">Xóa đội
                                     </button>
                                 </div>
                             </div>
                             <!-- /.col-lg-6 (nested) -->
+
+                            <div class="col-lg-12">
+                                <br>
+                                <br>
+
+                                <div class="panel-body">
+                                    <label>Đội trưởng</label>
+                                    <table width="100%" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Email</th>
+                                            <th>Họ tên</th>
+                                            <th>SĐT</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Đội</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  ng-repeat="x in accountsLead" ng-click="clickItemLead(x)">
+                                            <td><input type="checkbox" ng-model="x.checked"/></td>
+                                            <td><a href="#/accountscreate/{{x._email}}">{{x._email}}</a></td>
+                                            <td>{{x._last_name}} {{x._first_name}}</td>
+                                            <td>{{x._phone}}</td>
+                                            <td>{{x._address}}</td>
+                                            <td>{{x._team}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div class="panel-body">
+                                    <label>Nhân viên</label>
+                                    <table width="100%" class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th>Email</th>
+                                            <th>Họ tên</th>
+                                            <th>SĐT</th>
+                                            <th>Địa chỉ</th>
+                                            <th>Đội</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr  ng-repeat="x in accountsEmployee" ng-click="clickItemEmployee(x)">
+                                            <td><input type="checkbox" ng-model="x.checked"/></td>
+                                            <td><a href="#/accountscreate/{{x._email}}">{{x._email}}</a></td>
+                                            <td>{{x._last_name}} {{x._first_name}}</td>
+                                            <td>{{x._phone}}</td>
+                                            <td>{{x._address}}</td>
+                                            <td>{{x._team}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                         <!-- /.row (nested) -->
                     </div>

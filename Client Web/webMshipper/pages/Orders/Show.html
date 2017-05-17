@@ -27,7 +27,7 @@
                                 <div>
                                     <label class="control-label col-sm-12"><strong>Ngày bắt đầu:</strong></label>
                                     <div class="input-group">
-                                        <input readonly id="beginDate" type="text" class="form-control datepicker"
+                                        <input readonly = 'readonly' id="beginDate" type="text" class="form-control datepicker"
                                                data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
                                         <span class="input-group-addon" id="basic-addon0"><i class="fa fa-calendar"
                                                                                              aria-hidden="true"></i></span>
@@ -86,33 +86,21 @@
                             <tbody>
                             <tr class="pointer" ng-repeat="x in orders">
                                 <td>{{x._id}}</td>
-                                <td>{{x._created_date}}</td>
-                                <td>{{x._expected_date}}</td>
+                                <td>{{x._created_date | date:"dd/MM/yyyy" }}</td>
+                                <td>{{x._expected_date | date:"dd/MM/yyyy" }}</td>
                                 <td>{{x._address}}</td>
                                 <td>{{x._area_id}}</td>
                                 <td>{{x._order_status}}</td>
                                 <td>{{x._payment_status}}</td>
                                 <td>{{x._note}}</td>
                                 <td align="center">
-                                    <button ng-click="loadMaps(x)" type="button" class="btn btn-info btn-circle"><i
+                                    <button ng-click="loadDetails(x)" type="button" class="btn btn-info btn-circle"><i
                                             class="fa fa-plus-circle"></i></button>
                                 </td>
                             </tr>
                             </tbody>
                         </table>
                     </div>
-                    <table class="table table-bordered table-hover table-striped" at-table at-paginated at-list="list" at-config="config">
-                        <thead></thead>
-                        <tbody>
-                        <tr>
-                            <td at-implicit at-sortable at-attribute="index" width="150" at-initial-sorting="asc"></td>
-                            <td at-implicit at-sortable at-attribute="name"  width="250"></td>
-                            <td at-implicit at-sortable at-attribute="email"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-
-                    <at-pagination at-list="list" at-config="config"></at-pagination>
                     <!-- /.panel-body -->
                 </div>
                 <!-- /.panel -->
