@@ -35,7 +35,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private OrderListRecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
-
+    @Override
+    public void onPermissionsGranted(int requestCode) {
+        Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,22 +55,22 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
             }
         });
 
-        listOfOrder.add(new Order("13", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("4", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("5", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("6", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("123", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("7", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("12", "19:00", "19/24 binh thơi", 1));
-        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("13", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("4", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("5", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("6", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("123", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("7", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("12", "19:00", "19/24 binh thơi", 1));
+//        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -141,10 +144,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         final String lowerCaseQuery = query.toLowerCase();
 
         for (Order model : models) {
-            final String text = model.getId().toLowerCase();
-            if (text.contains(lowerCaseQuery)) {
-                resultSearch.add(model);
-            }
+//            final String text = model.getId().toLowerCase();
+//            if (text.contains(lowerCaseQuery)) {
+//                resultSearch.add(model);
+//            }
         }
         return resultSearch;
     }

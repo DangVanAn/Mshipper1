@@ -3,8 +3,6 @@ var router = express.Router();
 var Assign = require('../models/Assign');
 
 router.get('/getall', function (req, res) {
-
-// get all the
     Assign.find({}, function (err, assigns) {
         if (err)
             return console.error(err);
@@ -15,12 +13,8 @@ router.get('/getall', function (req, res) {
     });
 });
 
-
 router.post('/add', function (req, res) {
-
     var newAssign = new Assign(req.body);
-    console.log(newAssign);
-    console.log(req.body);
 
     newAssign.save(function (err) {
         if (err)

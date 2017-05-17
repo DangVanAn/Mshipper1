@@ -15,7 +15,7 @@ var assignSchema = mongoose.Schema({
         required: true
     },
     _datetime : {
-        type: Date,
+        type: Number,
         required: true
     },
     _status : {

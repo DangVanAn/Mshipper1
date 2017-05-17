@@ -12,6 +12,16 @@ function iAlert(ngDialog, $scope) {
         ngDialog.close();
     }, 2000);
 }
+
+function notifyIsNull(data, show, type, ngDialog, $scope) {
+    if (!data) {
+        $scope.show = show;
+        $scope.type = type;
+        iAlert(ngDialog, $scope);
+        return true;
+    }
+    return false;
+}
 function httpPost($http, url, data, successCB, errorCB) {
     $http({
         method: 'POST',
@@ -124,7 +134,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     templateUrl: "blank.html",
                 })
                 .when("/login", {
-                    templateUrl: "login.html",
+                    template: "<login></login>",
                 })
                 .when("/london", {
                     templateUrl: "london.htm",

@@ -40,7 +40,7 @@ var OrdersSchema = mongoose.Schema({
     },
      _note : {  
         type: String,
-    },
+    }
 });
 
 

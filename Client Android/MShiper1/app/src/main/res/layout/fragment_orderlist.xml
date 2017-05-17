@@ -15,6 +15,7 @@
         android:padding="4dp">
 
         <TextView
+            android:id="@+id/btnDate"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_marginEnd="16dp"

@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1.fragment;
 import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,14 +23,14 @@ import java.util.List;
  */
 
 public class OrderFragment extends BaseFragment {
-    private List<Order> listOfOrder = new ArrayList<>();
     private OrderListRecyclerAdapter mAdapter;
+    List<Order> orders;
 
-
-    public static OrderFragment newInstance(int state) {
+    public static OrderFragment newInstance(int state, List<Order> orders) {
         OrderFragment order = new OrderFragment();
         Bundle args = new Bundle();
         args.putInt("state", state);
+        args.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) orders);
         order.setArguments(args);
         return order;
     }
@@ -39,6 +40,7 @@ public class OrderFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         int state = args.getInt("state");
+        orders = args.getParcelableArrayList("data");
 
         View v = inflater.inflate(R.layout.fragment_order, container, false);
         if (state == 2)
@@ -46,25 +48,9 @@ public class OrderFragment extends BaseFragment {
         else if (state == 3)
             v.setBackgroundColor(Color.parseColor("#FFCDD2"));
 
-
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", state));
-
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new OrderListRecyclerAdapter(listOfOrder);
+        mAdapter = new OrderListRecyclerAdapter(orders);
         recyclerView.setAdapter(mAdapter);
         return v;
     }
