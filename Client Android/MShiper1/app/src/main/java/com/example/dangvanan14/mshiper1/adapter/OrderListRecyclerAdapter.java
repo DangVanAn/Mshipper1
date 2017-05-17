@@ -12,8 +12,12 @@ import android.widget.TextView;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -78,6 +82,11 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
                 public void onClick(View v) {
                     Intent intent = new Intent(v.getContext(), DetailActivity.class);
                     intent.putExtra("ID", order.get_id());
+                    Predicate<Order> predicate = input -> order.get_id().equals(input != null ? input.get_id() : "");
+                    Collection<Order> result2 = Collections2.filter(orders, predicate);
+                    List<Order> order = new ArrayList<>(result2);
+
+                    intent.putExtra("Order", order.get(0));
                     v.getContext().startActivity(intent);
                 }
             });

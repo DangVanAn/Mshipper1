@@ -4,19 +4,19 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Detail implements Parcelable {
-    private String _id;
-    private String _id_package;
-    private String _order_id;
-    private float _total_pay;
-    private String _pay_type;
-    private float _weight;
-    private String _package_type;
-    private long _delivery_daytime;
-    private String _latitude_update;
-    private String _longitude_update;
-    private String _signature;
-    private String _status;
-    private String _photo;
+    private String _id = "";
+    private String _id_package = "";
+    private String _order_id = "";
+    private float _total_pay = 0;
+    private String _pay_type = "";
+    private float _weight = 0;
+    private String _package_type = "";
+    private long _delivery_daytime = 0;
+    private String _latitude_update = "";
+    private String _longitude_update = "";
+    private String _signature = "";
+    private String _status = "";
+    private String _photo = "";
 
     public Detail(String _id, String _id_package, String _order_id, float _total_pay, String _pay_type, float _weight, String _package_type, long _delivery_daytime, String _latitude_update, String _longitude_update, String _signature, String _status, String _photo) {
         this._id = _id;

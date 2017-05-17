@@ -32,6 +32,12 @@ import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.service.LocationService;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Iterators;
+import com.google.common.collect.Lists;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
@@ -39,10 +45,12 @@ import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import retrofit2.Call;
+
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -106,13 +114,9 @@ public class MainActivity extends BaseActivity
                     //get gps
                 }
             });
-            dialog.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
+            dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> {
+                // TODO Auto-generated method stub
 
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-
-                }
             });
             dialog.show();
         }
@@ -163,8 +167,12 @@ public class MainActivity extends BaseActivity
                 Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra("ID", result.getContents());
-                Order order = orders.stream().filter(o -> o.get_id().equals(result.getContents())).findFirst().get();
-                intent.putExtra("Order", order);
+
+                Predicate<Order> predicate = input -> result.getContents().equals(input != null ? input.get_id() : "");
+                Collection<Order> result2 = Collections2.filter(orders, predicate);
+                List<Order> order = new ArrayList<>(result2);
+
+                intent.putExtra("Order", order.get(0));
                 startActivity(intent);
             }
         } else {

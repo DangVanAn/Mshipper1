@@ -45,7 +45,7 @@ router.post('/adds', function (req, res) {
 });
 
 router.post('/getbyidorder', function (req, res) {
-
+    console.log(req);
     console.log(req.body);
     console.log(req.body._id);
     //get
@@ -54,7 +54,7 @@ router.post('/getbyidorder', function (req, res) {
             return console.error(err);
         else {
             res.status(200).send(details);
-            console.log('Find one success!!!');
+            console.log('Find one success!!! ' + details.length);
         }
     });
 });

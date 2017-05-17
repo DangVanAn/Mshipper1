@@ -15,6 +15,10 @@ public class Order implements Parcelable {
     private String _payment_status;
     private String _note;
 
+    public Order(String _id) {
+        this._id = _id;
+    }
+
     public Order(String _id, long _created_date, long _expected_date, String _address, String _area_id, String _latitude, String _longitude, String _order_status, String _payment_status, String _note) {
         this._id = _id;
         this._created_date = _created_date;

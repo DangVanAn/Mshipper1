@@ -84,6 +84,9 @@ public class DetailsRecyclerAdapter extends RecyclerView.Adapter<DetailsRecycler
             SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
             txtTime.setText(df2.format(date));
 
+            if (detail.get_status() == null)
+                return;
+
             if (detail.get_status().equals(R.string.completeDetail))
                 cardView.setCardBackgroundColor(Color.parseColor("#C8E6C9"));
             else if (detail.get_status().equals(R.string.cancelDetail))

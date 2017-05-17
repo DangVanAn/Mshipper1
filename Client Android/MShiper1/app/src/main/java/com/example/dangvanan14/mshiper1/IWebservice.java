@@ -32,6 +32,6 @@ public interface IWebservice {
     @GET("orders/getOrderByIdDeliveryMan")
     Call<List<Order>> getOrderByIdDeliveryMan(@Query("_id_delivery_man") String _id_delivery_man);
 
-    @GET("details/getbyidorder")
-    Call<List<Detail>> getDetailByIdOrder(@Query("_id") String _id_order);
+    @POST("details/getbyidorder")
+    Call<List<Detail>> getDetailByIdOrder(@Body Order _id_order);
 }

@@ -43,39 +43,33 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     public List<Detail> details = new ArrayList<>();
     public Order order;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         order = getIntent().getParcelableExtra("Order");
 
+        Toast.makeText(this, getIntent().getStringExtra("ID"), Toast.LENGTH_SHORT).show();
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Chi tiết");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+
         loadModelDetail();
         Button btnCancel = (Button) findViewById(R.id.btnCancel);
         Button btnPay = (Button) findViewById(R.id.btnPay);
         btnCancel.setOnClickListener(this);
         btnPay.setOnClickListener(this);
     }
+
     private void loadModelDetail() {
         final LoadData<List<Detail>> loadData = new LoadData<>();
 
-        loadData.loadData(new Callable<Call<List<Detail>>>() {
-            @Override
-            public Call<List<Detail>> call() throws Exception {
-                return loadData.CreateRetrofit().getDetailByIdOrder(getIntent().getStringExtra("ID"));
-            }
-        }, new LoadData.CallbackDelegate<List<Detail>>(this, new CallBackImpl()));
+        loadData.loadData(() -> loadData.CreateRetrofit().getDetailByIdOrder(new Order(getIntent().getStringExtra("ID"))), new LoadData.CallbackDelegate<List<Detail>>(this, new CallBackImpl()));
     }
 
     private static class CallBackImpl implements ICallbackApi<List<Detail>> {
@@ -100,7 +94,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
         @Override
         public void onFailure(Throwable t, Logger LOG) {
-            Log.e(TAG, "onFailure: Load data failed" );
+            Log.e(TAG, "onFailure: Load data failed");
         }
     }
 
