@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ID đơn hàng : " />
+            android:text="ID : " />
 
         <TextView
             android:id="@+id/IDDonHang"
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trạng thái đơn hàng : " />
+            android:text="Trạng thái : " />
 
         <TextView
             android:id="@+id/orderStatus"
@@ -129,7 +129,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Trạng thái thanh toán: " />
+            android:text="Thanh toán: " />
 
         <TextView
             android:id="@+id/paymentStatus"

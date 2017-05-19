@@ -1,8 +1,10 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
 import android.content.Intent;
+import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,27 +70,26 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
         void bind(final Order order) {
             txtId.setText(order.get_id());
             Date date = new Date(order.get_created_date());
-            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
+            SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
             txtTime.setText(df2.format(date));
             txtAddress.setText(order.get_address());
             int ic = R.drawable.ic_time;
-            if (order.get_order_status().equals(R.string.completeOrder)) {
+            if (order.get_order_status().equals(imageView.getContext().getResources().getString(R.string.statusCompleteOrder))) {
                 ic = R.drawable.ic_ok;
-            } else if (order.get_order_status().equals(R.string.cancelOrder)) {
+            } else if (order.get_order_status().equals(imageView.getContext().getResources().getString(R.string.statusCancelOrder))) {
                 ic = R.drawable.ic_cancel;
             }
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                    intent.putExtra("ID", order.get_id());
-                    Predicate<Order> predicate = input -> order.get_id().equals(input != null ? input.get_id() : "");
-                    Collection<Order> result2 = Collections2.filter(orders, predicate);
-                    List<Order> order = new ArrayList<>(result2);
+            cardView.setOnClickListener(v -> {
+                Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                intent.putExtra("ID", order.get_id());
+                Predicate<Order> predicate = input -> order.get_id().equals(input != null ? input.get_id() : "");
+                Collection<Order> result2 = Collections2.filter(orders, predicate);
+                List<Order> order1 = new ArrayList<>(result2);
 
-                    intent.putExtra("Order", order.get(0));
-                    v.getContext().startActivity(intent);
-                }
+                intent.putExtra("order", order1.get(0));
+                intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+
+                v.getContext().startActivity(intent);
             });
             imageView.setImageResource(ic);
         }

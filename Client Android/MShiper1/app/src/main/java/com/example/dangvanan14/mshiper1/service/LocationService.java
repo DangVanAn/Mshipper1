@@ -148,13 +148,13 @@ public class LocationService extends Service {
                 intent.putExtra("Latitude", loc.getLatitude());
                 intent.putExtra("Longitude", loc.getLongitude());
                 intent.putExtra("Provider", loc.getProvider());
-//                loadData.loadData(new Callable<Call<RepPost>>() {
-//                    @Override
-//                    public Call<RepPost> call() throws Exception {
-//                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
-//                    }
-//                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
-//                sendBroadcast(intent);
+                loadData.loadData(new Callable<Call<RepPost>>() {
+                    @Override
+                    public Call<RepPost> call() throws Exception {
+                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
+                    }
+                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
+                sendBroadcast(intent);
 
             }
         }
@@ -172,7 +172,17 @@ public class LocationService extends Service {
 
             @Override
             public void onResponse(RepPost body, Logger log) {
-                Log.d("TAG", "onResponse: " + body.getRep());
+                Log.d("TAG", "onResponse: " + body.getMessage());
+            }
+
+            @Override
+            public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
+
+            }
+
+            @Override
+            public void onFailure(Activity activity, Throwable t, Logger LOG) {
+
             }
 
             @Override

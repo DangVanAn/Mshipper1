@@ -20,27 +20,6 @@
         android:textSize="18sp"
 
         android:textStyle="bold" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Loại thanh toán : "
-            android:textSize="@dimen/text_size"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spn_note"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
-
-
     <EditText
         android:id="@+id/edt_note"
         android:layout_width="match_parent"

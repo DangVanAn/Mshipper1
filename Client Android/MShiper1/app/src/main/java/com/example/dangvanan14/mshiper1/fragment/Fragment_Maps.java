@@ -16,15 +16,19 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.activity.BaseActivity;
+import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.module.maps.DirectionFinderListener;
 import com.example.dangvanan14.mshiper1.module.maps.Route;
 import com.google.android.gms.common.ConnectionResult;
@@ -49,6 +53,7 @@ import com.example.dangvanan14.mshiper1.module.maps.DirectionFinder;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -65,6 +70,7 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
     private List<Marker> originMarkers = new ArrayList<>();
     private List<Marker> destinationMarkers = new ArrayList<>();
     private List<Polyline> polylinePaths = new ArrayList<>();
+    private Polyline polylinePath;
     private ProgressDialog progressDialog;
     LatLng search_loc;
     private List<Marker> mysearch = new ArrayList<Marker>();
@@ -77,12 +83,15 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
     private List<String> listLocation = new ArrayList<String>();
 
     View inflaterView;
+    private ArrayList<Order> orders;
+    private Order order;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         inflaterView = inflater.inflate(R.layout.fragment_maps, container, false);
-
+        Bundle args = getArguments();
+        orders = args.getParcelableArrayList("data");
         buildGoogleApiClient();
 
         return inflaterView;
@@ -109,6 +118,7 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
         fab_loca.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if (lat != null && lon != null) {
                     if (markerLocation != null)
                         markerLocation.remove();
@@ -122,8 +132,8 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
                     mMap.animateCamera(cameraUpdate);
                 }
 
-                Toast.makeText(getActivity(), "lat: " + lat + ", lon: " + lon,
-                        Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity(), "lat: " + lat + ", lon: " + lon,
+//                        Toast.LENGTH_LONG).show();
 
             }
         });
@@ -132,6 +142,10 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
         fab_direc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!BaseActivity.isNetworkConnected(view.getContext())) {
+                    Toast.makeText(view.getContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (numMakers < listLocation.size() - 1)
                     sendRequest(listLocation.get(numMakers), listLocation.get(numMakers + 1));
                 numMakers += 1;
@@ -153,12 +167,33 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
         }
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
+
+        addMarkerListOrder();
+    }
+
+    private void addMarkerListOrder() {
+        Bitmap bitmap;
+        for (Order o :
+                orders) {
+            if (orders.size() == 1) {
+                order = orders.get(0);
+                bitmap = mIconGenerator.makeIcon("");
+            } else
+                bitmap = mIconGenerator.makeIcon(Integer.toString(numMakers));
+
+            originMarkers.add(mMap.addMarker(new MarkerOptions()
+                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                    .title(o.get_address())
+                    .position(new LatLng(Double.parseDouble(o.get_latitude()), Double.parseDouble(o.get_longitude())))));
+            numMakers++;
+        }
     }
 
     @Override
     public void onDirectionFinderStart() {
-        progressDialog = ProgressDialog.show(this.getActivity(), "Please wait.",
-                "Finding direction..!", true);
+        if (order == null)
+            progressDialog = ProgressDialog.show(this.getActivity(), "Please wait.",
+                    "Finding direction..!", true);
 
 //        if (marker_Find != null)
 //            marker_Find.remove();
@@ -184,38 +219,45 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
 
     @Override
     public void onDirectionFinderSuccess(List<Route> routes) {
-        progressDialog.dismiss();
+        if (order == null)
+            progressDialog.dismiss();
         polylinePaths = new ArrayList<>();
         originMarkers = new ArrayList<>();
         destinationMarkers = new ArrayList<>();
 
         for (Route route : routes) {
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+
 //            ((TextView) findViewById(R.id.tvDuration)).setText(route.duration.text);
 //            ((TextView) findViewById(R.id.tvDistance)).setText(route.distance.text);
-
-
-            Bitmap bitmap = mIconGenerator.makeIcon(Integer.toString(numMakers));
-
-            originMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                    .title(route.startAddress)
-                    .position(route.startLocation)));
-
-            destinationMarkers.add(mMap.addMarker(new MarkerOptions()
-                    .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
-                    .title(route.endAddress)
-                    .position(route.endLocation)));
-
             PolylineOptions polylineOptions = new PolylineOptions().
                     geodesic(true).
                     color(Color.BLUE).
                     width(10);
-
             for (int i = 0; i < route.points.size(); i++)
                 polylineOptions.add(route.points.get(i));
 
-            polylinePaths.add(mMap.addPolyline(polylineOptions));
+            if (order == null) {
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(route.startLocation, 16));
+                Bitmap bitmap = mIconGenerator.makeIcon(Integer.toString(numMakers));
+
+                originMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                        .title(route.startAddress)
+                        .position(route.startLocation)));
+
+                destinationMarkers.add(mMap.addMarker(new MarkerOptions()
+                        .icon(BitmapDescriptorFactory.fromBitmap(bitmap))
+                        .title(route.endAddress)
+                        .position(route.endLocation)));
+
+                polylinePaths.add(mMap.addPolyline(polylineOptions));
+            } else {
+                if (polylinePath != null) {
+                    Log.d("TAG", "onDirectionFinderSuccess: " + polylinePath.getId());
+                    polylinePath.remove();
+                }
+                polylinePath = mMap.addPolyline(polylineOptions);
+            }
         }
     }
 
@@ -223,7 +265,7 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
     public void onConnected(Bundle bundle) {
         mLocationRequest = LocationRequest.create();
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(100); // Update location every second
+        mLocationRequest.setInterval(500); // Update location every second
 
         if (ActivityCompat.checkSelfPermission(this.getActivity(),
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -279,12 +321,11 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_one_pixel))
                     .position(latLng)
                     .title("Bạn đang ở đây!"));
-        }
-    }
+            if (order != null)
+                sendRequest(Double.parseDouble(lat) + "," + Double.parseDouble(lon),
+                        Double.parseDouble(order.get_latitude()) + "," + Double.parseDouble(order.get_longitude()));
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
+        }
     }
 
     private void sendRequest(String origin, String destination) {
@@ -366,9 +407,11 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
         }
     }
 
-    public static Fragment_Maps newInstance() {
+    public static Fragment_Maps newInstance(List<Order> orders) {
         Fragment_Maps map = new Fragment_Maps();
-
+        Bundle args = new Bundle();
+        args.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) orders);
+        map.setArguments(args);
         return map;
     }
 }

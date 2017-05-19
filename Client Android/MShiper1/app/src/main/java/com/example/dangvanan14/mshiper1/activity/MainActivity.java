@@ -1,4 +1,4 @@
-package com.example.dangvanan14.mshiper1;
+package com.example.dangvanan14.mshiper1.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -18,6 +19,7 @@ import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -25,19 +27,16 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import android.Manifest;
 
-import com.example.dangvanan14.mshiper1.activity.BaseActivity;
-import com.example.dangvanan14.mshiper1.activity.DetailActivity;
+import com.example.dangvanan14.mshiper1.LoadData;
+import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.service.LocationService;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
@@ -53,9 +52,10 @@ import retrofit2.Call;
 
 
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
-    List<Order> orders = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+//    List<Order> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +67,14 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        loadModelAssign();
         MainActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.INTERNET,
                         Manifest.permission.WAKE_LOCK,
@@ -84,6 +86,8 @@ public class MainActivity extends BaseActivity
                         Manifest.permission.ACCESS_NETWORK_STATE}, R.string
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
+        loadModelAssign();
+
         LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         boolean gps_enabled = false;
         boolean network_enabled = false;
@@ -103,28 +107,29 @@ public class MainActivity extends BaseActivity
 
         if (!gps_enabled) {
             // notify user
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                    //get gps
-                }
-            });
-            dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> {
-                // TODO Auto-generated method stub
-
-            });
-            dialog.show();
+//            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+//            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
+//            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+//                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+//                    startActivity(myIntent);
+//                }
+//            });
+//            dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> {
+//            });
+//            dialog.show();
         }
     }
 
     private void loadModelAssign() {
-        final LoadData<List<Order>> loadData = new LoadData<>();
+        if (!isNetworkConnected(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showProgressDialog();
 
+        final LoadData<List<Order>> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<List<Order>>>() {
             @Override
             public Call<List<Order>> call() throws Exception {
@@ -162,9 +167,11 @@ public class MainActivity extends BaseActivity
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onActivityResult: Cancelled");
             } else {
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+//                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
+                Log.d(TAG, "onActivityResult: Scanned");
                 Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
                 intent.putExtra("ID", result.getContents());
 
@@ -172,7 +179,8 @@ public class MainActivity extends BaseActivity
                 Collection<Order> result2 = Collections2.filter(orders, predicate);
                 List<Order> order = new ArrayList<>(result2);
 
-                intent.putExtra("Order", order.get(0));
+                intent.putExtra("order", order.get(0));
+                intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
                 startActivity(intent);
             }
         } else {
@@ -216,12 +224,19 @@ public class MainActivity extends BaseActivity
         };
         registerReceiver(receiver, filter);
 
+
 //        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
 //        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
 //        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 //        Calendar updateTime = Calendar.getInstance();
 //        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
 
+    }
+
+    @Override
+    public void onRefresh() {
+        loadModelAssign();
+        swipeRefreshLayout.setRefreshing(true);
     }
 
     class MyLocationListener implements android.location.LocationListener {
@@ -247,7 +262,6 @@ public class MainActivity extends BaseActivity
             Intent i = new Intent(context, LocationService.class);
             context.startService(i);
         }
-
     }
 
     @Override
@@ -274,12 +288,29 @@ public class MainActivity extends BaseActivity
             MainActivity ac = (MainActivity) activity;
             ac.orders = body;
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
             ac.setupTabLayout();
         }
 
         @Override
         public void onResponse(List<Order> body, Logger log) {
 
+        }
+
+        @Override
+        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
+
+        }
+
+        @Override
+        public void onFailure(Activity activity, Throwable t, Logger LOG) {
+            Log.e(TAG, "onFailure: Load data failed");
+            MainActivity ac = (MainActivity) activity;
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
+//            ac.setupTabLayout();
+            // show trống dữ liệu
         }
 
         @Override

@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.example.dangvanan14.mshiper1.fragment.BoxDetailFragment;
 import com.example.dangvanan14.mshiper1.fragment.Fragment_Maps;
 import com.example.dangvanan14.mshiper1.fragment.InfoDetailFragment;
-import com.example.dangvanan14.mshiper1.fragment.OrderFragment;
 import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.Order;
 
@@ -32,7 +31,11 @@ public class DetailPagerAdapter extends FragmentStatePagerAdapter{
             case 1:
                 return BoxDetailFragment.newInstance(details);
             case 2:
-                return Fragment_Maps.newInstance();
+            {
+                List<Order> orders = new ArrayList<>();
+                orders.add(order);
+                return Fragment_Maps.newInstance(orders);
+            }
         }
         return null;
     }

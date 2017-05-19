@@ -1,6 +1,5 @@
 package com.example.dangvanan14.mshiper1.fragment;
 
-import android.app.DatePickerDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -14,8 +13,11 @@ import android.view.ViewGroup;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -40,13 +42,21 @@ public class OrderFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         int state = args.getInt("state");
-        orders = args.getParcelableArrayList("data");
-
+        List<Order> data = args.getParcelableArrayList("data");
+        String status;
         View v = inflater.inflate(R.layout.fragment_order, container, false);
-        if (state == 2)
+        if (state == 2) {
+            status = getResources().getString(R.string.statusCompleteOrder);
             v.setBackgroundColor(Color.parseColor("#C8E6C9"));
-        else if (state == 3)
+        } else if (state == 3) {
+            status = getResources().getString(R.string.statusCancelOrder);
             v.setBackgroundColor(Color.parseColor("#FFCDD2"));
+        } else
+            status = getResources().getString(R.string.statusShippingOrder);
+
+        Predicate<Order> predicate = input -> status.equals(input != null ? input.get_order_status() : "");
+        Collection<Order> result = Collections2.filter(data, predicate);
+        orders = new ArrayList<>(result);
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

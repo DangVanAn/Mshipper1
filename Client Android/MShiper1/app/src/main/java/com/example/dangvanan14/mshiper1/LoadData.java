@@ -1,8 +1,11 @@
 package com.example.dangvanan14.mshiper1;
 
 import android.app.Activity;
+import android.content.Context;
+import android.net.ConnectivityManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 
@@ -25,8 +28,8 @@ import static com.example.dangvanan14.mshiper1.activity.BaseActivity.newDefaultL
 
 // E : kiểu trả về từ server
 public class LoadData<E> {
-    public static String url = "https://mshipperserver.herokuapp.com/";
-//    public static String url = "http://192.168.137.1:9999/";
+    //    public static String url = "https://mshipperserver.herokuapp.com/";
+    public static String url = "http://192.168.137.1:9999/";
 
     public IWebservice CreateRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()
@@ -97,12 +100,11 @@ public class LoadData<E> {
                 } else if (isService) {
                     callback.onResponse(response.body(), LOG);
                 }
-            }
-            else {
+            } else {
                 try {
                     Log.e(MY_ERROR, "onResponse: " + response.errorBody().string());
                 } catch (IOException e) {
-                    Log.e(MY_ERROR, "onResponse: " + e.getMessage() );
+                    Log.e(MY_ERROR, "onResponse: " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -110,15 +112,16 @@ public class LoadData<E> {
 
         @Override
         public void onFailure(Call<E> call, Throwable t) {
+            Log.d("TAG", "onFailure: ");
             if (isActivity) {
                 Activity activity = activityWeakReference.get();
                 if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
-                    callback.onFailure(t, LOG);
+                    callback.onFailure(activity, t, LOG);
                 }
             } else if (isFragment) {
                 Fragment fragment = fragmentWeakReference.get();
                 if (fragment != null && !fragment.isRemoving() && !fragment.isDetached()) {
-                    callback.onFailure(t, LOG);
+                    callback.onFailure(fragment, t, LOG);
                 }
             } else if (isService) {
                 callback.onFailure(t, LOG);

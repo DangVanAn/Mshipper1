@@ -48,7 +48,7 @@ public class InfoDetailFragment extends BaseFragment {
 
         idDonHang.setText(order.get_id());
         Date date = new Date(order.get_created_date());
-        SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yy");
+        SimpleDateFormat df2 = new SimpleDateFormat("dd/MM/yyyy");
         dateCreate.setText(df2.format(date));
         address.setText(order.get_address());
         orderStatus.setText(order.get_order_status());

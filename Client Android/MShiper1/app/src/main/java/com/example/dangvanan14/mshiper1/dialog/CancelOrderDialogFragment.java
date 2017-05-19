@@ -1,12 +1,14 @@
 package com.example.dangvanan14.mshiper1.dialog;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatDialogFragment;
+import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,23 +16,33 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.BaseActivity;
+import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.model.Detail;
+import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.google.gson.Gson;
 
-/**
- * Created by Sherman on 3/10/2017.
- */
+import org.slf4j.Logger;
 
-public class CancelOrderDialogFragment extends AppCompatDialogFragment implements View.OnClickListener {
-    public static CancelOrderDialogFragment newInstance() {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CancelOrderDialogFragment extends BaseDialogFragment implements View.OnClickListener {
+    private ArrayList<String> id_detail = new ArrayList<>();
+    private EditText edtNote;
+
+    public static CancelOrderDialogFragment newInstance(ArrayList<String> id_detail) {
         CancelOrderDialogFragment dialogFragment = new CancelOrderDialogFragment();
         dialogFragment.setCancelable(false);
+        Bundle args = new Bundle();
+        args.putStringArrayList("data", id_detail);
+        dialogFragment.setArguments(args);
         return dialogFragment;
     }
 
@@ -40,18 +52,15 @@ public class CancelOrderDialogFragment extends AppCompatDialogFragment implement
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
+
         return dialog;
     }
 
-    String arr[] = {
-            "Hàng 1",
-            "Hàng 2",
-            "Hàng 3"};
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
+        Bundle args = getArguments();
+        id_detail = args.getStringArrayList("data");
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
@@ -59,34 +68,20 @@ public class CancelOrderDialogFragment extends AppCompatDialogFragment implement
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.dialog_cancel_order, container, false);
 
-        Spinner spin = (Spinner) v.findViewById(R.id.spn_note);
         Button btnCancel = (Button) v.findViewById(R.id.btnCancel);
         Button btnSubmit = (Button) v.findViewById(R.id.btnCash);
 
         btnCancel.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
 
-        EditText edtNote = (EditText) v.findViewById(R.id.edt_note);
+        edtNote = (EditText) v.findViewById(R.id.edt_note);
         edtNote.requestFocus();
-
 
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         //show soft keyboard fragment
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         imm.showSoftInput(edtNote, InputMethodManager.SHOW_IMPLICIT);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, arr);
-        adapter.setDropDownViewResource(android.R.layout.simple_list_item_single_choice);
-        spin.setAdapter(adapter);
-        spin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
         return v;
     }
 
@@ -117,18 +112,75 @@ public class CancelOrderDialogFragment extends AppCompatDialogFragment implement
 
     @Override
     public void onClick(View v) {
-        InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         switch (v.getId()) {
             case R.id.btnCancel:
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 dismiss();
                 break;
             case R.id.btnCash:
-                Toast.makeText(getActivity(), "Submit thành công !!!", Toast.LENGTH_SHORT).show();
+                updateStatusDetail("");
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                dismiss();
                 break;
         }
     }
 
+    private void updateStatusDetail(String _payment_status) {
+        if (!BaseActivity.isNetworkConnected(getContext())) {
+            Toast.makeText(getContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showProgressDialog();
+        final LoadData<RepPost> loadData = new LoadData<>();
+        List<Detail> senddetail = new ArrayList<>();
+        for ( int i = 0; i < id_detail.size(); i++ ){
+            Detail detail = new Detail();
+            detail.set_id_package(id_detail.get(i));
+            detail.set_status("Hủy");
+            senddetail.add(detail);
+        }
+        String _note = edtNote.getText().toString();
+
+        Gson gson = new Gson();
+        loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail), _payment_status, _note), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
+    }
+
+    private class CallBackImpl implements ICallbackApi<RepPost> {
+        @Override
+        public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
+            Toast.makeText(getContext(), R.string.repUpdateSuccess , Toast.LENGTH_SHORT).show();
+            dismiss();
+            dismissProgressDialog();
+        }
+
+        @Override
+        public void onResponse(Activity activity, RepPost body, Logger LOG) {
+
+        }
+
+        @Override
+        public void onResponse(RepPost body, Logger log) {
+
+        }
+
+        @Override
+        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
+            Log.e("TAG", "onFailure: Load data failed");
+            Toast.makeText(getContext(), R.string.repUpdateFailed, Toast.LENGTH_SHORT).show();
+            CancelOrderDialogFragment ac = (CancelOrderDialogFragment) fragment;
+            ac.dismissProgressDialog();
+        }
+
+        @Override
+        public void onFailure(Activity activity, Throwable t, Logger LOG) {
+
+        }
+
+        @Override
+        public void onFailure(Throwable t, Logger LOG) {
+            Toast.makeText(getContext(), R.string.repUpdateFailed, Toast.LENGTH_SHORT).show();
+            dismiss();
+            dismissProgressDialog();
+        }
+    }
 }

@@ -4,7 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class Detail implements Parcelable {
-    private String _id = "";
     private String _id_package = "";
     private String _order_id = "";
     private float _total_pay = 0;
@@ -18,8 +17,10 @@ public class Detail implements Parcelable {
     private String _status = "";
     private String _photo = "";
 
-    public Detail(String _id, String _id_package, String _order_id, float _total_pay, String _pay_type, float _weight, String _package_type, long _delivery_daytime, String _latitude_update, String _longitude_update, String _signature, String _status, String _photo) {
-        this._id = _id;
+    public Detail() {
+    }
+
+    public Detail(String _id_package, String _order_id, float _total_pay, String _pay_type, float _weight, String _package_type, long _delivery_daytime, String _latitude_update, String _longitude_update, String _signature, String _status, String _photo) {
         this._id_package = _id_package;
         this._order_id = _order_id;
         this._total_pay = _total_pay;
@@ -32,14 +33,6 @@ public class Detail implements Parcelable {
         this._signature = _signature;
         this._status = _status;
         this._photo = _photo;
-    }
-
-    public String get_id() {
-        return _id;
-    }
-
-    public void set_id(String _id) {
-        this._id = _id;
     }
 
     public String get_id_package() {
@@ -139,7 +132,6 @@ public class Detail implements Parcelable {
     }
 
     protected Detail(Parcel in) {
-        _id = in.readString();
         _id_package = in.readString();
         _order_id = in.readString();
         _total_pay = in.readFloat();
@@ -156,7 +148,6 @@ public class Detail implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id);
         dest.writeString(_id_package);
         dest.writeString(_order_id);
         dest.writeFloat(_total_pay);
