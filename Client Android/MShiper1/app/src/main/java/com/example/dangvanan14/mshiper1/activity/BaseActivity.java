@@ -37,6 +37,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected static final String TAG_PROGRESS_DIALOG = "progressDialog";
     protected static final int REQUEST_PERMISSIONS = 12;
     protected static final String TAG = "My debug";
+    public static final int RESULT_SEARCH = 2;
     private SparseIntArray mErrorString;
     protected List<Order> orders;
 
@@ -65,7 +66,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             case R.id.action_search:
                 Intent intentSearch = new Intent(this, SearchActivity.class);
                 intentSearch.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
-                startActivity(intentSearch);
+                startActivityForResult(intentSearch, RESULT_SEARCH);
                 return true;
             case R.id.action_encode:
                 requestAppPermissions(new String[]{Manifest.permission.CAMERA,}, R.string

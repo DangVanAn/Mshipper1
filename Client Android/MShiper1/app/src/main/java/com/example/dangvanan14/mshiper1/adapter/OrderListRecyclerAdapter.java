@@ -1,5 +1,6 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
@@ -10,9 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
+import com.example.dangvanan14.mshiper1.activity.MainActivity;
+import com.example.dangvanan14.mshiper1.activity.SearchActivity;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -80,16 +85,26 @@ public class OrderListRecyclerAdapter extends RecyclerView.Adapter<OrderListRecy
                 ic = R.drawable.ic_cancel;
             }
             cardView.setOnClickListener(v -> {
-                Intent intent = new Intent(v.getContext(), DetailActivity.class);
-                intent.putExtra("ID", order.get_id());
+
                 Predicate<Order> predicate = input -> order.get_id().equals(input != null ? input.get_id() : "");
                 Collection<Order> result2 = Collections2.filter(orders, predicate);
                 List<Order> order1 = new ArrayList<>(result2);
+                if ("MainActivity".equals(v.getContext().getClass().getSimpleName())) {
+                    Intent intent = new Intent(v.getContext(), DetailActivity.class);
+                    intent.putExtra("ID", order.get_id());
+                    intent.putExtra("order", order1.get(0));
+                    intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+                    v.getContext().startActivity(intent);
+                }
 
-                intent.putExtra("order", order1.get(0));
-                intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+                if ("SearchActivity".equals(v.getContext().getClass().getSimpleName())) {
+                    Intent intent = new Intent();
+                    intent.putExtra("ID", order.get_id());
+                    intent.putExtra("order", order1.get(0));
+                    ((Activity)(v.getContext())).setResult(BaseActivity.RESULT_SEARCH, intent);
+                    ((Activity)(v.getContext())).finish();
+                }
 
-                v.getContext().startActivity(intent);
             });
             imageView.setImageResource(ic);
         }

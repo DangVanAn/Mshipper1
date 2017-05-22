@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -12,12 +13,15 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
+import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
+import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.response.RepPost;
@@ -32,12 +36,18 @@ import retrofit2.Call;
 public class LocationService extends Service {
     public static final String BROADCAST_ACTION = "SEND_GPS";
     private static final int TWO_MINUTES = 1000 * 60 * 2;
+    private static final long MIN_TIME_BW_UPDATES = 2000;
+    private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
     public LocationManager locationManager;
     public MyLocationListener listener;
     public Location previousBestLocation = null;
     Intent intent;
     int counter = 0;
     public LoadData<RepPost> loadData;
+    private Location locationNetwork;
+    private Location locationGPS;
+    private double latitude;
+    private double longitude;
 
     @Override
     public void onCreate() {
@@ -53,20 +63,13 @@ public class LocationService extends Service {
         wakeLock = mgr.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MyWakeLock");
         wakeLock.acquire();
 
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        listener = new MyLocationListener();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            super.onStartCommand(intent, flags, startId);
-        }
-
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 5000, 0, listener);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 0, listener);
+        startLocation(getApplicationContext());
         Thread thread = new Thread() {
             @Override
             public void run() {
                 int i = 0;
                 try {
-                    while(true) {
+                    while (true) {
                         sleep(1000);
                         Log.d("***************", "run: " + i++);
                     }
@@ -78,7 +81,85 @@ public class LocationService extends Service {
         thread.start();
         return super.onStartCommand(intent, flags, startId);
     }
+
     private PowerManager.WakeLock wakeLock;
+
+    public void startLocation(Context context) {
+
+        locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        listener = new MyLocationListener();
+
+        boolean gps_enabled = false;
+        boolean network_enabled = false;
+
+        try {
+            gps_enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+            network_enabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+            if (!gps_enabled && !network_enabled) {
+                AlertDialog.Builder dialog = new AlertDialog.Builder(getApplicationContext());
+                dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
+                dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                        Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(myIntent);
+                    }
+                });
+                dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> {
+                });
+                dialog.show();
+            } else {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+                locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, listener);
+
+                locationManager.requestLocationUpdates(
+                        LocationManager.GPS_PROVIDER,
+                        MIN_TIME_BW_UPDATES,
+                        MIN_DISTANCE_CHANGE_FOR_UPDATES, listener);
+
+                if (locationManager != null) {
+                    locationNetwork = locationManager
+                            .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                    if (locationNetwork != null) {
+                        latitude = locationNetwork.getLatitude();
+                        longitude = locationNetwork.getLongitude();
+                    }
+
+                    locationGPS = locationManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                    if (locationGPS != null) {
+                        latitude = locationGPS.getLatitude();
+                        longitude = locationGPS.getLongitude();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Log.d("TAG", "startLocation: " + ex.getMessage());
+        }
+    }
+
+    public double getLatitude() {
+        if (locationGPS != null) {
+            latitude = locationNetwork.getLatitude();
+        } else if (locationNetwork != null) {
+            latitude = locationGPS.getLatitude();
+        }
+        return latitude;
+    }
+
+    public double getLongitude() {
+        if (locationGPS != null) {
+            latitude = locationNetwork.getLongitude();
+        } else if (locationNetwork != null) {
+            latitude = locationGPS.getLongitude();
+        }
+        return longitude;
+    }
 
     protected boolean isBetterLocation(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
@@ -126,13 +207,17 @@ public class LocationService extends Service {
         return null;
     }
 
+    public void stopUsingGPS() {
+        if (locationManager != null) {
+            locationManager.removeUpdates(listener);
+        }
+    }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         Log.v("STOP_SERVICE", "DONE");
-        locationManager.removeUpdates(listener);
-        if(locationManager != null){
+        if (locationManager != null) {
             locationManager.removeUpdates(listener);
             wakeLock.release();
         }
@@ -154,8 +239,10 @@ public class LocationService extends Service {
                         return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
                     }
                 }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
-                sendBroadcast(intent);
+                ((App) getApplication()).setLat(loc.getLatitude());
+                ((App) getApplication()).setLon(loc.getLongitude());
 
+                sendBroadcast(intent);
             }
         }
 
@@ -201,5 +288,7 @@ public class LocationService extends Service {
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
         }
+
     }
 }
+

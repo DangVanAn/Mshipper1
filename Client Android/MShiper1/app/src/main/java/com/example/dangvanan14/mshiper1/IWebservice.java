@@ -30,7 +30,7 @@ public interface IWebservice {
     Call<RepPost> postLocation(@Body Location location);
 
     @POST("details/updateStatus")
-    Call<RepPost> updateStatus(@Query("_list_detail") String _list_detail, @Query("_payment_status") String _payment_status, @Query("_note") String _note);
+    Call<RepPost> updateStatus(@Query("_list_detail") String _list_detail);
 
     @GET("orders/getOrderByIdDeliveryMan")
     Call<List<Order>> getOrderByIdDeliveryMan(@Query("_id_delivery_man") String _id_delivery_man);

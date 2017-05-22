@@ -1,7 +1,9 @@
 package com.example.dangvanan14.mshiper1.activity;
 
 import android.app.Activity;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,6 +46,7 @@ import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -87,39 +90,6 @@ public class MainActivity extends BaseActivity
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
         loadModelAssign();
-
-        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        Log.d(TAG, "***************: " + gps_enabled);
-        Log.d(TAG, "***************: " + network_enabled);
-
-        if (!gps_enabled) {
-            // notify user
-//            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-//            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
-//            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-//                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                    startActivity(myIntent);
-//                }
-//            });
-//            dialog.setNegativeButton(getString(R.string.Cancel), (paramDialogInterface, paramInt) -> {
-//            });
-//            dialog.show();
-        }
     }
 
     private void loadModelAssign() {
@@ -164,27 +134,39 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-//                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-                Log.d(TAG, "onActivityResult: Cancelled");
-            } else {
-//                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                Log.d(TAG, "onActivityResult: Scanned");
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                intent.putExtra("ID", result.getContents());
-
-                Predicate<Order> predicate = input -> result.getContents().equals(input != null ? input.get_id() : "");
-                Collection<Order> result2 = Collections2.filter(orders, predicate);
-                List<Order> order = new ArrayList<>(result2);
-
-                intent.putExtra("order", order.get(0));
-                intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
-                startActivity(intent);
-            }
+        if (resultCode == RESULT_SEARCH) {
+            String id = data.getStringExtra("ID");
+            Order order = data.getParcelableExtra("order");
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("ID", id);
+            intent.putExtra("order", order);
+            intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+            startActivity(intent);
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Log.d(TAG, "onActivityResult: Cancelled");
+                } else {
+                    Log.d(TAG, "onActivityResult: Scanned");
+                    Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                    intent.putExtra("ID", result.getContents());
+                    orders = ((App) getApplication()).getOrders();
+                    if (orders == null) {
+                        Toast.makeText(this, "Không có đơn hàng nào để tìm kiếm!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Predicate<Order> predicate = input -> result.getContents().equals(input != null ? input.get_id() : "");
+                    Collection<Order> result2 = Collections2.filter(orders, predicate);
+                    List<Order> order = new ArrayList<>(result2);
+
+                    intent.putExtra("order", order.get(0));
+                    intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+                    startActivity(intent);
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 
@@ -225,11 +207,11 @@ public class MainActivity extends BaseActivity
         registerReceiver(receiver, filter);
 
 
-//        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
-//        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
-//        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        Calendar updateTime = Calendar.getInstance();
-//        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
+        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Calendar updateTime = Calendar.getInstance();
+        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
 
     }
 
@@ -239,22 +221,6 @@ public class MainActivity extends BaseActivity
         swipeRefreshLayout.setRefreshing(true);
     }
 
-    class MyLocationListener implements android.location.LocationListener {
-        public void onLocationChanged(final Location loc) {
-            Log.i("***************", "Location changed" + loc.getLatitude() + " " + loc.getLongitude());
-        }
-
-        public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onProviderEnabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-    }
 
     public static class AlarmReceiver extends WakefulBroadcastReceiver {
         @Override
@@ -287,6 +253,7 @@ public class MainActivity extends BaseActivity
         public void onResponse(Activity activity, List<Order> body, Logger LOG) {
             MainActivity ac = (MainActivity) activity;
             ac.orders = body;
+            ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
@@ -309,7 +276,6 @@ public class MainActivity extends BaseActivity
             MainActivity ac = (MainActivity) activity;
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
-//            ac.setupTabLayout();
             // show trống dữ liệu
         }
 

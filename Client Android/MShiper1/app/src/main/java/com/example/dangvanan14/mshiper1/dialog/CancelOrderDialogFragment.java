@@ -24,24 +24,28 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Detail;
+import com.example.dangvanan14.mshiper1.model.Location;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.example.dangvanan14.mshiper1.service.LocationService;
 import com.google.gson.Gson;
 
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class CancelOrderDialogFragment extends BaseDialogFragment implements View.OnClickListener {
-    private ArrayList<String> id_detail = new ArrayList<>();
+    private ArrayList<Detail> id_detail = new ArrayList<>();
     private EditText edtNote;
 
-    public static CancelOrderDialogFragment newInstance(ArrayList<String> id_detail) {
+    public static CancelOrderDialogFragment newInstance(ArrayList<Detail> id_detail) {
         CancelOrderDialogFragment dialogFragment = new CancelOrderDialogFragment();
         dialogFragment.setCancelable(false);
         Bundle args = new Bundle();
-        args.putStringArrayList("data", id_detail);
+        args.putParcelableArrayList("data", id_detail);
         dialogFragment.setArguments(args);
         return dialogFragment;
     }
@@ -59,7 +63,7 @@ public class CancelOrderDialogFragment extends BaseDialogFragment implements Vie
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
-        id_detail = args.getStringArrayList("data");
+        id_detail = args.getParcelableArrayList("data");
         super.onCreate(savedInstanceState);
     }
 
@@ -69,7 +73,7 @@ public class CancelOrderDialogFragment extends BaseDialogFragment implements Vie
         View v = inflater.inflate(R.layout.dialog_cancel_order, container, false);
 
         Button btnCancel = (Button) v.findViewById(R.id.btnCancel);
-        Button btnSubmit = (Button) v.findViewById(R.id.btnCash);
+        Button btnSubmit = (Button) v.findViewById(R.id.btnSubmit);
 
         btnCancel.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
@@ -118,37 +122,50 @@ public class CancelOrderDialogFragment extends BaseDialogFragment implements Vie
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 dismiss();
                 break;
-            case R.id.btnCash:
-                updateStatusDetail("");
+            case R.id.btnSubmit:
+                updateStatusDetail();
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 break;
         }
     }
 
-    private void updateStatusDetail(String _payment_status) {
+    private void updateStatusDetail() {
         if (!BaseActivity.isNetworkConnected(getContext())) {
             Toast.makeText(getContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
             return;
         }
         showProgressDialog();
+        String _note = edtNote.getText().toString();
         final LoadData<RepPost> loadData = new LoadData<>();
         List<Detail> senddetail = new ArrayList<>();
-        for ( int i = 0; i < id_detail.size(); i++ ){
+
+        double lat = ((App) getActivity().getApplication()).getLat();
+        double lon = ((App) getActivity().getApplication()).getLon();
+        if (lat == 0 && lon == 0) {
+            Toast.makeText(getContext(), "Vui lòng kiểm tra lại tín hiệu GPS hoặc Network", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Calendar c = Calendar.getInstance();
+
+        for (int i = 0; i < id_detail.size(); i++) {
             Detail detail = new Detail();
-            detail.set_id_package(id_detail.get(i));
+            detail.set_id_package(id_detail.get(i).get_id_package());
             detail.set_status("Hủy");
+            detail.set_note(_note);
+            detail.set_pay_type("");
+            detail.set_latitude_update(lat + "");
+            detail.set_longitude_update(lon + "");
+            detail.set_delivery_daytime(c.getTimeInMillis());
             senddetail.add(detail);
         }
-        String _note = edtNote.getText().toString();
-
         Gson gson = new Gson();
-        loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail), _payment_status, _note), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
+        loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail)), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
     }
 
     private class CallBackImpl implements ICallbackApi<RepPost> {
         @Override
         public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
-            Toast.makeText(getContext(), R.string.repUpdateSuccess , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.repUpdateSuccess, Toast.LENGTH_SHORT).show();
             dismiss();
             dismissProgressDialog();
         }

@@ -43,7 +43,6 @@ public class InfoDetailFragment extends BaseFragment {
         TextView dateCreate = (TextView)v.findViewById(R.id.dateCreate);
         TextView address = (TextView)v.findViewById(R.id.address);
         TextView orderStatus = (TextView)v.findViewById(R.id.orderStatus);
-        TextView paymentStatus = (TextView)v.findViewById(R.id.paymentStatus);
         TextView note = (TextView)v.findViewById(R.id.note);
 
         idDonHang.setText(order.get_id());
@@ -52,7 +51,6 @@ public class InfoDetailFragment extends BaseFragment {
         dateCreate.setText(df2.format(date));
         address.setText(order.get_address());
         orderStatus.setText(order.get_order_status());
-        paymentStatus.setText(order.get_payment_status());
         note.setText(order.get_note());
 
         return v;

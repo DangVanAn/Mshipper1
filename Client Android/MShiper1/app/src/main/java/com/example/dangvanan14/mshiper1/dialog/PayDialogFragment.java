@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,26 +16,24 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Detail;
-import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.google.gson.Gson;
 
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class PayDialogFragment extends BaseDialogFragment implements View.OnClickListener {
@@ -58,6 +55,7 @@ public class PayDialogFragment extends BaseDialogFragment implements View.OnClic
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.white);
+
         return dialog;
     }
 
@@ -74,7 +72,7 @@ public class PayDialogFragment extends BaseDialogFragment implements View.OnClic
         View v = inflater.inflate(R.layout.dialog_pay_order, container, false);
 
         Button btnCancel = (Button) v.findViewById(R.id.btnCancel);
-        ImageView btnCash = (ImageView) v.findViewById(R.id.btnCash);
+        ImageView btnCash = (ImageView) v.findViewById(R.id.btnSubmit);
         ImageView btnCard = (ImageView) v.findViewById(R.id.btnCard);
 
         btnCancel.setOnClickListener(this);
@@ -118,13 +116,13 @@ public class PayDialogFragment extends BaseDialogFragment implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         switch (v.getId()) {
             case R.id.btnCancel:
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 dismiss();
                 break;
-            case R.id.btnCash:
+            case R.id.btnSubmit:
                 updateStatusDetail("Cash");
                 imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 break;
@@ -134,30 +132,46 @@ public class PayDialogFragment extends BaseDialogFragment implements View.OnClic
                 break;
         }
     }
+
     private void updateStatusDetail(String _payment_status) {
         if (!BaseActivity.isNetworkConnected(getContext())) {
             Toast.makeText(getContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
             return;
         }
         showProgressDialog();
+
+        double lat = ((App) getActivity().getApplication()).getLat();
+        double lon = ((App) getActivity().getApplication()).getLon();
+        if (lat == 0 && lon == 0) {
+            Toast.makeText(getContext(), "Vui lòng kiểm tra lại tín hiệu GPS hoặc Network", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Toast.makeText(getContext(), "latlon : " + lat + " " + lon, Toast.LENGTH_SHORT).show();
+
+        Calendar c = Calendar.getInstance();
+        String _note = edtNote.getText().toString();
         final LoadData<RepPost> loadData = new LoadData<>();
         List<Detail> senddetail = new ArrayList<>();
-        for ( int i = 0; i < id_detail.size(); i++ ){
+        for (int i = 0; i < id_detail.size(); i++) {
             Detail detail = new Detail();
             detail.set_id_package(id_detail.get(i));
             detail.set_status("Hoàn thành");
+            detail.set_note(_note);
             detail.set_pay_type(_payment_status);
+            detail.set_latitude_update(lat + "");
+            detail.set_longitude_update(lon + "");
+            detail.set_delivery_daytime(c.getTimeInMillis());
             senddetail.add(detail);
         }
-        String _note = edtNote.getText().toString();
         Gson gson = new Gson();
-        loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail), _payment_status, _note), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
+        loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail)), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
     }
 
     private class CallBackImpl implements ICallbackApi<RepPost> {
         @Override
         public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
-            Toast.makeText(getContext(), R.string.repUpdateSuccess , Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), R.string.repUpdateSuccess, Toast.LENGTH_SHORT).show();
+
             dismiss();
             dismissProgressDialog();
         }
@@ -176,7 +190,7 @@ public class PayDialogFragment extends BaseDialogFragment implements View.OnClic
         public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
             Log.e("TAG", "onFailure: Load data failed");
             Toast.makeText(getContext(), R.string.repUpdateFailed, Toast.LENGTH_SHORT).show();
-            CancelOrderDialogFragment ac = (CancelOrderDialogFragment) fragment;
+            PayDialogFragment ac = (PayDialogFragment) fragment;
             ac.dismissProgressDialog();
         }
 

@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -40,7 +41,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
 
-        orders = getIntent().getParcelableArrayListExtra("orders");
+        orders = ((App)getApplication()).getOrders();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -86,20 +87,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Log.d(TAG, "onActivityResult: Cancelled");
-            } else {
-                Log.d(TAG, "onActivityResult: Scanned");
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -113,7 +100,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         }
         mAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
-
         return true;
     }
 
@@ -128,4 +114,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         }
         return resultSearch;
     }
+
+
 }

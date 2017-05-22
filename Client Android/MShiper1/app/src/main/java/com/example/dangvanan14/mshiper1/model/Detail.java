@@ -16,11 +16,12 @@ public class Detail implements Parcelable {
     private String _signature = "";
     private String _status = "";
     private String _photo = "";
+    private String _note = "";
 
     public Detail() {
     }
 
-    public Detail(String _id_package, String _order_id, float _total_pay, String _pay_type, float _weight, String _package_type, long _delivery_daytime, String _latitude_update, String _longitude_update, String _signature, String _status, String _photo) {
+    public Detail(String _id_package, String _order_id, float _total_pay, String _pay_type, float _weight, String _package_type, long _delivery_daytime, String _latitude_update, String _longitude_update, String _signature, String _status, String _photo, String _note) {
         this._id_package = _id_package;
         this._order_id = _order_id;
         this._total_pay = _total_pay;
@@ -33,7 +34,58 @@ public class Detail implements Parcelable {
         this._signature = _signature;
         this._status = _status;
         this._photo = _photo;
+        this._note = _note;
     }
+
+    protected Detail(Parcel in) {
+        _id_package = in.readString();
+        _order_id = in.readString();
+        _total_pay = in.readFloat();
+        _pay_type = in.readString();
+        _weight = in.readFloat();
+        _package_type = in.readString();
+        _delivery_daytime = in.readLong();
+        _latitude_update = in.readString();
+        _longitude_update = in.readString();
+        _signature = in.readString();
+        _status = in.readString();
+        _photo = in.readString();
+        _note = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id_package);
+        dest.writeString(_order_id);
+        dest.writeFloat(_total_pay);
+        dest.writeString(_pay_type);
+        dest.writeFloat(_weight);
+        dest.writeString(_package_type);
+        dest.writeLong(_delivery_daytime);
+        dest.writeString(_latitude_update);
+        dest.writeString(_longitude_update);
+        dest.writeString(_signature);
+        dest.writeString(_status);
+        dest.writeString(_photo);
+        dest.writeString(_note);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Detail> CREATOR = new Creator<Detail>() {
+        @Override
+        public Detail createFromParcel(Parcel in) {
+            return new Detail(in);
+        }
+
+        @Override
+        public Detail[] newArray(int size) {
+            return new Detail[size];
+        }
+    };
 
     public String get_id_package() {
         return _id_package;
@@ -131,51 +183,11 @@ public class Detail implements Parcelable {
         this._photo = _photo;
     }
 
-    protected Detail(Parcel in) {
-        _id_package = in.readString();
-        _order_id = in.readString();
-        _total_pay = in.readFloat();
-        _pay_type = in.readString();
-        _weight = in.readFloat();
-        _package_type = in.readString();
-        _delivery_daytime = in.readLong();
-        _latitude_update = in.readString();
-        _longitude_update = in.readString();
-        _signature = in.readString();
-        _status = in.readString();
-        _photo = in.readString();
+    public String get_note() {
+        return _note;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id_package);
-        dest.writeString(_order_id);
-        dest.writeFloat(_total_pay);
-        dest.writeString(_pay_type);
-        dest.writeFloat(_weight);
-        dest.writeString(_package_type);
-        dest.writeLong(_delivery_daytime);
-        dest.writeString(_latitude_update);
-        dest.writeString(_longitude_update);
-        dest.writeString(_signature);
-        dest.writeString(_status);
-        dest.writeString(_photo);
+    public void set_note(String _note) {
+        this._note = _note;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Detail> CREATOR = new Creator<Detail>() {
-        @Override
-        public Detail createFromParcel(Parcel in) {
-            return new Detail(in);
-        }
-
-        @Override
-        public Detail[] newArray(int size) {
-            return new Detail[size];
-        }
-    };
 }

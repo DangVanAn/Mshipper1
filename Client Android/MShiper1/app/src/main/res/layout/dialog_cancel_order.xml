@@ -43,7 +43,7 @@
             android:text="cancel" />
 
         <Button
-            android:id="@+id/btnCash"
+            android:id="@+id/btnSubmit"
             android:background="#d43f3a"
             android:layout_width="0dp"
             android:layout_height="match_parent"

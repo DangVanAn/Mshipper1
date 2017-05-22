@@ -26,9 +26,6 @@ var OrdersSchema = mongoose.Schema({
     _order_status  : {
         type: String,
     },
-     _payment_status  : {
-        type: String,
-    },
      _note : {  
         type: String,
     }
