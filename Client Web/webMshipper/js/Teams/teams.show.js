@@ -1,7 +1,7 @@
 angular.module('mShipperApp')
     .component('teamsShow', {
         templateUrl: './Teams/Show.html',
-        controller: function DsDonHangController($rootScope, $scope, $http, modalOrderShow, NgMap, $filter, $location, $timeout) {
+        controller: function DsDonHangController($rootScope, $scope, $http, modalTeamShowAccount, NgMap, $filter, $location, $timeout) {
             $(document).ready(function () {
                 init();
             });
@@ -38,5 +38,17 @@ angular.module('mShipperApp')
                     });
             }
 
+            $scope.loadAccount = function (x) {
+                modalTeamShowAccount.show(x, function (selected) {
+                    if (selected) {
+                        console.log("Nhan duoc::" + selected.toString());
+                        x.session = selected.toString();
+
+                    }
+                    else {
+                        console.log("không có");
+                    }
+                });
+            }
         }
     });

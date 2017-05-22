@@ -15,6 +15,36 @@ router.get('/getall', function (req, res) {
     });
 });
 
+router.post('/remove', function (req, res) {
+    console.log(JSON.stringify(req.body));
+
+    removeTeam();
+    function removeTeam() {
+        TeamList.findOne({_team_id: req.body._team_id}).select().exec(function (err, team) {
+            if (err)
+            {
+
+            }
+            else {
+                //delete all
+                if(team != null)
+                {
+                    team.remove(function(err) {
+                        if (err)
+                            return console.error(err);
+                        else {
+                            removeTeam();
+                            console.log('Team successfully remove!');
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    res.status(200).send('Team list removed!');
+});
+
 router.post('/adds', function (req, res) {
     var areas = JSON.parse(req.body._areas);
     console.log(areas);
@@ -48,18 +78,33 @@ router.post('/adds', function (req, res) {
     }
 
     function createTeam() {
-        for (var i = 0; i < areas.length; i++) {
-            console.log(i);
+        var areasLength = areas.length;
+        if(areasLength != 0)
+        {
+            for (var i = 0; i < areas.length; i++) {
+                console.log(i);
+                var newTeam = {
+                    _team_id: req.body._team_id,
+                    _name: req.body._name,
+                    _area: areas[i].area,
+                    _status: req.body._status,
+                    _description: req.body._description
+                };
+                console.log(newTeam);
+                var Team = new TeamList(newTeam);
+                // save
+                Team.save();
+            }
+        }
+        else
+        {
             var newTeam = {
                 _team_id: req.body._team_id,
                 _name: req.body._name,
-                _area: areas[i].area,
                 _status: req.body._status,
                 _description: req.body._description
             };
-            console.log(newTeam);
             var Team = new TeamList(newTeam);
-            // save
             Team.save();
         }
         res.status(200).send('Team created!');

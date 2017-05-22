@@ -12,7 +12,6 @@ var teamLeadSchema = mongoose.Schema({
     },
     _manager : {
         type: String,
-        required: true
     },
 });
 

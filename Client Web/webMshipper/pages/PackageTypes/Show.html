@@ -2,7 +2,7 @@
     <div id="page-wrapper">
         <div class="row">
             <div class="col-lg-12">
-                <h1 class="page-header">Danh sách đội</h1>
+                <h1 class="page-header">Danh sách loại gói hàng</h1>
             </div>
             <!-- /.col-lg-12 -->
         </div>
@@ -17,7 +17,7 @@
 
                     <div >
                         <div class="col-lg-12">
-                            <button ng-click="addTeam()" type="button" class="btn btn-primary">Thêm đội</button>
+                            <button ng-click="add()" type="button" class="btn btn-primary">Thêm loại gói hàng</button>
                         </div>
                     </div>
                     <br>
@@ -26,25 +26,18 @@
                         <table width="100%" class="table table-bordered table-hover">
                             <thead>
                             <tr>
+                                <th>STT</th>
                                 <th>Id</th>
-                                <th>Tên</th>
-                                <th>Khu vực quản lý</th>
-                                <th>Trạng thái</th>
+                                <th>Tên loại gói hàng</th>
                                 <th>Mô tả</th>
-                                <th>Thành viên</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <tr class="pointer" ng-repeat="x in teams">
-                                <td><a href="#/teamscreate/{{x._team_id}}">{{x._team_id}}</a></td>
+                            <tr  ng-repeat="x in packagetypes">
+                                <td>{{x.stt}}</td>
+                                <td><a href="#/packagetypescreate/{{x._id}}">{{x._id}}</a></td>
                                 <td>{{x._name}}</td>
-                                <td>{{x._area}}</td>
-                                <td>{{x._status}}</td>
                                 <td>{{x._description}}</td>
-                                <td align="center">
-                                    <button ng-click="loadAccount(x)" type="button" class="btn btn-info btn-circle"><i
-                                            class="fa fa-plus-circle"></i></button>
-                                </td>
                             </tr>
                             </tbody>
                         </table>

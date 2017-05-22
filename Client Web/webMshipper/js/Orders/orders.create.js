@@ -164,7 +164,7 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
             google.maps.event.trigger(map, "resize");
         });
 
-        $scope.center = [51.5285578, -0.242023];
+        $scope.center = [10.7680338,106.414162];
 
         $scope.markers = [];
 
@@ -339,7 +339,7 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
             return date;
         };
 
-        $scope.loadMaps = function (x) {
+        $scope.loadDetails = function (x) {
             console.log(x._latitude);
             console.log(x._longitude);
 
