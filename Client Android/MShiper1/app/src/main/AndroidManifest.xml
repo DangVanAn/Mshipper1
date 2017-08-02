@@ -15,6 +15,12 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+
+    <permission
+        android:name="com.example.dangvanan14.mshiper1.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+    <uses-permission android:name="com.example.dangvanan14.mshiper1.permission.C2D_MESSAGE" />
 
     <application
         android:allowBackup="true"
@@ -33,12 +39,19 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/FullScreen">
+        </activity>
+
+        <activity
+            android:name=".NotificationTest"
+            android:label="@string/app_name"
+            android:theme="@style/FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
             android:screenOrientation="fullUser"
@@ -66,5 +79,36 @@
             android:theme="@style/FullScreen"/>
         <service android:name=".service.LocationService"/>
         <receiver android:name=".MainActivity$AlarmReceiver"/>
+
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.example.gcm" />
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name="com.example.dangvanan14.mshiper1.notification.GCMService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.example.dangvanan14.mshiper1.notification.GCMInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.example.dangvanan14.mshiper1.notification.RegistrationIntentService"
+            android:exported="false">
+        </service>
     </application>
 </manifest>

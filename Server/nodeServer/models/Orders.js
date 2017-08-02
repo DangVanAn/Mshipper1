@@ -34,10 +34,6 @@ var OrdersSchema = mongoose.Schema({
         type: String,
         required: true
     },
-     _payment_status  : {
-        type: String,
-        required: true
-    },
      _note : {  
         type: String,
     }
