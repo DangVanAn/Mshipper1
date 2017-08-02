@@ -1,10 +1,14 @@
 package com.example.dangvanan14.mshiper1.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -21,24 +25,33 @@ import android.view.View;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.dialog.ProgressDialogFragment;
+import com.example.dangvanan14.mshiper1.model.Order;
 import com.google.zxing.integration.android.IntentIntegrator;
 
-import okhttp3.logging.HttpLoggingInterceptor;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by Sherman on 3/6/2017.
- */
+import okhttp3.logging.HttpLoggingInterceptor;
 
 public abstract class BaseActivity extends AppCompatActivity {
     protected static final String TAG_PROGRESS_DIALOG = "progressDialog";
     protected static final int REQUEST_PERMISSIONS = 12;
     protected static final String TAG = "My debug";
+    public static final int RESULT_SEARCH = 2;
     private SparseIntArray mErrorString;
+    protected List<Order> orders;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mErrorString = new SparseIntArray();
+    }
+
+     public static boolean isNetworkConnected(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     @Override
@@ -52,7 +65,8 @@ public abstract class BaseActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_search:
                 Intent intentSearch = new Intent(this, SearchActivity.class);
-                startActivity(intentSearch);
+                intentSearch.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+                startActivityForResult(intentSearch, RESULT_SEARCH);
                 return true;
             case R.id.action_encode:
                 requestAppPermissions(new String[]{Manifest.permission.CAMERA,}, R.string
@@ -96,6 +110,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
         ft.commitAllowingStateLoss();
     }
+
     public static HttpLoggingInterceptor newDefaultLogging() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         if (App.isInDebugMode()) {

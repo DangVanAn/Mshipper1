@@ -1,5 +1,6 @@
 package com.example.dangvanan14.mshiper1;
 
+import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.Location;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.response.RepPost;
@@ -28,6 +29,12 @@ public interface IWebservice {
     @POST("locations/postLocation")
     Call<RepPost> postLocation(@Body Location location);
 
+    @POST("details/updateStatus")
+    Call<RepPost> updateStatus(@Query("_list_detail") String _list_detail);
+
     @GET("orders/getOrderByIdDeliveryMan")
     Call<List<Order>> getOrderByIdDeliveryMan(@Query("_id_delivery_man") String _id_delivery_man);
+
+    @POST("details/getbyidorder")
+    Call<List<Detail>> getDetailByIdOrder(@Body Order _id_order);
 }

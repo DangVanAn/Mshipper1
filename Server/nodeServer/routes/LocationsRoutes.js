@@ -6,8 +6,10 @@ router.get('/getall', function (req, res) {
 
 // get all
     Locations.find({}, function (err, locations) {
-        if (err)
+        if (err) {
+            res.status(200).send(repHttp(false, err));
             return console.error(err);
+        }
         else {
             res.status(200).send(locations);
             console.log('Find all success!!!');
@@ -20,18 +22,20 @@ router.post('/postLocation', function (req, res) {
     try {
         var newLocation = new Locations(req.body);
         newLocation.save(function (err) {
-            if (err)
+            if (err) {
+                res.status(200).send(repHttp(false, err));
                 return console.error(err);
+            }
             else {
-                res.status(200).send({rep: "Updated location of use"});
+                res.status(200).send(repHttp(true, "Updated location of use"));
                 console.log('Location created!');
             }
         });
     }
-    catch(err) {
+    catch (err) {
+        res.status(200).send(repHttp(false, err.message));
         console.log(err.message);
     }
-
 });
 
 module.exports = router;

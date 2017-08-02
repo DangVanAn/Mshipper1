@@ -1,4 +1,4 @@
-package com.example.dangvanan14.mshiper1;
+package com.example.dangvanan14.mshiper1.activity;
 
 import android.app.Activity;
 import android.app.AlarmManager;
@@ -9,20 +9,19 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.PowerManager;
+import android.os.Parcelable;
 import android.provider.Settings;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.support.v4.view.ViewPager;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -30,15 +29,16 @@ import android.view.MenuItem;
 import android.widget.Toast;
 import android.Manifest;
 
-import com.example.dangvanan14.mshiper1.activity.BaseActivity;
-import com.example.dangvanan14.mshiper1.activity.DetailActivity;
+import com.example.dangvanan14.mshiper1.LoadData;
+import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
-import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.example.dangvanan14.mshiper1.service.LocationService;
-import com.google.android.gms.location.LocationListener;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Collections2;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
@@ -47,15 +47,18 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 
+
 public class MainActivity extends BaseActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
-    List<Order> orders = new ArrayList<>();
+    private SwipeRefreshLayout swipeRefreshLayout;
+//    List<Order> orders = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +70,14 @@ public class MainActivity extends BaseActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
-        loadModelAssign();
         MainActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.INTERNET,
                         Manifest.permission.WAKE_LOCK,
@@ -84,51 +89,17 @@ public class MainActivity extends BaseActivity
                         Manifest.permission.ACCESS_NETWORK_STATE}, R.string
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
-        LocationManager lm = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        Log.d(TAG, "***************: " + gps_enabled);
-        Log.d(TAG, "***************: " + network_enabled);
-
-        if (!gps_enabled) {
-            // notify user
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                    //get gps
-                }
-            });
-            dialog.setNegativeButton(getString(R.string.Cancel), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-
-                }
-            });
-            dialog.show();
-        }
+        loadModelAssign();
     }
 
     private void loadModelAssign() {
-        final LoadData<List<Order>> loadData = new LoadData<>();
+        if (!isNetworkConnected(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showProgressDialog();
 
+        final LoadData<List<Order>> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<List<Order>>>() {
             @Override
             public Call<List<Order>> call() throws Exception {
@@ -163,18 +134,39 @@ public class MainActivity extends BaseActivity
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
-                intent.putExtra("ID", result.getContents());
-                startActivity(intent);
-            }
+        if (resultCode == RESULT_SEARCH) {
+            String id = data.getStringExtra("ID");
+            Order order = data.getParcelableExtra("order");
+            Intent intent = new Intent(this, DetailActivity.class);
+            intent.putExtra("ID", id);
+            intent.putExtra("order", order);
+            intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+            startActivity(intent);
         } else {
-            super.onActivityResult(requestCode, resultCode, data);
+            IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+            if (result != null) {
+                if (result.getContents() == null) {
+                    Log.d(TAG, "onActivityResult: Cancelled");
+                } else {
+                    Log.d(TAG, "onActivityResult: Scanned");
+                    Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                    intent.putExtra("ID", result.getContents());
+                    orders = ((App) getApplication()).getOrders();
+                    if (orders == null) {
+                        Toast.makeText(this, "Không có đơn hàng nào để tìm kiếm!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Predicate<Order> predicate = input -> result.getContents().equals(input != null ? input.get_id() : "");
+                    Collection<Order> result2 = Collections2.filter(orders, predicate);
+                    List<Order> order = new ArrayList<>(result2);
+
+                    intent.putExtra("order", order.get(0));
+                    intent.putParcelableArrayListExtra("orders", (ArrayList<? extends Parcelable>) orders);
+                    startActivity(intent);
+                }
+            } else {
+                super.onActivityResult(requestCode, resultCode, data);
+            }
         }
     }
 
@@ -214,30 +206,21 @@ public class MainActivity extends BaseActivity
         };
         registerReceiver(receiver, filter);
 
-//        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
-//        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
-//        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-//        Calendar updateTime = Calendar.getInstance();
-//        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
+
+        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
+        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        Calendar updateTime = Calendar.getInstance();
+        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
 
     }
 
-    class MyLocationListener implements android.location.LocationListener {
-        public void onLocationChanged(final Location loc) {
-            Log.i("***************", "Location changed" + loc.getLatitude() + " " + loc.getLongitude());
-        }
-
-        public void onProviderDisabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Disabled", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onProviderEnabled(String provider) {
-            Toast.makeText(getApplicationContext(), "Gps Enabled", Toast.LENGTH_SHORT).show();
-        }
-
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
+    @Override
+    public void onRefresh() {
+        loadModelAssign();
+        swipeRefreshLayout.setRefreshing(true);
     }
+
 
     public static class AlarmReceiver extends WakefulBroadcastReceiver {
         @Override
@@ -245,7 +228,6 @@ public class MainActivity extends BaseActivity
             Intent i = new Intent(context, LocationService.class);
             context.startService(i);
         }
-
     }
 
     @Override
@@ -271,13 +253,30 @@ public class MainActivity extends BaseActivity
         public void onResponse(Activity activity, List<Order> body, Logger LOG) {
             MainActivity ac = (MainActivity) activity;
             ac.orders = body;
+            ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
             ac.setupTabLayout();
         }
 
         @Override
         public void onResponse(List<Order> body, Logger log) {
 
+        }
+
+        @Override
+        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
+
+        }
+
+        @Override
+        public void onFailure(Activity activity, Throwable t, Logger LOG) {
+            Log.e(TAG, "onFailure: Load data failed");
+            MainActivity ac = (MainActivity) activity;
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
+            // show trống dữ liệu
         }
 
         @Override

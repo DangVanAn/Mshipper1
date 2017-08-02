@@ -19,6 +19,7 @@ import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
+import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
 
 import java.text.SimpleDateFormat;
@@ -27,10 +28,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-/**
- * Created by Sherman on 2/23/2017.
- */
 
 public class OrderListFragment extends BaseFragment implements View.OnClickListener {
     private TextView txtNgay;
@@ -54,21 +51,19 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
         View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
         txtNgay = (TextView) v.findViewById(R.id.btnDate);
 
-        txtNgay.setOnClickListener(this);
-
         cal = Calendar.getInstance();
-        SimpleDateFormat dft = null;
-        dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        SimpleDateFormat dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         String strDate = dft.format(cal.getTime());
         txtNgay.setText(strDate);
-
+        txtNgay.setOnClickListener(this);
         setupTabLayout(v);
         return v;
     }
 
     public void setupTabLayout(View v) {
         OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), orders);
-        ViewPager viewPager = (ViewPager) v.findViewById(R.id.orderViewPager);
+        CustomViewPager viewPager = (CustomViewPager) v.findViewById(R.id.orderViewPager);
+        viewPager.setPagingEnabled(false);
         viewPager.setAdapter(mAdapter);
 
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.orderTabLayout);

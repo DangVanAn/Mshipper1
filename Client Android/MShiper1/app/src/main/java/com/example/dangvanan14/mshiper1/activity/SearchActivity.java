@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -23,14 +24,10 @@ import com.google.zxing.integration.android.IntentResult;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Sherman on 3/6/2017.
- */
-
 public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "SearchActivity";
     private SearchView searchView;
-    private List<Order> listOfOrder = new ArrayList<>();
+    private List<Order> orders = new ArrayList<>();
     private List<Order> resultSearch = new ArrayList<>();
 
     private OrderListRecyclerAdapter mAdapter;
@@ -43,34 +40,15 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        orders = ((App)getApplication()).getOrders();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        getSupportActionBar().setTitle("Tìm kiếm");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
-
-//        listOfOrder.add(new Order("13", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("3", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("4", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("5", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("6", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("2", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("1", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("123", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("7", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("12", "19:00", "19/24 binh thơi", 1));
-//        listOfOrder.add(new Order("11", "19:00", "19/24 binh thơi", 1));
+        getSupportActionBar().setTitle(R.string.textSearch);
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -109,20 +87,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
-        if (result != null) {
-            if (result.getContents() == null) {
-                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(this, "Scanned: " + result.getContents(), Toast.LENGTH_LONG).show();
-            }
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -132,11 +96,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         Log.d(TAG, "onQueryTextChange: " + newText);
         resultSearch.clear();
         if (!newText.equals("")) {
-            filter(listOfOrder, newText, resultSearch);
+            filter(orders, newText, resultSearch);
         }
         mAdapter.notifyDataSetChanged();
         recyclerView.scrollToPosition(0);
-
         return true;
     }
 
@@ -144,11 +107,13 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         final String lowerCaseQuery = query.toLowerCase();
 
         for (Order model : models) {
-//            final String text = model.getId().toLowerCase();
-//            if (text.contains(lowerCaseQuery)) {
-//                resultSearch.add(model);
-//            }
+            final String text = model.get_id().toLowerCase();
+            if (text.contains(lowerCaseQuery)) {
+                resultSearch.add(model);
+            }
         }
         return resultSearch;
     }
+
+
 }

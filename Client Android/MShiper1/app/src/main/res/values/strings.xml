@@ -4,10 +4,20 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="runtime_permissions_txt">\"Enable Permissions from settings\"</string>
+    <string name="runtime_permissions_txt">Enable Permissions from settings</string>
     <string name="open_location_settings">abc</string>
     <string name="gps_network_not_enabled">abc</string>
     <string name="Cancel">cancel</string>
+    <string name="statusCompleteOrder">Hoàn thành</string>
+    <string name="statusCancelOrder">Hủy</string>
+    <string name="statusShippingOrder">Đang vận chuyển</string>
+    <string name="ShippingDetail">Đang vận chuyển</string>
+    <string name="completeDetail">Hoàn thành</string>
+    <string name="cancelDetail">Hủy</string>
+    <string name="textSearch">Tìm kiếm</string>
+    <string name="statusCancelDetail">Hủy</string>
+    <string name="repUpdateFailed">Cập nhật không thành công</string>
+    <string name="repUpdateSuccess">Cập nhật thành công</string>
+    <string name="denomination">VNĐ</string>
 
 </resources>

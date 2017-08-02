@@ -42,6 +42,9 @@ var detailsSchema = mongoose.Schema({
     _photo: {
         type: String,
     },
+    _note : {
+        type: String,
+    }
 });
 
 

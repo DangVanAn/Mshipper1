@@ -30,7 +30,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
             case 0:
                 return OrderListFragment.newInstance(orders);
             case 1:
-                return Fragment_Maps.newInstance();
+                return Fragment_Maps.newInstance(orders);
         }
         return null;
     }

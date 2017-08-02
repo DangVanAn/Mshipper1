@@ -5,23 +5,23 @@ import android.os.Parcelable;
 
 
 public class RepPost implements Parcelable {
-    private String rep;
+    private String success;
+    private String message;
+
+    public RepPost(String success, String message) {
+        this.success = success;
+        this.message = message;
+    }
 
     protected RepPost(Parcel in) {
-        rep = in.readString();
-    }
-
-    public String getRep() {
-        return rep;
-    }
-
-    public void setRep(String rep) {
-        this.rep = rep;
+        success = in.readString();
+        message = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(rep);
+        dest.writeString(success);
+        dest.writeString(message);
     }
 
     @Override
@@ -29,7 +29,7 @@ public class RepPost implements Parcelable {
         return 0;
     }
 
-    public static final Parcelable.Creator<RepPost> CREATOR = new Parcelable.Creator<RepPost>() {
+    public static final Creator<RepPost> CREATOR = new Creator<RepPost>() {
         @Override
         public RepPost createFromParcel(Parcel in) {
             return new RepPost(in);
@@ -40,4 +40,20 @@ public class RepPost implements Parcelable {
             return new RepPost[size];
         }
     };
+
+    public String getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(String success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
 }
