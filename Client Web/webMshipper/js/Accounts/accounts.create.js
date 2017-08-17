@@ -6,30 +6,16 @@ angular.module('mShipperApp')
             init();
         });
 
-        $scope.gender = [
-            "Nam",
-            "Nữ",
-            "Chưa xác định"
-        ];
-        $scope.selectGender = $scope.gender[0];
+        $scope.gender = $rootScope.gender;
 
-        $scope.role = [
-            "Quản lý",
-            "Đội trưởng",
-            "Nhân viên"
-        ];
-        $scope.selectRole = $scope.role[2];
+        $scope.selectedGender = {};
+        $scope.selectedGender.selected = $scope.gender[0];
 
-        $scope.team = [
-            "Khu vực 1",
-            "Khu vực 2",
-            "Khu vực 3",
-            "Khu vực 4",
-            "Khu vực 5",
-            "Khu vực 6",
-            "Khu vực 7",
-        ];
-        $scope.selectTeam = $scope.team[0];
+        $scope.role = $rootScope.listRole;
+
+        $scope.selectedRole = {};
+        $scope.selectedRole.selected = $scope.role[0];
+
 
         $("#birthday").datepicker({
             defaultDate: "+1w",
@@ -70,10 +56,9 @@ angular.module('mShipperApp')
                     _identify_card: $scope.identityNumber,
                     _address: $scope.address,
                     _phone: $scope.phoneNumber,
-                    _gender: $scope.selectGender,
-                    _permission_id: $scope.selectRole,
-                    _team: $scope.selectTeam,
-                }
+                    _gender: $scope.selectedGender.selected.id,
+                    _permission_id: $scope.selectedRole.selected.id
+                };
 
                 $url = $rootScope.api_url.postAccountCreate;
 

@@ -1,4 +1,5 @@
-angular.module('mShipperApp').component('danhSachDonHang', {
+angular.module('mShipperApp')
+    .component('orderShow', {
     templateUrl: './Orders/Show.html',
     controller: function DsDonHangController($scope, $http, modalOrderShow, NgMap, $filter, $location, $timeout) {
         $(document).ready(function () {
@@ -14,7 +15,7 @@ angular.module('mShipperApp').component('danhSachDonHang', {
         $scope.markers =[];
 
         function addMarker(event) {
-            $scope.markers.push({pos:[event._latitude, event._longitude]});
+            $scope.markers.push({pos:[event._latitude, event._longitude], id : event._id, label : event._address});
         }
 
         $scope.status = [
@@ -31,32 +32,7 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             filterAll();
         }
 
-        //Get latLong from address
-        $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
-            '150 Nguyễn Thị Nhỏ, Phường 15, Quận 11, TP.HCM' + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
-            .then(function(coord_results){
-                    $scope.queryResults = coord_results.data.results;
-                    $scope.geodata = $scope.queryResults[0].geometry;
-
-                    console.log("geo : " + JSON.stringify($scope.queryResults[0].geometry.location));
-                },
-                function error(_error){
-                    $scope.queryError = _error;
-                });
-
-        $scope.example6data = [
-            {id: 1, label: 'Khu vực 1'},
-            {id: 2, label: 'Khu vực 2'},
-            {id: 3, label: 'Khu vực 3'},
-            {id: 4, label: 'Khu vực 4'},
-            {id: 5, label: 'Khu vực 5'},
-            {id: 6, label: 'Khu vực 6'},
-            {id: 7, label: 'Khu vực 7'},
-            {id: 8, label: 'Khu vực 8'},
-            {id: 9, label: 'Khu vực 9'},
-            {id: 10, label: 'Khu vực 10'},
-            {id: 11, label: 'Khu vực 11'},
-            {id: 12, label: 'Khu vực 12'}];
+        $scope.example6data = [];
         $scope.example6model = [];
         $scope.example6settings = {
             showCheckAll: false,
@@ -181,8 +157,29 @@ angular.module('mShipperApp').component('danhSachDonHang', {
             }).then(function successCallback(response) {
 
                 listOrders = response.data;
+                listOrders.sort(function(a, b){
+                    if(a._id < b._id) return -1;
+                    if(a._id > b._id) return 1;
+                    return 0;
+                });
                 rootListOrders = response.data;
-
+                rootListOrders.sort(function(a, b){
+                    if(a._id < b._id) return -1;
+                    if(a._id > b._id) return 1;
+                    return 0;
+                });
+                var listArea = [];
+                for(var i = 0; i < response.data.length; i++)
+                {
+                    listArea.push({id : i + 1, label : response.data[i]._area_id});
+                }
+                listArea.sort(function(a, b){
+                    console.log(":a.label:" + a.label + ":" + b.label);
+                    if(a.label < b.label) return -1;
+                    if(a.label > b.label) return 1;
+                    return 0;
+                });
+                $scope.example6data = listArea;
                 $scope.orders = listOrders;
                 console.log(response.data);
 
@@ -194,16 +191,10 @@ angular.module('mShipperApp').component('danhSachDonHang', {
         }
 
         $scope.loadDetails = function (x) {
-            console.log(x._latitude);
-            console.log(x._longitude);
-
-            // Show modal
-
             modalOrderShow.show(x, function (selected) {
                 if (selected) {
                     console.log("Nhan duoc::" + selected.toString());
                     x.session = selected.toString();
-
                 }
                 else {
                     console.log("không có");

@@ -1,62 +1,255 @@
 <div id="wrapper">
     <div id="page-wrapper">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">Danh sách tài khoản</h1>
-            </div>
-            <!-- /.col-lg-12 -->
-        </div>
-        <!-- /.row -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Bảng dữ liệu
-                    </div>
-                    <br>
+        <div id="AccountShow">
 
-                    <div >
-                        <div class="col-lg-12">
-                            <button ng-click="addAcount()" type="button" class="btn btn-primary">Thêm tài khoản</button>
+            <!--textBox overlay-->
+            <div class="overlay" id="overlay-showmore" style="display: block;">
+                <div class="model glx-container" style="margin-top: -166.5px;">
+                    <div class="row closeOver">
+                        <img ng-click="closeShowMore()" src="../assets/img/icons/xController.png">
+                    </div>
+                    <div class="row core">
+                        <p id="scoreRate">Thông Tin Chi Tiết</p>
+                    </div>
+                    <div class="row panel-body">
+                        <div class="col-xs-6">
+                            <div class="row">
+                                <div class="col-xs-4"><p>Họ và Tên</p></div>
+                                <div class="col-xs-8"><p>{{detail_name}}</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Số CMND</p></div>
+                                <div class="col-xs-8"><p>{{detail_idnumber}}</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Email</p></div>
+                                <div class="col-xs-8"><p>{{detail_email}}</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Ngày Sinh</p></div>
+                                <div class="col-xs-8"><p>{{detail_birth | date:"dd/MM/yyyy"}}</p></div>
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="row">
+                                <div class="col-xs-4"><p>Địa Chỉ</p></div>
+                                <div class="col-xs-8"><p>{{detail_address}}</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Điện Thoại</p></div>
+                                <div class="col-xs-8"><p>{{detail_phone}}</p></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Giới Tính</p></div>
+                                <div class="col-xs-8"><p>{{detail_gender}}</p></div>
+                            </div>
+                        </div>
+                        <div>
+
                         </div>
                     </div>
-                    <br>
-                    <br>
-                    <div class="panel-body">
-                        <table width="100%" class="table table-bordered table-hover">
-                            <thead>
-                            <tr>
-                                <th>STT</th>
-                                <th>Email</th>
-                                <th>Họ tên</th>
-                                <th>SĐT</th>
-                                <th>Địa chỉ</th>
-                                <th>Vai trò</th>
-                                <th>Đội</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr  ng-repeat="x in accounts">
-                                <td>{{x.stt}}</td>
-                                <td><a href="#/accountscreate/{{x._email}}">{{x._email}}</a></td>
-                                <td>{{x._last_name}} {{x._first_name}}</td>
-                                <td>{{x._phone}}</td>
-                                <td>{{x._address}}</td>
-                                <td>{{x._permission_id}}</td>
-                                <td>{{x._team}}</td>
-                                <td>{{x._is_enabled}}</td>
-                            </tr>
-                            </tbody>
-                        </table>
+
+                    <div id="tableCustomer" class="row" style="padding: 10px">
+                        <div class="panel-body">
+                            <button ng-click="showAddDelivery()">Thêm Địa Điểm</button>
+
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a href="#" ng-click="sortType = 'stt'; sortReverse = !sortReverse">
+                                            STT
+                                            <span ng-show="sortType == 'stt' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'stt' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_phone'; sortReverse = !sortReverse">
+                                            Mã
+                                            <span ng-show="sortType == '_phone' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_phone' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_first_name'; sortReverse = !sortReverse">
+                                            Địa Chỉ
+                                            <span ng-show="sortType == '_first_name' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_first_name' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_permission'; sortReverse = !sortReverse">
+                                            Tọa độ
+                                            <span ng-show="sortType == '_permission' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_permission' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>Ghi Chú</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="x in accounts | orderBy:sortType:sortReverse | filter:searchFish">
+                                    <td>{{x.stt}}</td>
+                                    <td><a href="#/accountscreate/{{x._phone}}">{{x._phone}}</a></td>
+                                    <td>{{x._last_name}} {{x._first_name}}</td>
+                                    <td>{{x._permission}}</td>
+                                    <td>ghi chú</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <!-- /.panel-body -->
+
                 </div>
-                <!-- /.panel -->
             </div>
-            <!-- /.col-lg-12 -->
+
+            <!--textBox overlay-->
+            <div class="overlay" id="overlay-showmore1" style="display: block;">
+                <div class="model glx-container" style="margin-top: -166.5px;">
+                    <div class="row closeOver">
+                        <img ng-click="closeShowMore1()" src="../assets/img/icons/xController.png">
+                    </div>
+                    <div class="row core">
+                        <p>Nhập địa chỉ giao hàng</p>
+                    </div>
+                    <div class="row panel-body">
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label>Mã Địa Điểm</label>
+                                <input ng-model="phoneNumber" class="form-control" placeholder="0968899988">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Địa chỉ</label>
+                                <input ng-model="address" class="form-control" placeholder="0968899988">
+                            </div>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <div class="form-group">
+                                <label>Tên Địa Điểm</label>
+                                <input ng-model="firstName" class="form-control" placeholder="An">
+                            </div>
+
+                            <div class="form-group">
+                                <label>Tọa Độ</label>
+                                <input ng-model="firstName" class="form-control" placeholder="An">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row panel-body" id="mapAccountAddress">
+                        <button ng-click="removePoint()">Xóa Điểm</button>
+                        <button ng-click="removePoint()">Lập vùng</button>
+                        <ng-map center="{{ address }}" zoom="10" scrollwheel="false" zoom-to-include-markers="auto" on-click="addMarkerAndPath()">
+                            <marker position="{{address}}" title="{{address}}"></marker>
+                            <shape name="polyline" id="foo"
+                                   path="{{path}}"
+                                   stroke-color="#FF0000"
+                                   stroke-opacity="1.0"
+                                   stroke-weight="3">
+                            </shape>
+                        </ng-map>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Danh sách tài khoản</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+                        <br>
+
+                        <div>
+                            <div class="col-lg-12">
+                                <button ng-click="addAcount()" type="button" class="btn btn-primary">Thêm tài khoản
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <div class="panel-body">
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a href="#" ng-click="sortType = 'stt'; sortReverse = !sortReverse">
+                                            STT
+                                            <span ng-show="sortType == 'stt' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'stt' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_phone'; sortReverse = !sortReverse">
+                                            SĐT
+                                            <span ng-show="sortType == '_phone' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_phone' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_first_name'; sortReverse = !sortReverse">
+                                            Họ Và Tên
+                                            <span ng-show="sortType == '_first_name' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_first_name' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_permission'; sortReverse = !sortReverse">
+                                            Vai Trò
+                                            <span ng-show="sortType == '_permission' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_permission' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>Chi Tiết</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="x in accounts | orderBy:sortType:sortReverse | filter:searchFish">
+                                    <td>{{x.stt}}</td>
+                                    <td><a href="#/accountscreate/{{x._phone}}">{{x._phone}}</a></td>
+                                    <td>{{x._last_name}} {{x._first_name}}</td>
+                                    <td>{{x._permission}}</td>
+                                    <td>
+                                        <button ng-click="showMore(x)">Chi Tiết</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
         </div>
-        <!-- /.row -->
     </div>
     <!-- /#page-wrapper -->
 </div>

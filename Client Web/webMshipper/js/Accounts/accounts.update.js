@@ -6,19 +6,11 @@ angular.module('mShipperApp')
             init();
         });
 
-        $scope.gender = [
-            "Nam",
-            "Nữ",
-            "Chưa xác định"
-        ];
-        $scope.selectGender = $scope.gender[0];
+        $scope.gender = $rootScope.gender;
+        $scope.selectedGender = {};
+        $scope.role = $rootScope.listRole;
+        $scope.selectedRole = {};
 
-        $scope.role = [
-            "Quản lý",
-            "Đội trưởng",
-            "Nhân viên"
-        ];
-        $scope.selectRole = $scope.role[2];
         $("#emailForm").addClass("disabledbutton");
         $("#birthday").datepicker({
             defaultDate: "+1w",
@@ -40,8 +32,8 @@ angular.module('mShipperApp')
             $scope.address = '';
             $scope.phoneNumber = '';
 
-            $url = $rootScope.api_url.getAccountEmail;
-            var data = {email : $routeParams.email};
+            $url = $rootScope.api_url.getAccountPhone;
+            var data = {phone : $routeParams.phone};
             httpPost($http, $url, data,
                 function (response) {
                     $scope.email = response.data[0]._email;
@@ -51,8 +43,22 @@ angular.module('mShipperApp')
                     $scope.identityNumber = response.data[0]._identify_card;
                     $scope.address = response.data[0]._address;
                     $scope.phoneNumber = response.data[0]._phone;
-                    $scope.selectGender = response.data[0]._gender;
-                    $scope.selectRole = response.data[0]._permission_id;
+
+                    for(var i = 0; i < $scope.gender.length; i++)
+                    {
+                        if($scope.gender[i].id == response.data[0]._gender)
+                        {
+                            $scope.selectedGender.selected = $scope.gender[i];
+                        }
+                    }
+                    for(var i = 0; i < $scope.role.length; i++)
+                    {
+                        if($scope.role[i].id == response.data[0]._permission_id)
+                        {
+                            $scope.selectedRole.selected = $scope.role[i];
+                        }
+                    }
+
                 }, function (response) {
                     $scope.statustext = 'error';
                 });
@@ -69,6 +75,9 @@ angular.module('mShipperApp')
             }
             else
             {
+                console.log('77');
+                console.log($scope.selectedGender.selected, $scope.selectedRole.selected);
+
                 var data = {
                     _email: $scope.email,
                     _first_name: $scope.firstName,
@@ -77,9 +86,8 @@ angular.module('mShipperApp')
                     _identify_card: $scope.identityNumber,
                     _address: $scope.address,
                     _phone: $scope.phoneNumber,
-                    _gender: $scope.selectGender,
-                    _permission_id: $scope.selectRole,
-                    _team: $scope.selectTeam,
+                    _gender: $scope.selectedGender.selected.id,
+                    _permission_id: $scope.selectedRole.selected.id,
                 }
 
                 $url = $rootScope.api_url.postAccountUpdate;
