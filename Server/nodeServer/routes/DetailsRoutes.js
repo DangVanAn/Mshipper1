@@ -34,8 +34,25 @@ router.post('/add', function (req, res) {
 });
 
 router.post('/adds', function (req, res) {
-
     console.log(req.body);
+    for(var i = 0; i < req.body.length; i++)
+    {
+        Details.findOne({_order_id: req.body[i]._order_id, _id_package : req.body[i]._id_package}).select().exec(function (err, detail) {
+            if (err) {}
+            else {
+                if (detail != null) {
+                    detail.remove(function (err) {
+                        if (err)
+                            return console.error(err);
+                        else {
+                            console.log('detail successfully remove!');
+                        }
+                    });
+                }
+                else {}
+            }
+        });
+    }
 
     for (var i = 0; i < req.body.length; i++) {
         console.log(req.body[i]._order_id);
@@ -44,7 +61,7 @@ router.post('/adds', function (req, res) {
         newDetails.save();
     }
 
-    res.status(200).send('Order created!');
+    res.status(200).send('Details created!');
 });
 
 router.post('/getbyidorder', function (req, res) {

@@ -1,0 +1,112 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div class="row">
+            <div class="col-lg-12">
+                <h1 class="page-header">Phân công đơn hàng</h1>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="col-sm-2">
+                            <div>
+                                <label class="control-label col-sm-12"><strong>Ngày bắt đầu:</strong></label>
+                                <div class="input-group">
+                                    <input readonly='readonly' id="beginDate" type="text"
+                                           class="form-control datepicker"
+                                           data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon" id="basic-addon0"><i class="fa fa-calendar"
+                                                                                         aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <div>
+                                <label class="control-label col-sm-12"><strong>Ngày kết thúc:</strong></label>
+                                <div class="input-group">
+                                    <input readonly id="endDate" type="text" class="form-control datepicker"
+                                           data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
+                                    <span class="input-group-addon" id="basic-addon1"><i class="fa fa-calendar"
+                                                                                         aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 text-center">
+                            <label class="control-label col-sm-12"><strong>Trạng thái:</strong></label>
+                            <div bs-dropdown
+                                 bs-dropdown-display="MyDropDown"
+                                 bs-dropdown-items="status"
+                                 ng-model="selectStatus"
+                                 ng-change="changeStatus()">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-2 text-center">
+                            <label class="control-label col-sm-12"><strong>Khu vực</strong></label>
+                            <div ng-dropdown-multiselect="" options="example6data" selected-model="example6model"
+                                 extra-settings="example6settings" events="myEventListeners"></div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <br>
+
+                <!-- /.panel-heading -->
+                <div class="panel-body; col-xs-6">
+                    <table width="100%" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Địa chỉ</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer" ng-repeat="x in orders">
+                            <td>{{x._id}}</td>
+                            <td>{{x._address}}</td>
+                            <td align="center">
+                                <button ng-click="loadDetails(x)" type="button" class="btn btn-info btn-circle"><i
+                                        class="fa fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="panel-body; col-xs-6">
+                    <table width="100%" class="table table-bordered table-hover">
+                        <thead>
+                        <tr>
+                            <th>Id</th>
+                            <th>Địa chỉ</th>
+                            <th>Chi tiết</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="pointer" ng-repeat="x in orders">
+                            <td>{{x._id}}</td>
+                            <td>{{x._address}}</td>
+                            <td align="center">
+                                <button ng-click="loadDetails(x)" type="button" class="btn btn-info btn-circle"><i
+                                        class="fa fa-plus-circle"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- /.panel-body -->
+
+
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /#page-wrapper -->
+</div>

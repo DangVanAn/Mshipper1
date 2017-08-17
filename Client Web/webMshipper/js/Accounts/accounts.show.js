@@ -1,7 +1,6 @@
-angular.module('mShipperApp').
-component('accountShow',{
+angular.module('mShipperApp').component('accountShow', {
     templateUrl: './Accounts/Show.html',
-    controller: function DsDonHangController($scope, $rootScope,$http, $filter,$location, $timeout){
+    controller: function DsDonHangController($scope, $rootScope, $http, $filter, $location, $timeout) {
         $(document).ready(function () {
             init();
         });
@@ -12,6 +11,7 @@ component('accountShow',{
         }
 
         var teamleads = [], userteamlists = [];
+
         function getTeamLead() {
             $url = 'http://localhost:9999/teamleads/getall'
             httpGet($http, $url,
@@ -41,28 +41,12 @@ component('accountShow',{
             httpGet($http, $url,
                 function (response) {
                     for (var i = 0; i < response.data.length; i++) {
-                        if (response.data[i]._permission_id == "Quản lý") {
-                            $scope.accounts.push(response.data[i]);
-                        }
-                        if (response.data[i]._permission_id == "Đội trưởng") {
-                            $scope.accounts.push(response.data[i]);
-                            $scope.accounts[$scope.accounts.length - 1]._team = '';
-                            for (var j = 0; j < teamleads.length; j++) {
-                                if ($scope.accounts[$scope.accounts.length - 1]._email == teamleads[j]._team_lead) {
-                                    if ($scope.accounts[$scope.accounts.length - 1]._team.length != 0)
-                                        $scope.accounts[$scope.accounts.length - 1]._team += ", ";
-                                    $scope.accounts[$scope.accounts.length - 1]._team += teamleads[j]._team_id;
-                                }
+                        for (var j = 0; j < $rootScope.listRole.length; j++) {
+                            if ($rootScope.listRole[j].id == response.data[i]._permission_id) {
+                                response.data[i]._permission = $rootScope.listRole[j].name;
                             }
                         }
-                        if (response.data[i]._permission_id == "Nhân viên") {
-                            $scope.accounts.push(response.data[i]);
-                            for (var j = 0; j < userteamlists.length; j++) {
-                                if (response.data[i]._email == userteamlists[j]._user_id) {
-                                    $scope.accounts[$scope.accounts.length - 1]._team = userteamlists[j]._team_id;
-                                }
-                            }
-                        }
+                        $scope.accounts.push(response.data[i]);
                         $scope.accounts[$scope.accounts.length - 1].stt = $scope.accounts.length;
                     }
                 }, function (response) {
@@ -73,5 +57,64 @@ component('accountShow',{
         $scope.addAcount = function () {
             $location.path('/accountscreate');
         }
+
+        $('#overlay-showmore').hide();
+        $scope.showMore = function (x) {
+            console.log(x);
+            $scope.detail_name = x._last_name + " " + x._first_name;
+            $scope.detail_idnumber = x._identify_card;
+            $scope.detail_email = x._email;
+            $scope.detail_birth = x._date_of_birth;
+            $scope.detail_address = x._address;
+            $scope.detail_phone = x._phone;
+
+            switch (x._gender) {
+                case "01" :
+                    $scope.detail_gender = "Nam";
+                    break;
+                case "02" :
+                    $scope.detail_gender = "Nữ";
+                    break;
+                case "03" :
+                    $scope.detail_gender = "Chưa xác định";
+                    break;
+            }
+
+            $('#overlay-showmore').show();
+        }
+
+        $scope.sortType = "_first_name";
+        $scope.sortReverse = false;
+        $scope.searchFish = "";
+
+        $scope.closeShowMore = function () {
+            $('#overlay-showmore').hide();
+        }
+
+        // $('#overlay-showmore1').hide();
+        $scope.closeShowMore1 = function () {
+            $('#overlay-showmore1').hide();
+        }
+
+        $scope.showAddDelivery = function () {
+            $('#overlay-showmore1').show();
+        }
+
+        $scope.center = [10.7680338,106.414162];
+
+        $scope.markers =[];
+
+        $scope.path = [];
+        $scope.addMarkerAndPath = function(event) {
+            console.log(event);
+            $scope.path.push([event.latLng.lat(), event.latLng.lng()]);
+        };
+
+        $scope.removePoint = function () {
+            $scope.path.splice(-1,1)
+        }
+
+        // $scope.inputAddress = "Hồ Chí Minh";
+        // $scope.address = $scope.inputAddress;
     }
 });

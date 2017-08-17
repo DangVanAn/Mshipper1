@@ -1,14 +1,15 @@
-angular.module('mShipperApp').component('addDanhSachDonHang', {
+angular.module('mShipperApp')
+    .component('orderCreate', {
     templateUrl: './Orders/Create.html',
-    controller: function DsDonHangController($rootScope, $scope, $http, $filter, $location, $timeout, $parse, modalOrderCreate, NgMap) {
+    controller: function DsDonHangController($rootScope, $scope, $http, $filter, ngDialog, $location, $timeout, $parse, modalOrderCreate, NgMap) {
         $(document).ready(function () {
             init();
         });
 
         var listAreas = [];
         function init() {
+            $scope.orders = [];
             $url = $rootScope.api_url.getAreaShow;
-
             httpGet($http, $url,
                 function (response) {
                     console.log("info::" + response.data);
@@ -42,9 +43,8 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
                         _address: obj.Address,
                         _latitude: '0',
                         _longitude: '0',
-                        _area_id: obj.AreaId,
+                        _area_id: '',
                         _order_status: 'Đang vận chuyển',
-                        _payment_status: obj.PaymentStatus,
                         _note: obj.Note
                     })
 
@@ -169,7 +169,7 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
         $scope.markers = [];
 
         function addMarker(event) {
-            $scope.markers.push({pos: [event._latitude, event._longitude]});
+            $scope.markers.push({pos:[event._latitude, event._longitude], id : event._id, label : event._address});
         }
 
         $scope.status = [
@@ -187,19 +187,7 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
         }
 
 
-        $scope.example6data = [
-            {id: 1, label: 'Khu vực 1'},
-            {id: 2, label: 'Khu vực 2'},
-            {id: 3, label: 'Khu vực 3'},
-            {id: 4, label: 'Khu vực 4'},
-            {id: 5, label: 'Khu vực 5'},
-            {id: 6, label: 'Khu vực 6'},
-            {id: 7, label: 'Khu vực 7'},
-            {id: 8, label: 'Khu vực 8'},
-            {id: 9, label: 'Khu vực 9'},
-            {id: 10, label: 'Khu vực 10'},
-            {id: 11, label: 'Khu vực 11'},
-            {id: 12, label: 'Khu vực 12'}];
+        $scope.example6data = [];
         $scope.example6model = [];
         $scope.example6settings = {
             showCheckAll: false,
@@ -364,7 +352,10 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
 
         $scope.saveOrders = function () {
             //Save toàn bộ thông tin.
-            if ($scope.orders.length === 0) {}
+            if ($scope.orders.length == 0) {
+                $scope.show = "Bạn chưa chọn tập tin đơn hàng!";
+                iAlert(ngDialog, $scope);
+            }
             else {
                 var tempOr = JSON.stringify($scope.orders);
                 tempOr = JSON.parse(tempOr);
@@ -385,6 +376,8 @@ angular.module('mShipperApp').component('addDanhSachDonHang', {
                     data: tempOr
                 }).then(function successCallback(response) {
                     console.log(response.data);
+                    $scope.show = response.data;
+                    iAlert(ngDialog, $scope);
                 }, function errorCallback(response) {
                     $scope.statustext = 'error';
                 });

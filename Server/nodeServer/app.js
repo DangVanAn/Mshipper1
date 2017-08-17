@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var io = require('socket.io');
 
 var index = require('./routes/index');
 var users = require('./routes/UserRoutes');
@@ -23,8 +23,12 @@ var teamleads = require('./routes/TeamLeadRoutes');
 var teamlists = require('./routes/TeamListRoutes');
 var userteamlists = require('./routes/UserTeamListRoutes');
 
-var app = express();
+var app = express()
+    , http = require('http')
+    , server = http.createServer(app)
+    ,socket = io = require('socket.io').listen(server);
 
+var notifi = require('./routes/Notifi/routes/routes')(app,socket);
 ////////////
 var url = 'mongodb://mshipper1:12345678@ds129090.mlab.com:29090/mshipper';
 
@@ -35,6 +39,7 @@ app.set('views', './views');
 
 var mongoose = require('mongoose');
 
+mongoose.Promise = global.Promise;
 mongoose.connect(url);
 var dbMongo = mongoose.connection;
 dbMongo.on('error', console.error.bind(console, 'connection error:'));

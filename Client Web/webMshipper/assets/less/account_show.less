@@ -1,0 +1,133 @@
+@backLight : #FFF;
+@backDark : #000;
+@redColor: #FB4226;
+
+#AccountShow{
+  table{
+    th{
+      text-align: center;
+    }
+    button{
+      display: block;
+      margin: auto;
+    }
+  }
+
+  .overlay {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.6);
+    display: none;
+    height: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 99;
+
+    .closeOver{
+      cursor: pointer;
+      float: right;
+      padding-right: 10px;
+      padding-top: 0;
+      position: absolute;
+      top: 0%;
+      right: 1%;
+      z-index: 2;
+    }
+
+    .core{
+      font-size: 40px;
+      color: #7ED321;
+      font-family: 'SF Medium';
+      text-align: center;
+      clear: both;
+    }
+
+    .starSelect{
+      max-width: 162px;
+      height: auto;
+      margin: auto;
+    }
+
+    .inputComment{
+      padding: 20px;
+      margin: 20px;
+      border-radius: 4px;
+      width: 740px;
+
+      border: 1px solid #E8E8E9;
+      background: #FFFFFF;
+      resize: none;
+      //color: #9B9B9B;
+      font-size: 16px;
+
+    }
+    .inputComment:focus{
+      outline-width: 0;
+    }
+
+    .buttonChoseMedia{
+      margin-top: 0!important;
+      margin-bottom: 25px!important;
+      margin-left: 20px;
+      padding-left: 39px;
+      padding-right: 10px;
+      background-color: transparent!important;
+      border-color: #E9E9E9!important;
+      color: #949494!important;
+      position: relative;
+      font-family: 'SF Medium';
+
+      .buttonMedia{
+        height: 16px;
+        width: auto;
+        position: absolute;
+        left: 10px;
+
+      }
+    }
+
+    .button{
+      margin-top: 0!important;
+      margin-bottom: 25px!important;
+      margin-right: 20px;
+      padding-left: 29px;
+      padding-right: 29px;
+      background-color: @redColor!important;
+      border-color: @redColor!important;
+      color: #fff!important;
+      background-image: linear-gradient(-226deg, #FB4226 11%, #BE2912 100%);
+      font-family: 'SF Medium';
+    }
+  }
+  .overlay .model {
+    position: relative;
+    position: absolute;
+    transform: translate(-50%);
+    top: 35%;
+    left: 50%;
+    //margin-top: -252px;
+    z-index: 100;
+    width: 50%;
+    background-color: #fff;
+    border: 1px solid #999;
+    border: 1px solid rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    outline: 0;
+  }
+
+  .panel-body{
+    padding-top: 0!important;
+  }
+
+  #mapAccountAddress{
+    margin-left: 0!important;
+    margin-right: 0!important;
+  }
+}

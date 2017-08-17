@@ -18,6 +18,9 @@ var userSchema = mongoose.Schema({
     _hashed_password: {
         type: String,
     },
+    _token:{
+        type: String,
+    },
     _assign_code: {
         type: String,
     },

@@ -25,6 +25,7 @@ var OrdersSchema = mongoose.Schema({
     },
     _order_status  : {
         type: String,
+        required: true
     },
      _note : {  
         type: String,

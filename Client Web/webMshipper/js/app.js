@@ -41,7 +41,15 @@ function httpGet($http, url, success, error) {
         error(response);
     });
 }
-angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'ngDialog', 'angularjs-dropdown-multiselect', 'xlsx-model'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'ngDialog', 'angularjs-dropdown-multiselect', 'xlsx-model', 'ui.select', 'ngSanitize'])
+    .controller('AppMain', function ($scope, $rootScope, $cookieStore, $location) {
+        $scope.Logout = function () {
+            $rootScope.globals = {};
+            $cookieStore.remove('globals');
+            $location.path('/Login');
+        }
+    })
+
     .config(['$locationProvider', '$routeProvider',
         function config($locationProvider, $routeProvider) {
             $routeProvider
@@ -54,17 +62,26 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/dashboard", {
                     templateUrl: "dashboard.html",
                 })
-                .when("/tabledsdonhang", {
-                    template: '<danh-sach-don-hang></danh-sach-don-hang>',
+                .when('/Login', {
+                    template: '<login></login>',
                 })
-                .when("/addtabledsdonhang", {
-                    template: '<add-danh-sach-don-hang></add-danh-sach-don-hang>',
+                .when("/ordersshow", {
+                    template: '<order-show></order-show>',
+                })
+                .when("/orderscreate", {
+                    template: '<order-create></order-create>',
                 })
                 .when("/packagetypesshow", {
                     template: '<packagetype-show></packagetype-show>',
                 })
                 .when("/packagetypescreate", {
                     template: '<packagetype-create></packagetype-create>',
+                })
+                .when("/assignsshow", {
+                    template: '<assign-show></assign-show>',
+                })
+                .when("/assignscreate", {
+                    template: '<assign-create></assign-create>',
                 })
                 .when("/packagetypescreate/:id", {
                     template: '<packagetype-update></packagetype-update>',
@@ -75,7 +92,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/accountscreate", {
                     template: '<account-create></account-create>',
                 })
-                .when("/accountscreate/:email", {
+                .when("/accountscreate/:phone", {
                     template: '<account-update></account-update>',
                 })
                 .when("/areasshow", {
@@ -251,10 +268,12 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
     .run(['$rootScope', '$location', '$cookieStore', '$http',
         function ($rootScope, $location, $cookieStore) {
             $rootScope.api_url = {
+
+                postAccountLogin: 'http://localhost:9999/users/login',
                 postAccountCreate: 'http://localhost:9999/users/add',
                 getAccountShow: 'http://localhost:9999/users/getall',
-                getAccountEmail : 'http://localhost:9999/users/getbyemail',
-                postAccountUpdate : 'http://localhost:9999/users/updatebyemail',
+                getAccountPhone : 'http://localhost:9999/users/getbyphone',
+                postAccountUpdate : 'http://localhost:9999/users/updatebyphone',
 
                 postAreaCreate: 'http://localhost:9999/areas/add',
                 getAreaShow: 'http://localhost:9999/areas/getall',
@@ -267,35 +286,40 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 postPackageTypeGetById: 'http://localhost:9999/packagetypes/getbyid',
                 postPackageTypeUpdate: 'http://localhost:9999/packagetypes/update',
                 postPackageTypeRemove: 'http://localhost:9999/packagetypes/remove',
+            };
 
+            $rootScope.globals = $cookieStore.get('globals') || {};
+            if ($rootScope.globals.currentUser) {
+                // $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
             }
+            $rootScope.$on('$locationChangeStart', function (event, next, current) {
+                if (!$rootScope.globals.currentUser) {
+                    $location.path('/Login');
+                    return;
+                }
+                if ($rootScope.globals.currentUser.role === "CoordinatorManager") {
 
-            // $rootScope.globals = $cookieStore.get('globals') || {};
-            // if ($rootScope.globals.currentUser) {
-            //     // $http.defaults.headers.common['Authorization'] = 'Basic ' + $rootScope.globals.currentUser.authdata; // jshint ignore:line
-            // }
-            // var roleUser = ["/SellTicket/Show", "/SellTicket/sellChair", '/SellTicket/chooseChair', '/Login'];
-            // $rootScope.$on('$locationChangeStart', function (event, next, current) {
-            //     if (!$rootScope.globals.currentUser) {
-            //         $location.path('/Login');
-            //         return;
-            //     }
-            //     if ($rootScope.globals.currentUser.role === "USER") {
-            //         if ($location.path() === "") {
-            //             $location.path('/SellTicket/Show');
-            //         }
-            //         if (roleUser.indexOf($location.path()) === -1) {
-            //             console.log("Bạn không có đủ quyền");
-            //             event.preventDefault();
-            //         }
-            //         return;
-            //     }
-            //     if ($rootScope.globals.currentUser.role === "ADMIN") {
-            //         if ($location.path() === "") {
-            //             $location.path('/User/Show');
-            //         }
-            //         return;
-            //     }
-            //     event.preventDefault();
-            // });
+                    if ($location.path() === "") {
+                        $location.path('/accountsshow');
+                    }
+                    return;
+                }
+                event.preventDefault();
+            });
+
+            $rootScope.listRole = [
+                {id : "A001", name : "Quản Lý Điều Phối"},
+                {id : "A002", name : "Điều Phối"},
+                {id : "A003", name : "Quản Lý Kho"},
+                {id : "A004", name : "Bảo Vệ Kho"},
+                {id : "B001", name : "Khách Hàng"},
+                {id : "C001", name : "Quản Lý Vận Tải"},
+                {id : "C002", name : "Tài xế"}
+            ];
+
+            $rootScope.gender = [
+                {id : '01', name : 'Nam'},
+                {id : '02', name : 'Nữ'},
+                {id : '03', name : 'Chưa Xác Định'}
+            ];
         }]);

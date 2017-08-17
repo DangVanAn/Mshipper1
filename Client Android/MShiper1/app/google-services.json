@@ -1,0 +1,35 @@
+{
+  "project_info": {
+    "project_number": "833181078030",
+    "project_id": "mshiper1"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:833181078030:android:0f7dd4930bd07e9b",
+        "android_client_info": {
+          "package_name": "com.example.dangvanan14.mshiper1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1yWoovi9S0JtPvfT-aX75aiyzqx_CwCM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
