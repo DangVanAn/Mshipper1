@@ -47,4 +47,5 @@ dependencies {
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     //log
     compile 'org.slf4j:slf4j-api:1.7.21'
+    compile 'com.github.nkzawa:socket.io-client:0.6.0'
 }

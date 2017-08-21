@@ -1,7 +1,7 @@
 package com.example.dangvanan14.mshiper1;
 
 import com.example.dangvanan14.mshiper1.model.Detail;
-import com.example.dangvanan14.mshiper1.model.Location;
+import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
@@ -27,7 +27,7 @@ public interface IWebservice {
 //    Call<RatingFragment.RepPost> sendRating(@Query("id_user") String id_user, @Query("id_dishmenu") String id_dishmenu, @Query("Avg") String Avg);
 
     @POST("locations/postLocation")
-    Call<RepPost> postLocation(@Body Location location);
+    Call<RepPost> postLocation(@Body LocationCustom locationCustom);
 
     @POST("details/updateStatus")
     Call<RepPost> updateStatus(@Query("_list_detail") String _list_detail);
