@@ -106,8 +106,7 @@ router.post('/login', function (req, res) {
                             _phone : user._phone,
                             _permission_id: user._permission_id,
                             _identify_card: user._identify_card,
-                            _first_name: user._first_name,
-                            _last_name: user._last_name,
+                            _name: user._name,
                             _token : user._token
                         });
                     }
