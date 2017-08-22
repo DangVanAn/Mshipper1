@@ -26,9 +26,7 @@ import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.Detail;
-import com.example.dangvanan14.mshiper1.model.Location;
 import com.example.dangvanan14.mshiper1.response.RepPost;
-import com.example.dangvanan14.mshiper1.service.LocationService;
 import com.google.gson.Gson;
 
 import org.slf4j.Logger;

@@ -81,6 +81,10 @@
         <activity
             android:name=".activity.NotifyActivity"
             android:theme="@style/FullScreen"/>
+
+        <activity
+            android:name=".activity.MapActivity"
+            android:theme="@style/FullScreen"/>
         <service android:name=".service.LocationService"/>
 
         <!--<receiver-->

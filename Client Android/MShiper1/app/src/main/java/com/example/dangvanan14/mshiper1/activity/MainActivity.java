@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.location.Location;
@@ -24,8 +23,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.Manifest;
 
@@ -37,14 +40,20 @@ import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.service.LocationService;
+import com.github.nkzawa.socketio.client.Socket;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.emitter.Emitter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -58,14 +67,16 @@ public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener, SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
     private SwipeRefreshLayout swipeRefreshLayout;
-//    List<Order> orders = new ArrayList<>();
+    private MainActivity activity;
+    //    List<Order> orders = new ArrayList<>();
+    private EditText mInputMessageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mshipper1);
 
-        App.user.set_email("dmh@gmail.com");
+        App.user.set_email("0932108486");
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -73,6 +84,15 @@ public class MainActivity extends BaseActivity
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this);
 
+        mInputMessageView = (EditText) findViewById(R.id.edittor);
+        Button test = (Button) findViewById(R.id.button2);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), MapActivity.class);
+                startActivity(intent);
+            }
+        });
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -90,6 +110,37 @@ public class MainActivity extends BaseActivity
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
         loadModelAssign();
+//        mSocket.on("messages", onNewMessage);
+//        mSocket.connect();
+        this.activity = this;
+    }
+
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            JSONObject data = (JSONObject) args[0];
+            String username;
+            String message;
+            try {
+                username = data.getString("username");
+                message = data.getString("message");
+            } catch (JSONException e) {
+                return;
+            }
+
+            // add the message to view
+
+            Log.d(TAG, "run: " + username + "   " + message);
+
+        }
+    };
+    private Socket mSocket;
+
+    {
+        try {
+            mSocket = IO.socket("http://192.168.137.1:6969");
+        } catch (URISyntaxException e) {
+        }
     }
 
     private void loadModelAssign() {
@@ -97,15 +148,27 @@ public class MainActivity extends BaseActivity
             Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
             return;
         }
-        showProgressDialog();
 
-        final LoadData<List<Order>> loadData = new LoadData<>();
-        loadData.loadData(new Callable<Call<List<Order>>>() {
-            @Override
-            public Call<List<Order>> call() throws Exception {
-                return loadData.CreateRetrofit().getOrderByIdDeliveryMan(App.user.get_email());
-            }
-        }, new LoadData.CallbackDelegate<List<Order>>(this, new CallBackImpl()));
+
+//        showProgressDialog();
+//
+//        final LoadData<List<Order>> loadData = new LoadData<>();
+//        loadData.loadData(new Callable<Call<List<Order>>>() {
+//            @Override
+//            public Call<List<Order>> call() throws Exception {
+//                return loadData.CreateRetrofit().getOrderByIdDeliveryMan(App.user.get_email());
+//            }
+//        }, new LoadData.CallbackDelegate<List<Order>>(this, new CallBackImpl()));
+    }
+
+    private void attemptSend() {
+        String message = mInputMessageView.getText().toString().trim();
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
+
+        mInputMessageView.setText("");
+        mSocket.emit("messages", message);
     }
 
     public void setupTabLayout() {
@@ -198,20 +261,20 @@ public class MainActivity extends BaseActivity
     public void onPermissionsGranted(int requestCode) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        IntentFilter filter = new IntentFilter(LocationService.BROADCAST_ACTION);
-        receiver = new WakefulBroadcastReceiver() {
-            public void onReceive(Context arg0, Intent arg1) {
-                processReceive(arg0, arg1);
-            }
-        };
-        registerReceiver(receiver, filter);
-
-
-        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
-        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-        Calendar updateTime = Calendar.getInstance();
-        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
+//        IntentFilter filter = new IntentFilter(LocationService.BROADCAST_ACTION);
+//        receiver = new WakefulBroadcastReceiver() {
+//            public void onReceive(Context arg0, Intent arg1) {
+//                processReceive(arg0, arg1);
+//            }
+//        };
+//        registerReceiver(receiver, filter);
+//
+//
+//        Intent myAlarm = new Intent(getApplicationContext(), AlarmReceiver.class);
+//        PendingIntent recurringAlarm = PendingIntent.getBroadcast(getApplicationContext(), 0, myAlarm, PendingIntent.FLAG_CANCEL_CURRENT);
+//        AlarmManager alarms = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+//        Calendar updateTime = Calendar.getInstance();
+//        alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, updateTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY, recurringAlarm);
 
     }
 
@@ -234,6 +297,8 @@ public class MainActivity extends BaseActivity
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(receiver);
+        mSocket.disconnect();
+        mSocket.off("messages", onNewMessage);
     }
 
     public void processReceive(Context context, Intent intent) {

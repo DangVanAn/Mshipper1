@@ -24,13 +24,18 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
-import java.util.concurrent.Callable;
-
-import retrofit2.Call;
+import java.net.URISyntaxException;
 
 
 public class LocationService extends Service {
@@ -48,14 +53,43 @@ public class LocationService extends Service {
     private Location locationGPS;
     private double latitude;
     private double longitude;
+    private Gson gson = new Gson();
 
+    private Socket mSocket;
+    {
+        try {
+            mSocket = IO.socket("http://192.168.137.1:6969");
+        } catch (URISyntaxException e) {
+            Log.d("ERROR Service", "instance initializer: " + e.getMessage());
+        }
+    }
     @Override
     public void onCreate() {
         super.onCreate();
         intent = new Intent(BROADCAST_ACTION);
         loadData = new LoadData<>();
+        mSocket.on("messages", onNewMessage);
+        mSocket.connect();
     }
+    private Emitter.Listener onNewMessage = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            JSONObject data = (JSONObject) args[0];
+            String username;
+            String message;
+            try {
+                username = data.getString("username");
+                message = data.getString("message");
+            } catch (JSONException e) {
+                return;
+            }
 
+            // add the message to view
+
+            Log.d("LocationCustom Service", "run: " + username + "   " + message);
+
+        }
+    };
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d("START_SERVICE", "DONE");
@@ -221,11 +255,21 @@ public class LocationService extends Service {
             locationManager.removeUpdates(listener);
             wakeLock.release();
         }
+        mSocket.disconnect();
+        mSocket.off("messages", onNewMessage);
     }
-
+    private void attemptSend() {
+//        String message = mInputMessageView.getText().toString().trim();
+//        if (TextUtils.isEmpty(message)) {
+//            return;
+//        }
+//
+//        mInputMessageView.setText("");
+//        mSocket.emit("messages", message);
+    }
     public class MyLocationListener implements LocationListener {
         public void onLocationChanged(final Location loc) {
-            Log.i("***************", "Location changed");
+            Log.i("***************", "LocationCustom changed");
             if (isBetterLocation(loc, previousBestLocation)) {
                 previousBestLocation = loc;
                 loc.getLatitude();
@@ -233,14 +277,18 @@ public class LocationService extends Service {
                 intent.putExtra("Latitude", loc.getLatitude());
                 intent.putExtra("Longitude", loc.getLongitude());
                 intent.putExtra("Provider", loc.getProvider());
-                loadData.loadData(new Callable<Call<RepPost>>() {
-                    @Override
-                    public Call<RepPost> call() throws Exception {
-                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.Location(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
-                    }
-                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
+//                loadData.loadData(new Callable<Call<RepPost>>() {
+//                    @Override
+//                    public Call<RepPost> call() throws Exception {
+//                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
+//                    }
+//                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
+                LocationCustom data = new LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email());
+
+                mSocket.emit("messages", gson.toJson(data));
                 ((App) getApplication()).setLat(loc.getLatitude());
                 ((App) getApplication()).setLon(loc.getLongitude());
+
 
                 sendBroadcast(intent);
             }
