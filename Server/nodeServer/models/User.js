@@ -6,10 +6,7 @@ var userSchema = mongoose.Schema({
     _identify_card: {
         type: String,
     },
-    _first_name: {
-        type: String,
-    },
-    _last_name: {
+    _name: {
         type: String,
     },
     _email: {
@@ -46,6 +43,18 @@ var userSchema = mongoose.Schema({
         type: String,
     },
     _is_enabled : {
+        type: Boolean,
+    },
+    _company : {
+        type: String,
+    },
+    _image : {
+        type: String,
+    },
+    _vehicleLicense : {
+        type: String,
+    },
+    _deliveryAddress : {
         type: String,
     }
 });
