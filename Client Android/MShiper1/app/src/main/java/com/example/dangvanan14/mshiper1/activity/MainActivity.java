@@ -1,24 +1,18 @@
 package com.example.dangvanan14.mshiper1.activity;
 
+import android.Manifest;
 import android.app.Activity;
-import android.app.AlarmManager;
-import android.app.AlertDialog;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.provider.Settings;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.WakefulBroadcastReceiver;
-import android.support.v4.view.ViewPager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -30,37 +24,27 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.Manifest;
 
-import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
-import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
+import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.service.LocationService;
-import com.github.nkzawa.socketio.client.Socket;
-import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.emitter.Emitter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.Callable;
-
-import retrofit2.Call;
 
 
 public class MainActivity extends BaseActivity
@@ -110,39 +94,8 @@ public class MainActivity extends BaseActivity
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
         loadModelAssign();
-//        mSocket.on("messages", onNewMessage);
-//        mSocket.connect();
         this.activity = this;
     }
-
-    private Emitter.Listener onNewMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            JSONObject data = (JSONObject) args[0];
-            String username;
-            String message;
-            try {
-                username = data.getString("username");
-                message = data.getString("message");
-            } catch (JSONException e) {
-                return;
-            }
-
-            // add the message to view
-
-            Log.d(TAG, "run: " + username + "   " + message);
-
-        }
-    };
-    private Socket mSocket;
-
-    {
-        try {
-            mSocket = IO.socket("http://192.168.137.1:6969");
-        } catch (URISyntaxException e) {
-        }
-    }
-
     private void loadModelAssign() {
         if (!isNetworkConnected(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
@@ -168,7 +121,6 @@ public class MainActivity extends BaseActivity
         }
 
         mInputMessageView.setText("");
-        mSocket.emit("messages", message);
     }
 
     public void setupTabLayout() {
@@ -296,9 +248,10 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(receiver);
-        mSocket.disconnect();
-        mSocket.off("messages", onNewMessage);
+        if (receiver != null)
+        {
+            unregisterReceiver(receiver);
+        }
     }
 
     public void processReceive(Context context, Intent intent) {

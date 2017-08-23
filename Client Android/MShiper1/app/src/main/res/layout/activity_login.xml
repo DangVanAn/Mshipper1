@@ -1,49 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/login_backround">
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/login_backround"
-        android:scaleType="centerCrop">
-    </ImageView>
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical"
         android:weightSum="10">
 
         <ImageView
-            android:paddingTop="20dp"
+            android:id="@+id/imageView3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/login_logo"
-            android:scaleType="fitCenter"
-            android:id="@+id/imageView3"
-            android:layout_weight="4"
             android:layout_marginLeft="55pt"
-            android:layout_marginRight="55pt"/>
+            android:layout_marginRight="55pt"
+            android:layout_weight="6"
+            android:paddingTop="20dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/login_logo" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="6">
+            android:layout_weight="6"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="4"
-                android:orientation="vertical"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                android:layout_marginRight="@dimen/activity_horizontal_margin">
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_weight="4"
+                android:orientation="vertical">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
@@ -51,54 +43,41 @@
                     android:layout_margin="5pt">
 
                     <EditText
+                        android:id="@+id/tv_username"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
                         android:hint="Tài khoản"
-                        android:id="@+id/tv_username"/>
+                        android:inputType="number" />
 
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="5pt">>
+                    android:layout_margin="5pt">
 
                     <EditText
+                        android:id="@+id/tv_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
                         android:hint="Mật khẩu"
-                        android:id="@+id/tv_password"/>
+                        android:inputType="textEmailAddress" />
 
                 </android.support.design.widget.TextInputLayout>
 
 
                 <Button
+                    android:id="@+id/btn_signin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Đăng nhập"
-                    android:id="@+id/btn_signin"
-                    />
-
-                <TextView
-                    android:id="@+id/txtforgotpassword"
-                    android:layout_marginTop="10pt"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="quên mật khẩu"
-                    android:textAlignment="center"
-                    android:textColor="#f44242"
-                    android:textSize="18dp"
-                    android:fontFamily="facebook"/>
-
+                    android:text="Đăng nhập" />
             </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="1.5"/>
+                android:layout_weight="1.5" />
         </LinearLayout>
 
     </LinearLayout>

@@ -24,7 +24,7 @@ mongoose.connect(url);
 var dbMongo = mongoose.connection;
 dbMongo.on('error', console.error.bind(console, 'connection error:'));
 dbMongo.once('open', function () {
-    console.log('MongoDb connect');
+    console.log('MongoDb connect ' + process.env.PORT);
 });
 
 // view engine setup
@@ -60,6 +60,7 @@ repHttp = function (success, message) {
 var Locations = require('./models/Locations');
 io.on('connection', function (client) {
     console.log('Client connected...');
+    client.emit('messages', "connected được nhá");
 
     client.on('join', function (data) {
 
@@ -86,11 +87,13 @@ io.on('connection', function (client) {
 });
 
 //port socket
-server.listen(6969);
-
+// server.listen(process.env.PORT || 6969);
+server.listen(process.env.PORT || 6969, function() {
+    console.log("dm");
+  });
 //port express
-app.listen(1111, function () {
-    console.log('connect thanh cong');
-});
+// app.listen(1111, function () {
+//     console.log('connect thanh cong');
+// });
 
-module.exports = app;
+// module.exports = app;

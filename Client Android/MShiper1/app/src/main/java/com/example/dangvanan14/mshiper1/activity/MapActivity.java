@@ -53,23 +53,23 @@ public class MapActivity extends FragmentActivity
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            JSONObject data = (JSONObject) args[0];
-            String username;
-            String message;
-            try {
-                username = data.getString("username");
-                message = data.getString("message");
-            } catch (JSONException e) {
-                return;
-            }
-
-            Log.d("TAG", "run: " + username + "   " + message);
+//            JSONObject data = (JSONObject) args[0];
+//            String username;
+//            String message;
+//            try {
+//                username = data.getString("username");
+//                message = data.getString("message");
+//            } catch (JSONException e) {
+//                return;
+//            }
+            String username = (String) args[0];
+            Log.d("TAG", "run: " + username + "   ");
         }
     };
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("http://192.168.137.1:6969");
+            mSocket = IO.socket("https://servergpsmhiper.herokuapp.com");
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }

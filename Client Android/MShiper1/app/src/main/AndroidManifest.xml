@@ -38,8 +38,9 @@
             android:value="AIzaSyCLT3W-l8w4SOIwSaPyvlP56AS_JKTNfFo" />
 
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".Activity_login"
             android:label="@string/app_name"
+            android:noHistory="true"
             android:theme="@style/FullScreen">
 
             <intent-filter>
@@ -64,7 +65,7 @@
             android:name=".Activity_Splash"
             android:theme="@style/FullScreen" />
         <activity
-            android:name=".Activity_login"
+            android:name=".activity.MainActivity"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".fragment.FragmentChart"
