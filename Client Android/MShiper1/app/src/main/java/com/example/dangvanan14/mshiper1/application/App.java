@@ -9,9 +9,9 @@ import java.util.List;
 
 public class App extends Application {
 
-    double lat;
-    double lon;
-    List<Order> orders;
+    private double lat;
+    private double lon;
+    private List<Order> orders;
 
     public List<Order> getOrders() {
         return orders;
@@ -37,12 +37,19 @@ public class App extends Application {
         this.lon = lon;
     }
 
-    public static User user = new User();
-    @Override public void onCreate() {
-        user.set_email("dmh@gmail.com");
-        super.onCreate();
+    private User user;
+
+    public User getUser() {
+        return user;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    @Override public void onCreate() {
+        super.onCreate();
+    }
     public static Boolean isInDebugMode() {
         return false;
     }

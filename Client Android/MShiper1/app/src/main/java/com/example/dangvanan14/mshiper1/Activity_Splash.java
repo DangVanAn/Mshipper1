@@ -1,5 +1,7 @@
 package com.example.dangvanan14.mshiper1;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,40 +26,53 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.BaseActivity;
+import com.example.dangvanan14.mshiper1.activity.MainActivity;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
+import com.example.dangvanan14.mshiper1.model.User;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 
 import butterknife.ButterKnife;
 
-/**
- * Created by dangvanan14 on 2/16/2017.
- */
 
-public class Activity_Splash extends AppCompatActivity {
+public class Activity_Splash extends BaseActivity {
     public final static int SLASH_TIME = 1000;
-    //AccessTokenTracker accessTokenTracker;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //FacebookSdk.sdkInitialize(getApplicationContext());
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setContentView(R.layout.activity_splash);
+
         ButterKnife.bind(this);
 
 
         LoadingDataTask task = new LoadingDataTask(this);
         task.execute();
+    }
 
-//        accessTokenTracker = new AccessTokenTracker() {
-//            @Override
-//            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-//                updateWithToken(newAccessToken);
-//            }
-//        };
+    @Override
+    public void onPermissionsGranted(int requestCode) {
 
+    }
+
+    public boolean isUserLogin()
+    {
+        SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
+        String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
+        if(userStr.equals("")){
+            return false;
+        }
+        Gson gson = new Gson();
+        User user = gson.fromJson(userStr, User.class);
+        getApp().setUser(user);
+
+        return true;
     }
 
     private static class LoadingDataTask extends AsyncTask<Void, Void, Void> {
@@ -79,7 +94,7 @@ public class Activity_Splash extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... params) {
-            long endTime = System.currentTimeMillis() + 4 * 1000;
+            long endTime = System.currentTimeMillis() + 1000;
             while (System.currentTimeMillis() < endTime) {
                 synchronized (this) {
                     try {
@@ -114,9 +129,13 @@ public class Activity_Splash extends AppCompatActivity {
 
                 @Override
                 public void run() {
-                    Intent i = new Intent(Activity_Splash.this, Activity_login.class);
+                    Intent i;
+                    if (!isUserLogin()) {
+                        i = new Intent(Activity_Splash.this, Activity_login.class);
+                    }else{
+                        i = new Intent(Activity_Splash.this, MainActivity.class);
+                    }
                     startActivity(i);
-
                     finish();
                 }
             }, SLASH_TIME);

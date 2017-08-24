@@ -25,12 +25,9 @@ var userSchema = mongoose.Schema({
         type: String,
     },
     _date_of_birth: {
-        type: String,
+        type: Number,
     },
     _address: {
-        type: String,
-    },
-    _image_url: {
         type: String,
     },
     _phone: {
@@ -58,7 +55,6 @@ var userSchema = mongoose.Schema({
         type: String,
     }
 });
-
 
 var User = mongoose.model('User', userSchema);
 

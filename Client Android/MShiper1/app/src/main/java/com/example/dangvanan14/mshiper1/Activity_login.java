@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -14,8 +15,11 @@ import android.widget.Toast;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.MainActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.google.gson.Gson;
 
 import org.slf4j.Logger;
 
@@ -46,12 +50,20 @@ public class Activity_login extends BaseActivity {
         loadData = new LoadData<>();
         ButterKnife.bind(this);
 
+        SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
+        prefs.edit().putString(DefinedApp.UserShaPreKey, "").apply();
+        String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
+        getApp().setUser(null);
+        Log.d(TAG, "onCreate: test " + userStr);
+
         tv_username.requestFocus();
         InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         //show soft keyboard fragment
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
         imm.showSoftInput(tv_username, InputMethodManager.SHOW_IMPLICIT);
     }
+
+
 
     @Override
     public void onPermissionsGranted(int requestCode) {
@@ -83,16 +95,20 @@ public class Activity_login extends BaseActivity {
         public void onResponse(Activity activity, RepPost body, Logger LOG) {
             Activity_login ac = (Activity_login) activity;
             ac.dismissProgressDialog();
-            if (body.isSuccess())
-            {
+            if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+                Gson gson = new Gson();
+                User user = gson.fromJson(body.getData(), User.class);
+                ac.getApp().setUser(user);
+
+                SharedPreferences prefs = ac.getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
+                prefs.edit().putString(DefinedApp.UserShaPreKey, body.getData()).apply();
+
                 Intent i = new Intent(ac, MainActivity.class);
                 activity.startActivity(i);
                 Toast.makeText(ac, "Xin chào mừng đến Mshipper", Toast.LENGTH_SHORT).show();
-            }
-            else
-            {
+            } else {
                 Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }

@@ -38,10 +38,10 @@
             android:value="AIzaSyCLT3W-l8w4SOIwSaPyvlP56AS_JKTNfFo" />
 
         <activity
-            android:name=".Activity_login"
+            android:name=".Activity_Splash"
             android:label="@string/app_name"
             android:noHistory="true"
-            android:theme="@style/FullScreen">
+            android:theme="@style/SplashTheme">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -62,7 +62,8 @@
             android:screenOrientation="fullUser"
             tools:replace="screenOrientation" />
         <activity
-            android:name=".Activity_Splash"
+            android:name=".Activity_login"
+            android:noHistory="true"
             android:theme="@style/FullScreen" />
         <activity
             android:name=".activity.MainActivity"
