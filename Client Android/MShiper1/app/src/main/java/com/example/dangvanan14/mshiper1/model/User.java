@@ -3,35 +3,38 @@ package com.example.dangvanan14.mshiper1.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by LAP10186-local on 5/13/2017.
- */
-
 public class User implements Parcelable{
-    String _identify_card;
-    String _first_name;
-    String _last_name;
-    String _email;
-    String _hashed_password;
-    String _assign_code;
-    String _pass_code;
-    String _date_of_birth;
-    String _address;
-    String _image_url;
-    String _phone;
-    String _gender;
-    String _permission_id;
-    String _is_enabled ;
+    private String _identify_card;
+    private String _first_name;
+    private String _last_name;
+    private String _email;
+    private String _hashed_password;
+    private String _password;
+    private String _assign_code;
+    private String _pass_code;
+    private String _date_of_birth;
+    private String _address;
+    private String _image_url;
+    private String _phone;
+    private String _gender;
+    private String _permission_id;
+    private String _is_enabled ;
 
     public User() {
     }
 
-    public User(String _identify_card, String _first_name, String _last_name, String _email, String _hashed_password, String _assign_code, String _pass_code, String _date_of_birth, String _address, String _image_url, String _phone, String _gender, String _permission_id, String _is_enabled) {
+    public User(String _password, String _phone) {
+        this._password = _password;
+        this._phone = _phone;
+    }
+
+    public User(String _identify_card, String _first_name, String _last_name, String _email, String _hashed_password, String _password, String _assign_code, String _pass_code, String _date_of_birth, String _address, String _image_url, String _phone, String _gender, String _permission_id, String _is_enabled) {
         this._identify_card = _identify_card;
         this._first_name = _first_name;
         this._last_name = _last_name;
         this._email = _email;
         this._hashed_password = _hashed_password;
+        this._password = _password;
         this._assign_code = _assign_code;
         this._pass_code = _pass_code;
         this._date_of_birth = _date_of_birth;
@@ -49,6 +52,7 @@ public class User implements Parcelable{
         _last_name = in.readString();
         _email = in.readString();
         _hashed_password = in.readString();
+        _password = in.readString();
         _assign_code = in.readString();
         _pass_code = in.readString();
         _date_of_birth = in.readString();
@@ -67,6 +71,7 @@ public class User implements Parcelable{
         dest.writeString(_last_name);
         dest.writeString(_email);
         dest.writeString(_hashed_password);
+        dest.writeString(_password);
         dest.writeString(_assign_code);
         dest.writeString(_pass_code);
         dest.writeString(_date_of_birth);
@@ -133,6 +138,14 @@ public class User implements Parcelable{
 
     public void set_hashed_password(String _hashed_password) {
         this._hashed_password = _hashed_password;
+    }
+
+    public String get_password() {
+        return _password;
+    }
+
+    public void set_password(String _password) {
+        this._password = _password;
     }
 
     public String get_assign_code() {

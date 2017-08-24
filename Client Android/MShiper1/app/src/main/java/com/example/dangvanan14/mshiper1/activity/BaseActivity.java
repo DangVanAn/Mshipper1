@@ -177,4 +177,4 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     public abstract void onPermissionsGranted(int requestCode);
-}
+        }

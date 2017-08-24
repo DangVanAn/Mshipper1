@@ -88,26 +88,33 @@ router.post('/updatebyphone', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-    User.findOne({_phone: req.body.phone,
+    console.log(req.body)
+    User.findOne({
+        _phone: req.body._phone,
     }).select().exec(function (err, user) {
-        if (err)
+        if (err) {
+            res.status(200).send({ success: false, message: "User not found" });
             return console.error(err);
+        }
         else {
             if (!user)
                 res.status(200).send({success: false, message: "Phone is incorrect"});
             else
             {
-                bcrypt.compare(req.body.password, user._hashed_password, function(err, resp) {
+                bcrypt.compare(req.body._password, user._hashed_password, function(err, resp) {
                     // res == true
                     if(resp == true)
                     {
-                        res.status(200).send({
-                            success: true,
+                        var userRes = { 
                             _phone : user._phone,
                             _permission_id: user._permission_id,
                             _identify_card: user._identify_card,
                             _name: user._name,
                             _token : user._token
+                        };
+
+                        res.status(200).send({
+                            success: true, message: "OK", data: JSON.stringify(userRes)
                         });
                     }
                     else {

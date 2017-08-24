@@ -12,14 +12,17 @@ import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 
 import org.slf4j.Logger;
 
 import okhttp3.OkHttpClient;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.Converter;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -86,7 +89,7 @@ public class LoadData<E> {
 
         @Override
         public void onResponse(Call<E> call, Response<E> response) {
-            if (response.code() == 200) {
+            if (response.isSuccessful()) {
                 if (isActivity) {
                     Activity activity = activityWeakReference.get();
                     if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
@@ -112,7 +115,8 @@ public class LoadData<E> {
 
         @Override
         public void onFailure(Call<E> call, Throwable t) {
-            Log.d("TAG", "onFailure: ");
+            String message = t.getMessage();
+            Log.d("TAG", "onFailure: " + message);
             if (isActivity) {
                 Activity activity = activityWeakReference.get();
                 if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {

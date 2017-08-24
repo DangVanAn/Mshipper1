@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1;
 import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
 import java.util.List;
@@ -25,6 +26,9 @@ public interface IWebservice {
 //
 //    @POST("/postAvgRating")
 //    Call<RatingFragment.RepPost> sendRating(@Query("id_user") String id_user, @Query("id_dishmenu") String id_dishmenu, @Query("Avg") String Avg);
+
+    @POST("users/login")
+    Call<RepPost> postLogin(@Body User user);
 
     @POST("locations/postLocation")
     Call<RepPost> postLocation(@Body LocationCustom locationCustom);
