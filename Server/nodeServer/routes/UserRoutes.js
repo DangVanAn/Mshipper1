@@ -1,7 +1,6 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
-var md5 = require('md5');
 var jwt = require("jsonwebtoken");
 var bcrypt = require('bcrypt');
 const saltRounds = 10;
