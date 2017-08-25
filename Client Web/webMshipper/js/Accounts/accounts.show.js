@@ -1,6 +1,6 @@
 angular.module('mShipperApp').component('accountShow', {
     templateUrl: './Accounts/Show.html',
-    controller: function DsDonHangController($scope, $rootScope, $http, $filter, $location, $timeout) {
+    controller: function DsDonHangController($scope, $rootScope, $http, $filter, $location, $timeout, ngDialog) {
         $(document).ready(function () {
             init();
         });
@@ -80,7 +80,37 @@ angular.module('mShipperApp').component('accountShow', {
                     break;
             }
 
+            //Chỉ hiển thị cho khách hàng phần nhập địa điểm
+            if(x._permission_id == 'B001')
+            {
+                $('#tableCustomer').show();
+
+                $scope.areas = [];
+                getAreasByPhone(x._phone);
+            }
+            else {
+                $('#tableCustomer').hide();
+            }
+
             $('#overlay-showmore').show();
+        };
+
+        function getAreasByPhone(phone) {
+            var data = {_phone : phone};
+            $url = $rootScope.api_url.postDeliveryAreaGetByPhone;
+            httpPost($http, $url, data,
+                function (response) {
+                    console.log("info::" + response.data);
+                    for(var i = 0; i < response.data.length; i++)
+                    {
+                        response.data[i].stt = i + 1;
+                    }
+                    $scope.areas = response.data;
+                    // $scope.show = response.data;
+                    // iAlert(ngDialog, $scope);
+                }, function (response) {
+                    $scope.statustext = 'error';
+                });
         }
 
         $scope.sortType = "_first_name";
@@ -89,32 +119,73 @@ angular.module('mShipperApp').component('accountShow', {
 
         $scope.closeShowMore = function () {
             $('#overlay-showmore').hide();
-        }
+        };
 
-        // $('#overlay-showmore1').hide();
+        $('#overlay-showmore1').hide();
         $scope.closeShowMore1 = function () {
             $('#overlay-showmore1').hide();
-        }
+            getAreasByPhone($scope.detail_phone);
+        };
 
         $scope.showAddDelivery = function () {
             $('#overlay-showmore1').show();
-        }
+            window.dispatchEvent(new Event('resize'));
+        };
 
-        $scope.center = [10.7680338,106.414162];
-
+        $scope.address = "Hồ CHí Minh.Việt Nam";
         $scope.markers =[];
-
         $scope.path = [];
         $scope.addMarkerAndPath = function(event) {
             console.log(event);
             $scope.path.push([event.latLng.lat(), event.latLng.lng()]);
+
+            $scope.path1 = $scope.path;
+            $scope.listLatLng = "concobebe";
         };
 
         $scope.removePoint = function () {
             $scope.path.splice(-1,1)
-        }
+        };
+        $scope.path1 = [[18.466465, -66.118292]];
+        
+        $scope.createZone = function () {
+            var data = {
+                _phone_user : $scope.detail_phone,
+                _id_area : $scope.idArea,
+                _name_area : $scope.nameArea,
+                _address : $scope.address,
+                _list_latLng : JSON.stringify($scope.path1),
+                _note : $scope.note
+            };
+            $url = $rootScope.api_url.postDeliveryAreaCreate;
+            httpPost($http, $url, data,
+                function (response) {
+                    console.log("info::" + response.data.message);
+                    $scope.show = response.data;
+                    iAlert(ngDialog, $scope);
+                }, function (response) {
+                    $scope.statustext = 'error';
+                });
+        };
 
-        // $scope.inputAddress = "Hồ Chí Minh";
-        // $scope.address = $scope.inputAddress;
+        $('#overlay-showmore2').hide();
+        $scope.viewMaps = function (x) {
+
+            var listLatLng = JSON.parse(x._list_latLng);
+            $scope.path1 = listLatLng;
+            $scope.address = listLatLng[0];
+            $('#overlay-showmore2').show();
+            window.dispatchEvent(new Event('resize'));
+        };
+
+        $scope.closeShowMore2 = function () {
+            $('#overlay-showmore2').hide();
+        };
+
+        $scope.updateArea = function (x) {
+            $('#overlay-showmore1').show();
+            window.dispatchEvent(new Event('resize'));
+        };
+
     }
 });

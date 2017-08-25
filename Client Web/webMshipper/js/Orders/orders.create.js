@@ -22,6 +22,8 @@ angular.module('mShipperApp')
         $scope.uploadFile = function () {
             $("#fileButton").val('');
             $scope.excel = '';
+
+            console.log('26', new Date().getTime());
         };
 
 
@@ -31,36 +33,38 @@ angular.module('mShipperApp')
             var tempOrders = [];
             var json = $scope.excel;
 
-            for (var i = 0; i < json.Sheet1.length; i++) {
-                var obj = json.Sheet1[i];
-                var objStr = JSON.stringify(json.Sheet1[i]);
-                console.log("object :" + i + " : " + objStr);
-                if (i !== 0 && json.Sheet1[i].Id !== json.Sheet1[i - 1].Id || i == 0)
-                    tempOrders.push({
-                        _id: obj.Id,
-                        _created_date: formatDate(obj.CreatedDay),
-                        _expected_date: formatDate(obj.ExpectedDay),
-                        _address: obj.Address,
-                        _latitude: '0',
-                        _longitude: '0',
-                        _area_id: '',
-                        _order_status: 'Đang vận chuyển',
-                        _note: obj.Note
-                    })
+            console.log('36', new Date().getTime());
 
-            }
+            // for (var i = 0; i < json.Sheet1.length; i++) {
+            //     var obj = json.Sheet1[i];
+            //     var objStr = JSON.stringify(json.Sheet1[i]);
+            //     console.log("object :" + i + " : " + objStr);
+            //     if (i !== 0 && json.Sheet1[i].Id !== json.Sheet1[i - 1].Id || i == 0)
+            //         tempOrders.push({
+            //             _id: obj.Id,
+            //             _created_date: formatDate(obj.CreatedDay),
+            //             _expected_date: formatDate(obj.ExpectedDay),
+            //             _address: obj.Address,
+            //             _latitude: '0',
+            //             _longitude: '0',
+            //             _area_id: '',
+            //             _order_status: 'Đang vận chuyển',
+            //             _note: obj.Note
+            //         })
+            // }
 
             rootListOrders = tempOrders;
             $scope.orders = tempOrders;
 
-            addDetails();
-            convertAddressToLatLng();
+            // addDetails();
+            // convertAddressToLatLng();
         };
 
         var details = [];
 
         function addDetails() {
             var json = $scope.excel;
+            console.log(json.Sheet1);
 
             for (var i = 0; i < json.Sheet1.length; i++) {
                 var obj = json.Sheet1[i];
@@ -73,7 +77,7 @@ angular.module('mShipperApp')
                     _package_type: obj.PackageType
                 })
 
-                console.log("detail : " + details[i]);
+                // console.log("detail : " + details[i]);
             }
         }
 

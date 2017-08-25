@@ -53,7 +53,19 @@ var userSchema = mongoose.Schema({
     },
     _deliveryAddress : {
         type: String,
-    }
+    },
+    _latitude : {
+        type: String,
+    },
+    _longitude: {
+        type: String,
+    },
+    _radius: {
+        type: Number,
+    },
+    _polygon: {
+        type: String,
+    },
 });
 
 var User = mongoose.model('User', userSchema);

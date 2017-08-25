@@ -1,0 +1,144 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="AccountCreateN">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Tạo danh sách tài khoản</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
+            <!--textBox overlay-->
+            <div ng-if="showMaps" class="overlay" id="overlay-showmore1" style="display: block;">
+                <div class="model glx-container" style="margin-top: -166.5px;">
+                    <div class="row closeOver">
+                        <img ng-click="closeShowMore1()" src="../assets/img/icons/xController.png">
+                    </div>
+                    <div class="row core">
+                        <p>Nhập địa chỉ giao hàng</p>
+                    </div>
+
+                    <div class="row panel-body" id="mapAccountAddress">
+
+                        <ui-select ng-model="selectedTypeSelect.selected" theme="bootstrap" on-select = "selectTypeSelect($item)">
+                            <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                            </ui-select-match>
+                            <ui-select-choices
+                                    repeat="item as item in typeSelects | filter: $select.search">
+                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </ui-select>
+
+                        <button ng-click="createZone()">Xong</button>
+                        <button ng-if="showSelectArea" ng-click="removePoint()">Xóa Điểm</button>
+
+                        <ng-map center="{{ addressCenter }}" zoom="15" scrollwheel="false" on-click="addMarkerAndPath()">
+                            <marker position="{{address}}"></marker>
+                            <shape name="polygon"
+                                   paths="{{path1}}"
+                                   stroke-color="#FF0000"
+                                   stroke-opacity="0.8"
+                                   stroke-weight="2"
+                                   fill-color="#FF0000"
+                                   fill-opacity="0.35">
+                            </shape>
+                        </ng-map>
+                    </div>
+                </div>
+            </div>
+
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+
+                        <ng-map center="{{ center }}" zoom="10" scrollwheel="false" zoom-to-include-markers="auto">
+                            <marker zoom="10" ng-repeat="p in markers"
+                                    position="{{p.pos}}" title="{{p.label}}"></marker>
+                        </ng-map>
+
+                        <br>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-2">
+                                    <input id="fileButton" type="file" ng-click="uploadFile()" xlsx-model="excel" style="display: none;">
+                                    <button style="width: 150px" type="button" class="btn btn-primary" onclick="document.getElementById('fileButton').click();">Nhập tập tin</button>
+                                    <div  ng-if="excel" ng-init="GetImport()"></div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button style="width: 150px; float: left" type="button" class="btn btn-primary" ng-click="saveAccounts()">Lưu tài khoản</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <div class="row">
+                            <div class="col-xs-4">
+                                <div class="col-xs-12">
+                                    <div class="form-group">
+                                        <label>Vai trò</label>
+                                        <ui-select ng-model="selectedRole.selected" theme="bootstrap" on-select = "selectRole($item)">
+                                            <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                                            </ui-select-match>
+                                            <ui-select-choices
+                                                    repeat="item as item in role | filter: $select.search">
+                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>SĐT</th>
+                                    <th>Họ và Tên</th>
+                                    <th>Ngày Sinh</th>
+                                    <th ng-if="b_driverLicense">Bằng Lái</th>
+                                    <th>Số Chứng Minh</th>
+                                    <th>Địa Chỉ</th>
+                                    <th ng-if="b_deliveryAddress">Địa Chỉ Giao Hàng</th>
+                                    <th>Email</th>
+                                    <th ng-if="b_company">Công Ty</th>
+                                    <th>Giới Tính</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="pointer" ng-repeat="x in accounts">
+                                    <td>{{x.stt}}</td>
+                                    <td>{{x.PhoneNumber}}</td>
+                                    <td>{{x.FullName}}</td>
+                                    <td>{{x.BirthDay}}</td>
+                                    <td ng-if="b_driverLicense">{{x.DriverLicenseNumber}}</td>
+                                    <td>{{x.IdNumber}}</td>
+                                    <td>{{x.Address}}</td>
+                                    <td ng-if="b_deliveryAddress"><a href="" ng-click="clickShowMaps(x)">{{x.DeliveryAddress}}</a></td>
+                                    <td>{{x.Email}}</td>
+                                    <td ng-if="b_company">{{x.CompanyName}}</td>
+                                    <td>{{x.Gender}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+</div>
