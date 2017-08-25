@@ -47,7 +47,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         mErrorString = new SparseIntArray();
     }
 
-     public static boolean isNetworkConnected(Context context) {
+    public static boolean isNetworkConnected(Context context) {
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
@@ -176,5 +176,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
+    public App getApp(){
+        return ((App)getApplication());
+    }
+
     public abstract void onPermissionsGranted(int requestCode);
-        }
+}

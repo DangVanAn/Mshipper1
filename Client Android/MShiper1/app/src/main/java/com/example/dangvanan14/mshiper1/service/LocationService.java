@@ -283,7 +283,7 @@ public class LocationService extends Service {
 //                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
 //                    }
 //                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
-                LocationCustom data = new LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email());
+                LocationCustom data = new LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone());
 
                 mSocket.emit("messages", gson.toJson(data));
                 ((App) getApplication()).setLat(loc.getLatitude());
