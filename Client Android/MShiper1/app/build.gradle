@@ -29,6 +29,9 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    // FCM
+    compile 'com.google.firebase:firebase-messaging:11.2.0'
+
     compile 'com.journeyapps:zxing-android-embedded:3.4.0'
     compile 'com.jakewharton:butterknife:8.5.1'
     compile 'com.google.android.gms:play-services:10.2.4'
@@ -48,4 +51,5 @@ dependencies {
     //log
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile 'com.github.nkzawa:socket.io-client:0.6.0'
+
 }
