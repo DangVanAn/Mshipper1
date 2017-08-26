@@ -73,8 +73,8 @@
 
     <script src="../bower_components/ng-dialog/js/ngDialog.min.js"></script>
 
-    <script src="../js/Areas/areas.create.js"></script>
-    <script src="../js/Areas/areas.show.js"></script>
+    <script src="../js/Warehouses/warehouses.create.js"></script>
+    <script src="../js/Warehouses/warehouses.show.js"></script>
 
     <script src="../js/Teams/teams.create.js"></script>
     <script src="../js/Teams/teams.show.js"></script>
@@ -93,13 +93,29 @@
     <script src="../js/Assigns/assigns.modal.create.js"></script>
 
     <script src="../js/Accounts/accounts.login.js"></script>
+    <script src="../js/Accounts/accounts.main.js"></script>
     <script src="../js/Accounts/accounts.show.js"></script>
     <script src="../js/Accounts/accounts.create.js"></script>
+    <script src="../js/Accounts/accounts.create.n.js"></script>
     <script src="../js/Accounts/accounts.update.js"></script>
 
     <script src="../js/PackageTypes/packagetypes.show.js"></script>
     <script src="../js/PackageTypes/packagetypes.create.js"></script>
     <script src="../js/PackageTypes/packagetypes.update.js"></script>
+
+
+    <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+    <script>
+        var config = {
+            apiKey: "AIzaSyA1k5BwlCAW3T2M6Ep7aXI6V_sUokV0Czo",
+            authDomain: "imagemshipper.firebaseapp.com",
+            databaseURL: "https://imagemshipper.firebaseio.com",
+            projectId: "imagemshipper",
+            storageBucket: "gs://imagemshipper.appspot.com",
+            messagingSenderId: "844903822267"
+        };
+        firebase.initializeApp(config);
+    </script>
 
 </head>
 
@@ -108,7 +124,7 @@
 <div id="wrapper">
 
     <!-- Navigation -->
-    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+    <nav id="mainIndex" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -120,7 +136,29 @@
         </div>
         <!-- /.navbar-header -->
 
+        <div>
+        </div>
+
         <ul class="nav navbar-top-links navbar-right">
+
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="">
+                    <p class="barUser" id="mainUserName">UserName</p><p class="barUser">-</p><p class="barUser" id="mainUserRole">Chức Vụ</p>
+                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a ng-click="Logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+                <!-- /.dropdown-user -->
+            </li>
+            <!-- /.dropdown -->
+
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                     <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
@@ -315,22 +353,6 @@
                 <!-- /.dropdown-alerts -->
             </li>
             <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a ng-click="Logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-            <!-- /.dropdown -->
         </ul>
         <!-- /.navbar-top-links -->
 
@@ -367,10 +389,10 @@
                         <a href="#packagetypesshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý loại gói hàng</a>
                     </li>
                     <li>
-                        <a href="#accountsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
+                        <a href="#accountsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
                     </li>
                     <li>
-                        <a href="#areasshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý khu vực vận chuyển</a>
+                        <a href="#warehousesshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý danh sách kho hàng</a>
                     </li>
                     <li>
                         <a href="#teamsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý đội</a>

@@ -1,14 +1,9 @@
-#AccountShow table th {
-  text-align: center;
-}
-#AccountShow table .center {
-  text-align: center;
-}
-#AccountShow table button {
+#AccountCreateN table {
   display: block;
-  margin: auto;
+  overflow-x: auto;
+  white-space: nowrap;
 }
-#AccountShow .overlay {
+#AccountCreateN .overlay {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
@@ -21,7 +16,7 @@
   width: 100%;
   z-index: 99;
 }
-#AccountShow .overlay .closeOver {
+#AccountCreateN .overlay .closeOver {
   cursor: pointer;
   float: right;
   padding-right: 10px;
@@ -31,19 +26,19 @@
   right: 1%;
   z-index: 2;
 }
-#AccountShow .overlay .core {
+#AccountCreateN .overlay .core {
   font-size: 40px;
   color: #7ED321;
   font-family: 'SF Medium';
   text-align: center;
   clear: both;
 }
-#AccountShow .overlay .starSelect {
+#AccountCreateN .overlay .starSelect {
   max-width: 162px;
   height: auto;
   margin: auto;
 }
-#AccountShow .overlay .inputComment {
+#AccountCreateN .overlay .inputComment {
   padding: 20px;
   margin: 20px;
   border-radius: 4px;
@@ -53,10 +48,10 @@
   resize: none;
   font-size: 16px;
 }
-#AccountShow .overlay .inputComment:focus {
+#AccountCreateN .overlay .inputComment:focus {
   outline-width: 0;
 }
-#AccountShow .overlay .buttonChoseMedia {
+#AccountCreateN .overlay .buttonChoseMedia {
   margin-top: 0!important;
   margin-bottom: 25px!important;
   margin-left: 20px;
@@ -68,13 +63,13 @@
   position: relative;
   font-family: 'SF Medium';
 }
-#AccountShow .overlay .buttonChoseMedia .buttonMedia {
+#AccountCreateN .overlay .buttonChoseMedia .buttonMedia {
   height: 16px;
   width: auto;
   position: absolute;
   left: 10px;
 }
-#AccountShow .overlay .button {
+#AccountCreateN .overlay .button {
   margin-top: 0!important;
   margin-bottom: 25px!important;
   margin-right: 20px;
@@ -86,7 +81,7 @@
   background-image: linear-gradient(-226deg, #fb4226 11%, #be2912 100%);
   font-family: 'SF Medium';
 }
-#AccountShow .overlay .model {
+#AccountCreateN .overlay .model {
   position: relative;
   position: absolute;
   transform: translate(-50%);
@@ -104,10 +99,6 @@
   background-clip: padding-box;
   outline: 0;
 }
-#AccountShow .panel-body {
+#AccountCreateN .panel-body {
   padding: 0 20px 0px 20px!important;
-}
-#AccountShow #mapAccountAddress {
-  margin-left: 0!important;
-  margin-right: 0!important;
 }

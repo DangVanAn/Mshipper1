@@ -13,13 +13,13 @@ angular.module('mShipperApp').component('login', {
                     switch (response._permission_id) {
                         case "A001":
                             // Manager điều phối
-                            AuthenticationService.SetCredentials('CoordinatorManager', response._token, response._first_name, response._last_name, response._phone);
-                            $location.path('/accountsshow');
+                            AuthenticationService.SetCredentials('Quản Lý Điều Phối', response._permission_id, response._token, response._name, response._phone);
+                            $location.path('/accountsmain');
                             break;
                         case "A002":
                             // Điều phối
-                            AuthenticationService.SetCredentials('Coordinator', response._token, response._first_name, response._last_name, response._phone);
-                            $location.path('/accountsshow');
+                            AuthenticationService.SetCredentials('Điều Phối', response._permission_id, response._token, response._name, response._phone);
+                            $location.path('/accountsmain');
                             break;
                         case "A003":
                             // Quản lý kho
@@ -96,14 +96,15 @@ angular.module('mShipperApp')
                         });
                 };
 
-                service.SetCredentials = function (role, token, first_name, last_name, phone) {
+                service.SetCredentials = function (role, permission, token, name, phone) {
+                    console.log('conco2', name);
                     $rootScope.globals = {
                         currentUser: {
                             phone: phone,
                             token: token,
-                            first_name: first_name,
-                            last_name: last_name,
-                            role: role
+                            name: name,
+                            role: role,
+                            permission: permission
                         }
                     };
 

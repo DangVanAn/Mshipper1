@@ -43,6 +43,7 @@ function httpGet($http, url, success, error) {
 }
 angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'ngDialog', 'angularjs-dropdown-multiselect', 'xlsx-model', 'ui.select', 'ngSanitize'])
     .controller('AppMain', function ($scope, $rootScope, $cookieStore, $location) {
+
         $scope.Logout = function () {
             $rootScope.globals = {};
             $cookieStore.remove('globals');
@@ -86,20 +87,26 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/packagetypescreate/:id", {
                     template: '<packagetype-update></packagetype-update>',
                 })
+                .when("/accountsmain", {
+                    template: '<account-main></account-main>',
+                })
                 .when("/accountsshow", {
                     template: '<account-show></account-show>',
                 })
                 .when("/accountscreate", {
                     template: '<account-create></account-create>',
                 })
+                .when("/accountscreate.n", {
+                    template: '<account-create-n></account-create-n>',
+                })
                 .when("/accountscreate/:phone", {
                     template: '<account-update></account-update>',
                 })
-                .when("/areasshow", {
-                    template: '<areas-show></areas-show>',
+                .when("/warehousesshow", {
+                    template: '<warehouses-show></warehouses-show>',
                 })
-                .when("/areascreate", {
-                    template: '<areas-create></areas-create>',
+                .when("/warehousescreate", {
+                    template: '<warehouses-create></warehouses-create>',
                 })
                 .when("/teamscreate", {
                     template: '<teams-create></teams-create>',
@@ -275,9 +282,6 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 getAccountPhone : 'http://localhost:9999/users/getbyphone',
                 postAccountUpdate : 'http://localhost:9999/users/updatebyphone',
 
-                postAreaCreate: 'http://localhost:9999/areas/add',
-                getAreaShow: 'http://localhost:9999/areas/getall',
-
                 getTeamShow: 'http://localhost:9999/teamlists/getall',
                 postTeamCreate: 'http://localhost:9999/teamlists/adds',
                 getTeamUpdate: 'http://localhost:9999/teamlists/getbyid',
@@ -286,6 +290,12 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 postPackageTypeGetById: 'http://localhost:9999/packagetypes/getbyid',
                 postPackageTypeUpdate: 'http://localhost:9999/packagetypes/update',
                 postPackageTypeRemove: 'http://localhost:9999/packagetypes/remove',
+
+                postDeliveryAreaCreate: 'http://localhost:9999/deliveryareas/add',
+                postDeliveryAreaGetByPhone: 'http://localhost:9999/deliveryareas/getbyphone',
+
+                getWarehouse: 'http://localhost:9999/warehouses/getall',
+                postWarehouseCreate: 'http://localhost:9999/warehouses/add',
             };
 
             $rootScope.globals = $cookieStore.get('globals') || {};
@@ -297,10 +307,17 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     $location.path('/Login');
                     return;
                 }
-                if ($rootScope.globals.currentUser.role === "CoordinatorManager") {
+                if ($rootScope.globals.currentUser.role === "Quản Lý Điều Phối") {
+
+                    console.log('conco1', $rootScope.globals.currentUser);
+
+                    $('#mainUserName').text($rootScope.globals.currentUser.name);
+                    $('#mainUserRole').text($rootScope.globals.currentUser.role);
+
+                    console.log('314', $location.path());
 
                     if ($location.path() === "") {
-                        $location.path('/accountsshow');
+                        $location.path('/accountsmain');
                     }
                     return;
                 }
