@@ -7,7 +7,7 @@ const saltRounds = 10;
 const keyJWT = 'djs235Ajhs668DDflb';
 
 router.get('/getall', function (req, res) {
-    User.find({}, function (err, users) {
+    User.find({_is_enabled : true}, function (err, users) {
         if (err)
             return console.error(err);
         else {
@@ -19,7 +19,8 @@ router.get('/getall', function (req, res) {
 
 router.post('/add', function (req, res) {
 
-    User.findOne({_phone: req.body._phone
+    User.findOne({
+        _phone: req.body._phone
     }).select().exec(function (err, user) {
         if (err)
             return console.error(err);
@@ -28,9 +29,12 @@ router.post('/add', function (req, res) {
                 var newUser = new User(req.body);
 
                 var time = new Date().getTime().toString();
-                newUser._token = (jwt.sign({bum: time + keyJWT, user: newUser._phone}, keyJWT) + ' ' + time).split(".")[2];
+                newUser._token = (jwt.sign({
+                    bum: time + keyJWT,
+                    user: newUser._phone
+                }, keyJWT) + ' ' + time).split(".")[2];
 
-                bcrypt.hash('123456', 10, function(err, hash) {
+                bcrypt.hash('123456', 10, function (err, hash) {
                     newUser._hashed_password = hash;
                     newUser.save(function (err) {
                         if (err)
@@ -38,15 +42,104 @@ router.post('/add', function (req, res) {
                         else {
                             res.status(200).send('User created!');
                             console.log('User created!');
-                        }});
+                        }
+                    });
                 });
             }
-            else
-            {
+            else {
                 res.status(200).send("Số điện thoại đã tồn tại!");
             }
 
 
+        }
+    });
+});
+
+router.post('/adds', function (req, res) {
+
+    // console.log(req.body);
+    var listData = req.body;
+    console.log(listData.length);
+
+    var index = 0;
+    var listPhoneExist = '';
+
+    createAccouts(index);
+
+    function createAccouts(index) {
+        User.findOne({_phone: listData[index]._phone
+        }).select().exec(function (err, user) {
+            if (err)
+                return console.error(err);
+            else {
+                if (!user) {
+                    var newUser = new User(listData[index]);
+
+                    var time = new Date().getTime().toString();
+                    newUser._token = (jwt.sign({bum: time + keyJWT, user: newUser._phone}, keyJWT) + ' ' + time).split(".")[2];
+
+                    bcrypt.hash('123456', 10, function(err, hash) {
+                        newUser._hashed_password = hash;
+                        newUser.save(function (err) {
+                            if (err)
+                                return console.error(err);
+                            else {
+                                console.log('85');
+                                index++;
+                                if(index < listData.length)
+                                {
+                                    createAccouts(index);
+                                }
+                                else {
+                                    if(listPhoneExist.length > 0)
+                                    {
+                                        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+                                    }
+                                    else{
+                                        res.status(200).send('User created!');
+                                        console.log('User created!');
+                                    }
+                                }
+                            }});
+                    });
+                }
+                else
+                {
+                    listPhoneExist += ' ' + listData[index]._phone;
+                }
+            }
+        });
+    }
+
+    if(listPhoneExist.length > 0)
+    {
+        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+    }
+});
+
+router.post('/remove', function (req, res) {
+
+    User.findOne({
+        _phone: req.body._phone
+    }).select().exec(function (err, user) {
+        if (err)
+            return console.error(err);
+        else {
+            if (user) {
+                user._is_enabled = false;
+
+                user.save(function (err) {
+                    if (err)
+                        return console.error(err);
+                    else {
+                        res.status(200).send('User removed!');
+                        console.log('User removed!');
+                    }
+                });
+            }
+            else {
+                res.status(200).send("Tài khoản không tồn tại!");
+            }
         }
     });
 });
@@ -92,24 +185,22 @@ router.post('/login', function (req, res) {
         _phone: req.body._phone,
     }).select().exec(function (err, user) {
         if (err) {
-            res.status(200).send({ success: false, message: "User not found" });
+            res.status(200).send({success: false, message: "User not found"});
             return console.error(err);
         }
         else {
             if (!user)
                 res.status(200).send({success: false, message: "Phone is incorrect"});
-            else
-            {
-                bcrypt.compare(req.body._password, user._hashed_password, function(err, resp) {
+            else {
+                bcrypt.compare(req.body._password, user._hashed_password, function (err, resp) {
                     // res == true
-                    if(resp == true)
-                    {
-                        var userRes = { 
-                            _phone : user._phone,
+                    if (resp == true) {
+                        var userRes = {
+                            _phone: user._phone,
                             _permission_id: user._permission_id,
                             _identify_card: user._identify_card,
                             _name: user._name,
-                            _token : user._token
+                            _token: user._token
                         };
 
                         res.status(200).send({
@@ -126,8 +217,8 @@ router.post('/login', function (req, res) {
 
 });
 
-router.get('/me', ensureAuthorized, function(req, res) {
-    User.findOne({_token: req.token}, function(err, user) {
+router.get('/me', ensureAuthorized, function (req, res) {
+    User.findOne({_token: req.token}, function (err, user) {
         if (err) {
             res.json({
                 type: false,
@@ -155,7 +246,7 @@ function ensureAuthorized(req, res, next) {
     }
 }
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     console.log(err);
 });
 
