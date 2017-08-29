@@ -16,7 +16,7 @@
 
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group">
+                                    <div id="roleForm" class="form-group">
                                         <label>Vai trò</label>
                                         <ui-select ng-model="selectedRole.selected" theme="bootstrap" on-select = "selectRole($item)">
                                             <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
@@ -33,7 +33,7 @@
                             <div class="row">
                                 <div class="col-lg-6">
 
-                                    <div class="form-group">
+                                    <div id="phoneForm" class="form-group">
                                         <label>Số điện thoại</label>
                                         <input ng-model="phoneNumber" class="form-control" placeholder="0968899988">
                                     </div>
@@ -49,9 +49,21 @@
                                                data-date-format="dd/mm/yyyy" placeholder="dd/mm/yyyy">
                                     </div>
 
-                                    <div id="inputVehicle" class="form-group">
-                                        <label>Bằng Lái Xe</label>
-                                        <input ng-model="vehicleLicense" class="form-control" placeholder="An">
+                                    <div ng-if="inputVehicle" class="form-group">
+                                        <label>Loại Bằng Lái Xe</label>
+                                        <ui-select ng-model="selectedDriverLicenses.selected" theme="bootstrap" on-select = "selectDriverLicenses($item)">
+                                            <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                                            </ui-select-match>
+                                            <ui-select-choices
+                                                    repeat="item as item in driverLicenses | filter: $select.search">
+                                                <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+
+                                    <div ng-if="inputVehicle" class="form-group">
+                                        <label>Số Bằng Lái Xe</label>
+                                        <input ng-model="driverLicenseName" class="form-control" placeholder="541321351">
                                     </div>
 
                                     <div class="form-group">
@@ -65,20 +77,20 @@
                                                placeholder="150A Nguyễn Thị Nhỏ,...">
                                     </div>
 
-                                    <div id="deliveryAddress" class="form-group">
+                                    <div ng-if="showMap" class="form-group">
                                         <label>Địa chỉ giao hàng</label>
-                                        <input ng-model="deliveryAddress" class="form-control"
+                                        <input ng-model="obj.deliveryAddress" class="form-control" my-enter="enterInputMap()"
                                                placeholder="150A Nguyễn Thị Nhỏ,...">
                                     </div>
 
-                                    <div id="emailForm" class="form-group">
+                                    <div class="form-group">
                                         <label>Email</label>
                                         <input ng-model="email" class="form-control" placeholder="dangvan@gmail.com">
                                     </div>
 
-                                    <div id="company" class="form-group">
+                                    <div ng-if="showCompany" class="form-group">
                                         <label>Tên công ty</label>
-                                        <input ng-model="company" class="form-control" placeholder="dangvan@gmail.com">
+                                        <input ng-model="company" class="form-control" placeholder="EXZ">
                                     </div>
 
                                     <div class="form-group">
@@ -111,9 +123,36 @@
                                         <img src="{{srcImage.src}}" style="width:auto;height:150px;">
                                     </div>
 
-                                    <div id="mapDeliveryPoint">
-                                        <ng-map center="{{ deliveryAddress }}" zoom="10" scrollwheel="false" on-click="addMarkerAndPath()">
-                                            <marker position="{{deliveryAddress}}" title="{{deliveryAddress}}"></marker>
+                                    <div>
+                                        <div class="col-xs-6" style="padding-left: 0">
+                                            <div ng-if="showMap">
+                                                <ui-select ng-model="selectedTypeSelect.selected" theme="bootstrap" on-select = "selectTypeSelect($item)">
+                                                    <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                                                    </ui-select-match>
+                                                    <ui-select-choices
+                                                            repeat="item as item in typeSelects | filter: $select.search">
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-6">
+                                            <button ng-if="showMapArea" ng-click="removePoint()">Xóa Điểm</button>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="showMap">
+                                        <ng-map center="{{ mapAddressCenter }}" zoom="14" scrollwheel="false" on-click="addMarkerAndPath()">
+                                            <marker position="{{mapAddress}}"></marker>
+                                            <shape name="polygon"
+                                                   paths="{{path1}}"
+                                                   stroke-color="#FF0000"
+                                                   stroke-opacity="0.8"
+                                                   stroke-weight="2"
+                                                   fill-color="#FF0000"
+                                                   fill-opacity="0.35">
+                                            </shape>
                                         </ng-map>
                                     </div>
 
