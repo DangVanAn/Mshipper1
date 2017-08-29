@@ -15,10 +15,10 @@ import android.widget.Toast;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.MainActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
-import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
 import org.slf4j.Logger;
@@ -57,10 +57,6 @@ public class Activity_login extends BaseActivity {
         Log.d(TAG, "onCreate: test " + userStr);
 
         tv_username.requestFocus();
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        //show soft keyboard fragment
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-        imm.showSoftInput(tv_username, InputMethodManager.SHOW_IMPLICIT);
     }
 
 
@@ -72,6 +68,7 @@ public class Activity_login extends BaseActivity {
 
     @OnClick(R.id.btn_signin)
     public void submit() {
+        String token= FirebaseInstanceId.getInstance().getToken();
         String username = tv_username.getText().toString();
         String password = tv_password.getText().toString();
 
@@ -80,7 +77,7 @@ public class Activity_login extends BaseActivity {
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
-                return loadData.CreateRetrofit().postLogin(new User(password, username));
+                return loadData.CreateRetrofit().postLogin(new User(password, username, token));
             }
         }, new LoadData.CallbackDelegate<RepPost>(this, new CallBackImpl()));
     }

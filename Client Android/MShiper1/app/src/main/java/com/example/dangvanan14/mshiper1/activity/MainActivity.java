@@ -36,14 +36,12 @@ import com.example.dangvanan14.mshiper1.fragment.FragmentChart;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.service.LocationService;
-import com.github.nkzawa.emitter.Emitter;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 
 import java.util.ArrayList;
@@ -115,6 +113,9 @@ public class MainActivity extends BaseActivity
                 , REQUEST_PERMISSIONS);
         loadModelAssign();
         this.activity = this;
+
+        ////////////////////////////
+        FirebaseMessaging.getInstance().subscribeToTopic("fcm");
     }
     private void loadModelAssign() {
         if (!isNetworkConnected(getApplicationContext())) {

@@ -19,7 +19,8 @@ router.get('/getall', function (req, res) {
 
 router.post('/add', function (req, res) {
 
-    User.findOne({_phone: req.body._phone
+    User.findOne({
+        _phone: req.body._phone
     }).select().exec(function (err, user) {
         if (err)
             return console.error(err);
@@ -28,9 +29,9 @@ router.post('/add', function (req, res) {
                 var newUser = new User(req.body);
 
                 var time = new Date().getTime().toString();
-                newUser._token = (jwt.sign({bum: time + keyJWT, user: newUser._phone}, keyJWT) + ' ' + time).split(".")[2];
+                newUser._token = (jwt.sign({ bum: time + keyJWT, user: newUser._phone }, keyJWT) + ' ' + time).split(".")[2];
 
-                bcrypt.hash('123456', 10, function(err, hash) {
+                bcrypt.hash('123456', 10, function (err, hash) {
                     newUser._hashed_password = hash;
                     newUser.save(function (err) {
                         if (err)
@@ -38,11 +39,11 @@ router.post('/add', function (req, res) {
                         else {
                             res.status(200).send('User created!');
                             console.log('User created!');
-                        }});
+                        }
+                    });
                 });
             }
-            else
-            {
+            else {
                 res.status(200).send("Số điện thoại đã tồn tại!");
             }
 
@@ -52,7 +53,7 @@ router.post('/add', function (req, res) {
 });
 
 router.post('/update', function (req, res) {
-    User.findOneAndUpdate({_identify_card: req.body._identify_card}, req.body, function (err, user) {
+    User.findOneAndUpdate({ _identify_card: req.body._identify_card }, req.body, function (err, user) {
         if (err)
             return console.error(err);
         else {
@@ -65,7 +66,7 @@ router.post('/update', function (req, res) {
 router.post('/getbyphone', function (req, res) {
     console.log(req.body);
 
-    User.find({_phone: req.body.phone}, function (err, user) {
+    User.find({ _phone: req.body.phone }, function (err, user) {
         if (err)
             return console.error(err);
         else {
@@ -76,7 +77,7 @@ router.post('/getbyphone', function (req, res) {
 });
 
 router.post('/updatebyphone', function (req, res) {
-    User.findOneAndUpdate({_phone: req.body._phone}, req.body, function (err, user) {
+    User.findOneAndUpdate({ _phone: req.body._phone }, req.body, function (err, user) {
         if (err)
             return console.error(err);
         else {
@@ -87,7 +88,6 @@ router.post('/updatebyphone', function (req, res) {
 });
 
 router.post('/login', function (req, res) {
-    console.log(req.body)
     User.findOne({
         _phone: req.body._phone,
     }).select().exec(function (err, user) {
@@ -97,19 +97,34 @@ router.post('/login', function (req, res) {
         }
         else {
             if (!user)
-                res.status(200).send({success: false, message: "Phone is incorrect"});
-            else
-            {
-                bcrypt.compare(req.body._password, user._hashed_password, function(err, resp) {
+                res.status(200).send({ success: false, message: "Phone is incorrect" });
+            else {
+                bcrypt.compare(req.body._password, user._hashed_password, function (err, resp) {
                     // res == true
-                    if(resp == true)
-                    {
-                        var userRes = { 
-                            _phone : user._phone,
+                    if (resp == true) {
+                        //user update _device_token
+                        console.log(req.body)
+                        if (!req.body._device_token) {
+                            res.status(200).send({
+                                success: false, message: "_device_token is empty", data: ""
+                            });
+                            return
+                        }
+
+                        user._device_token = req._device_token
+                        user.save(function (err) {
+                            if (err)
+                            {
+                                res.status(200).send({success: false, message: "Update _device_token Failed"});
+                                return
+                            }
+                        });
+                        var userRes = {
+                            _phone: user._phone,
                             _permission_id: user._permission_id,
                             _identify_card: user._identify_card,
                             _name: user._name,
-                            _token : user._token
+                            _token: user._token
                         };
 
                         res.status(200).send({
@@ -117,7 +132,7 @@ router.post('/login', function (req, res) {
                         });
                     }
                     else {
-                        res.status(200).send({success: false, message: "Password is incorrect"});
+                        res.status(200).send({ success: false, message: "Password is incorrect" });
                     }
                 });
             }
@@ -126,8 +141,37 @@ router.post('/login', function (req, res) {
 
 });
 
-router.get('/me', ensureAuthorized, function(req, res) {
-    User.findOne({_token: req.token}, function(err, user) {
+router.post('/updateDeviceToken', function (req, res) {
+    User.findOne({
+        _phone: req.body._phone,
+    }).select().exec(function (err, user) {
+        if (err) {
+            res.status(200).send({ success: false, message: "User not found" });
+            return console.error(err);
+        }
+        else {
+            if (!user)
+                res.status(200).send({ success: false, message: "Phone is incorrect" });
+            else {
+                user._device_token = req._device_token
+                user.save(function (err, updatedUser) {
+                    if (err) {
+                        res.status(200).send({ success: false, message: "Update _device_token Failed" });
+                        return
+                    }
+                });
+
+                res.status(200).send({
+                    success: true, message: "Update _device_token complete", data: ""
+                });
+            }
+        }
+    });
+});
+
+
+router.get('/me', ensureAuthorized, function (req, res) {
+    User.findOne({ _token: req.token }, function (err, user) {
         if (err) {
             res.json({
                 type: false,
@@ -155,7 +199,7 @@ function ensureAuthorized(req, res, next) {
     }
 }
 
-process.on('uncaughtException', function(err) {
+process.on('uncaughtException', function (err) {
     console.log(err);
 });
 

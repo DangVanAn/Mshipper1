@@ -30,6 +30,9 @@ public interface IWebservice {
     @POST("users/login")
     Call<RepPost> postLogin(@Body User user);
 
+    @POST("users/updateDeviceToken")
+    Call<RepPost> postDeviceToken(@Body User user);
+
     @POST("locations/postLocation")
     Call<RepPost> postLocation(@Body LocationCustom locationCustom);
 

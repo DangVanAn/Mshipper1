@@ -1,20 +1,27 @@
 {
   "project_info": {
-    "project_number": "833181078030",
-    "project_id": "mshiper1"
+    "project_number": "1093180913418",
+    "firebase_url": "https://mshiper-45dab.firebaseio.com",
+    "project_id": "mshiper-45dab",
+    "storage_bucket": "mshiper-45dab.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:833181078030:android:0f7dd4930bd07e9b",
+        "mobilesdk_app_id": "1:1093180913418:android:0f7dd4930bd07e9b",
         "android_client_info": {
           "package_name": "com.example.dangvanan14.mshiper1"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1093180913418-lihnvedk55kjka3bbker0stsd2i32sng.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyC1yWoovi9S0JtPvfT-aX75aiyzqx_CwCM"
+          "current_key": "AIzaSyD5s4m18WMoqAN_AWNhK8mYKL5uQQIgyB8"
         }
       ],
       "services": {
@@ -26,7 +33,7 @@
           "other_platform_oauth_client": []
         },
         "ads_service": {
-          "status": 1
+          "status": 2
         }
       }
     }
