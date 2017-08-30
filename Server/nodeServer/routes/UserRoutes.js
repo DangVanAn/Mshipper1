@@ -7,7 +7,7 @@ const saltRounds = 10;
 const keyJWT = 'djs235Ajhs668DDflb';
 
 router.get('/getall', function (req, res) {
-    User.find({}, function (err, users) {
+    User.find({_is_enabled : true}, function (err, users) {
         if (err)
             return console.error(err);
         else {
@@ -29,7 +29,14 @@ router.post('/add', function (req, res) {
                 var newUser = new User(req.body);
 
                 var time = new Date().getTime().toString();
+<<<<<<< HEAD
                 newUser._token = (jwt.sign({ bum: time + keyJWT, user: newUser._phone }, keyJWT) + ' ' + time).split(".")[2];
+=======
+                newUser._token = (jwt.sign({
+                    bum: time + keyJWT,
+                    user: newUser._phone
+                }, keyJWT) + ' ' + time).split(".")[2];
+>>>>>>> 051f47b154184b74d14c280716557dccdcf25713
 
                 bcrypt.hash('123456', 10, function (err, hash) {
                     newUser._hashed_password = hash;
@@ -48,6 +55,95 @@ router.post('/add', function (req, res) {
             }
 
 
+        }
+    });
+});
+
+router.post('/adds', function (req, res) {
+
+    // console.log(req.body);
+    var listData = req.body;
+    console.log(listData.length);
+
+    var index = 0;
+    var listPhoneExist = '';
+
+    createAccouts(index);
+
+    function createAccouts(index) {
+        User.findOne({_phone: listData[index]._phone
+        }).select().exec(function (err, user) {
+            if (err)
+                return console.error(err);
+            else {
+                if (!user) {
+                    var newUser = new User(listData[index]);
+
+                    var time = new Date().getTime().toString();
+                    newUser._token = (jwt.sign({bum: time + keyJWT, user: newUser._phone}, keyJWT) + ' ' + time).split(".")[2];
+
+                    bcrypt.hash('123456', 10, function(err, hash) {
+                        newUser._hashed_password = hash;
+                        newUser.save(function (err) {
+                            if (err)
+                                return console.error(err);
+                            else {
+                                console.log('85');
+                                index++;
+                                if(index < listData.length)
+                                {
+                                    createAccouts(index);
+                                }
+                                else {
+                                    if(listPhoneExist.length > 0)
+                                    {
+                                        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+                                    }
+                                    else{
+                                        res.status(200).send('User created!');
+                                        console.log('User created!');
+                                    }
+                                }
+                            }});
+                    });
+                }
+                else
+                {
+                    listPhoneExist += ' ' + listData[index]._phone;
+                }
+            }
+        });
+    }
+
+    if(listPhoneExist.length > 0)
+    {
+        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+    }
+});
+
+router.post('/remove', function (req, res) {
+
+    User.findOne({
+        _phone: req.body._phone
+    }).select().exec(function (err, user) {
+        if (err)
+            return console.error(err);
+        else {
+            if (user) {
+                user._is_enabled = false;
+
+                user.save(function (err) {
+                    if (err)
+                        return console.error(err);
+                    else {
+                        res.status(200).send('User removed!');
+                        console.log('User removed!');
+                    }
+                });
+            }
+            else {
+                res.status(200).send("Tài khoản không tồn tại!");
+            }
         }
     });
 });
@@ -92,12 +188,12 @@ router.post('/login', function (req, res) {
         _phone: req.body._phone,
     }).select().exec(function (err, user) {
         if (err) {
-            res.status(200).send({ success: false, message: "User not found" });
+            res.status(200).send({success: false, message: "User not found"});
             return console.error(err);
         }
         else {
             if (!user)
-                res.status(200).send({ success: false, message: "Phone is incorrect" });
+                res.status(200).send({success: false, message: "Phone is incorrect"});
             else {
                 bcrypt.compare(req.body._password, user._hashed_password, function (err, resp) {
                     // res == true
@@ -138,7 +234,6 @@ router.post('/login', function (req, res) {
             }
         }
     });
-
 });
 
 router.post('/updateDeviceToken', function (req, res) {

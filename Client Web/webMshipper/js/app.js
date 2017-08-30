@@ -272,15 +272,41 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
         };
     }])
 
+    .directive('customOnChange', function() {
+        return {
+            restrict: 'A',
+            link: function (scope, element, attrs) {
+                var onChangeHandler = scope.$eval(attrs.customOnChange);
+                element.bind('change', onChangeHandler);
+            }
+        };
+    })
+
+    .directive('myEnter', function () {
+        return function (scope, element, attrs) {
+            element.bind("keydown keypress", function (event) {
+                if(event.which === 13) {
+                    scope.$apply(function (){
+                        scope.$eval(attrs.myEnter);
+                    });
+
+                    event.preventDefault();
+                }
+            });
+        };
+    })
+
     .run(['$rootScope', '$location', '$cookieStore', '$http',
         function ($rootScope, $location, $cookieStore) {
             $rootScope.api_url = {
 
                 postAccountLogin: 'http://localhost:9999/users/login',
                 postAccountCreate: 'http://localhost:9999/users/add',
+                postAccountCreate_N: 'http://localhost:9999/users/adds',
                 getAccountShow: 'http://localhost:9999/users/getall',
                 getAccountPhone : 'http://localhost:9999/users/getbyphone',
                 postAccountUpdate : 'http://localhost:9999/users/updatebyphone',
+                postAccountRemove : 'http://localhost:9999/users/remove',
 
                 getTeamShow: 'http://localhost:9999/teamlists/getall',
                 postTeamCreate: 'http://localhost:9999/teamlists/adds',
@@ -338,5 +364,22 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 {id : '01', name : 'Nam'},
                 {id : '02', name : 'Nữ'},
                 {id : '03', name : 'Chưa Xác Định'}
+            ];
+
+            $rootScope.listDriverLicense = [
+                {id : "A1", name : "Bằng lái A1"},
+                {id : "A2", name : "Bằng lái A2"},
+                {id : "A3", name : "Bằng lái A3"},
+                {id : "A4", name : "Bằng lái A4"},
+                {id : "B1", name : "Bằng lái B1"},
+                {id : "B2", name : "Bằng lái B2"},
+                {id : "C", name : "Bằng lái C"},
+                {id : "D", name : "Bằng lái D"},
+                {id : "E", name : "Bằng lái E"},
+                {id : "F", name : "Bằng lái F"},
+                {id : "FB2", name : "Bằng lái FB2"},
+                {id : "FC", name : "Bằng lái FC"},
+                {id : "FD", name : "Bằng lái FD"},
+                {id : "FE", name : "Bằng lái FE"}
             ];
         }]);

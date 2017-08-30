@@ -10,15 +10,17 @@ angular.module('mShipperApp').component('login', {
                 console.log(response);
                 if (response.success) {
 
-                    switch (response._permission_id) {
+                    response.data = JSON.parse(response.data);
+
+                    switch (response.data._permission_id) {
                         case "A001":
                             // Manager điều phối
-                            AuthenticationService.SetCredentials('Quản Lý Điều Phối', response._permission_id, response._token, response._name, response._phone);
+                            AuthenticationService.SetCredentials('Quản Lý Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone);
                             $location.path('/accountsmain');
                             break;
                         case "A002":
                             // Điều phối
-                            AuthenticationService.SetCredentials('Điều Phối', response._permission_id, response._token, response._name, response._phone);
+                            AuthenticationService.SetCredentials('Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone);
                             $location.path('/accountsmain');
                             break;
                         case "A003":
@@ -82,8 +84,8 @@ angular.module('mShipperApp')
                     console.log('47');
 
                     $user = {
-                        "phone": phone,
-                        "password": password
+                        "_phone": phone,
+                        "_password": password
                     };
 
                     console.log($user);

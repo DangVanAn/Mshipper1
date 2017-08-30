@@ -7,37 +7,13 @@ angular.module('mShipperApp').component('accountShow', {
 
         function init() {
             $scope.accounts = [];
-            getTeamLead();
+            console.log('12');
         }
-
-        var teamleads = [], userteamlists = [];
-
-        function getTeamLead() {
-            $url = 'http://localhost:9999/teamleads/getall'
-            httpGet($http, $url,
-                function (response) {
-                    console.log("teamleads : " + JSON.stringify(response.data));
-                    teamleads = response.data;
-                    getUserTeamList();
-                }, function (response) {
-                    $scope.statustext = 'error';
-                });
-        }
-
-        function getUserTeamList() {
-            $url = 'http://localhost:9999/userteamlists/getall'
-            httpGet($http, $url,
-                function (response) {
-                    console.log("userteamlist : " + JSON.stringify(response.data));
-                    userteamlists = response.data;
-                    getUser();
-                }, function (response) {
-                    $scope.statustext = 'error';
-                });
-        }
-
+        getUser();
         function getUser() {
-            $url = 'http://localhost:9999/users/getall'
+            console.log('16');
+            $scope.accounts = [];
+            $url = $rootScope.api_url.getAccountShow;
             httpGet($http, $url,
                 function (response) {
                     for (var i = 0; i < response.data.length; i++) {
@@ -54,64 +30,39 @@ angular.module('mShipperApp').component('accountShow', {
                 });
         }
 
-        $scope.addAcount = function () {
-            $location.path('/accountscreate');
-        }
+        $scope.role = $rootScope.listRole;
+        $scope.selectedRole = {};
+        $scope.selectedRole.selected = $scope.role[0];
 
+        var clickingRow = -1;
         $('#overlay-showmore').hide();
         $scope.showMore = function (x) {
             console.log(x);
-            $scope.detail_name = x._last_name + " " + x._first_name;
+            clickingRow = x.stt - 1;
+            $scope.detail_name = x._name;
             $scope.detail_idnumber = x._identify_card;
             $scope.detail_email = x._email;
             $scope.detail_birth = x._date_of_birth;
             $scope.detail_address = x._address;
             $scope.detail_phone = x._phone;
-
-            switch (x._gender) {
-                case "01" :
-                    $scope.detail_gender = "Nam";
-                    break;
-                case "02" :
-                    $scope.detail_gender = "Nữ";
-                    break;
-                case "03" :
-                    $scope.detail_gender = "Chưa xác định";
-                    break;
-            }
+            $scope.detail_gender = x._gender;
 
             //Chỉ hiển thị cho khách hàng phần nhập địa điểm
             if(x._permission_id == 'B001')
             {
-                $('#tableCustomer').show();
-
-                $scope.areas = [];
-                getAreasByPhone(x._phone);
+                $('#showMap').show();
             }
             else {
-                $('#tableCustomer').hide();
+                $('#showMap').hide();
             }
 
-            $('#overlay-showmore').show();
-        };
+            $scope.mapAddress = $scope.accounts[clickingRow]._deliveryAddress;
+            $scope.path1 = [[0, 0]];
+            $scope.mapAddressCenter = $scope.accounts[clickingRow]._deliveryAddress;
 
-        function getAreasByPhone(phone) {
-            var data = {_phone : phone};
-            $url = $rootScope.api_url.postDeliveryAreaGetByPhone;
-            httpPost($http, $url, data,
-                function (response) {
-                    console.log("info::" + response.data);
-                    for(var i = 0; i < response.data.length; i++)
-                    {
-                        response.data[i].stt = i + 1;
-                    }
-                    $scope.areas = response.data;
-                    // $scope.show = response.data;
-                    // iAlert(ngDialog, $scope);
-                }, function (response) {
-                    $scope.statustext = 'error';
-                });
-        }
+            $('#overlay-showmore').show();
+            window.dispatchEvent(new Event('resize'));
+        };
 
         $scope.sortType = "_first_name";
         $scope.sortReverse = false;
@@ -119,73 +70,68 @@ angular.module('mShipperApp').component('accountShow', {
 
         $scope.closeShowMore = function () {
             $('#overlay-showmore').hide();
-        };
 
-        $('#overlay-showmore1').hide();
-        $scope.closeShowMore1 = function () {
-            $('#overlay-showmore1').hide();
-            getAreasByPhone($scope.detail_phone);
-        };
-
-        $scope.showAddDelivery = function () {
-            $('#overlay-showmore1').show();
-            window.dispatchEvent(new Event('resize'));
+            $scope.mapAddress = [0, 0];
+            $scope.path1 = [[0, 0]];
+            $scope.mapAddressCenter = [0, 0];
+            $scope.selectedTypeSelect.selected = $scope.typeSelects[0];
         };
 
         $scope.address = "Hồ CHí Minh.Việt Nam";
         $scope.markers =[];
         $scope.path = [];
-        $scope.addMarkerAndPath = function(event) {
-            console.log(event);
-            $scope.path.push([event.latLng.lat(), event.latLng.lng()]);
+        $('#showMap').show();
 
-            $scope.path1 = $scope.path;
-            $scope.listLatLng = "concobebe";
+        $scope.typeSelects = [{id: '001', name: 'Chọn Điểm'}, {id: '002', name: 'Chọn Vùng'}];
+        $scope.selectedTypeSelect = [];
+        $scope.selectedTypeSelect.selected = $scope.typeSelects[0];
+
+        $scope.selectTypeSelect = function (item) {
+            if ($scope.selectedTypeSelect.selected.id === '001') {
+                $scope.showMapArea = false;
+
+                $scope.mapAddress = $scope.accounts[clickingRow]._deliveryAddress;
+                $scope.path1 = [[0, 0]];
+                $scope.mapAddressCenter = $scope.accounts[clickingRow]._deliveryAddress;
+            }
+
+            if ($scope.selectedTypeSelect.selected.id === '002') {
+                $scope.showMapArea = true;
+
+                $scope.mapAddress = [0, 0];
+                $scope.path1 = JSON.parse($scope.accounts[clickingRow]._polygon);
+                $scope.mapAddressCenter = $scope.path1[0];
+            }
         };
 
-        $scope.removePoint = function () {
-            $scope.path.splice(-1,1)
-        };
-        $scope.path1 = [[18.466465, -66.118292]];
-        
-        $scope.createZone = function () {
-            var data = {
-                _phone_user : $scope.detail_phone,
-                _id_area : $scope.idArea,
-                _name_area : $scope.nameArea,
-                _address : $scope.address,
-                _list_latLng : JSON.stringify($scope.path1),
-                _note : $scope.note
-            };
-            $url = $rootScope.api_url.postDeliveryAreaCreate;
-            httpPost($http, $url, data,
-                function (response) {
-                    console.log("info::" + response.data.message);
-                    $scope.show = response.data;
-                    iAlert(ngDialog, $scope);
-                }, function (response) {
-                    $scope.statustext = 'error';
-                });
+        $scope.showRemoveYN = false;
+        $scope.removeAccount = function (x) {
+            $scope.showRemoveYN = true;
+            clickingRow = x.stt - 1;
         };
 
-        $('#overlay-showmore2').hide();
-        $scope.viewMaps = function (x) {
+        $scope.clickYesRemove = function () {
+            $scope.showRemoveYN = false;
+            var data = {_phone : $scope.accounts[clickingRow]._phone};
+            var $urll = $rootScope.api_url.postAccountRemove;
+            $http({
+                method: 'POST',
+                url: $urll,
+                headers: {'Content-Type': 'application/json'},
+                data: data
+            }).then(function successCallback(response) {
+                console.log(response.data);
+                $scope.show = response.data;
+                iAlert(ngDialog, $scope);
 
-            var listLatLng = JSON.parse(x._list_latLng);
-            $scope.path1 = listLatLng;
-            $scope.address = listLatLng[0];
-            $('#overlay-showmore2').show();
-            window.dispatchEvent(new Event('resize'));
+                getUser();
+            }, function errorCallback(response) {
+                $scope.statustext = 'error';
+            });
         };
 
-        $scope.closeShowMore2 = function () {
-            $('#overlay-showmore2').hide();
-        };
-
-        $scope.updateArea = function (x) {
-            $('#overlay-showmore1').show();
-            window.dispatchEvent(new Event('resize'));
-        };
-
+        $scope.clickNoRemove = function () {
+            $scope.showRemoveYN = false;
+        }
     }
 });

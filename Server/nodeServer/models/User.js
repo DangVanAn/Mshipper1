@@ -48,7 +48,10 @@ var userSchema = mongoose.Schema({
     _image : {
         type: String,
     },
-    _vehicleLicense : {
+    _driverLicenseNumber : {
+        type: String,
+    },
+    _driverLicenseName : {
         type: String,
     },
     _deliveryAddress : {

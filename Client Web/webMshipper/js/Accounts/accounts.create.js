@@ -15,6 +15,10 @@ angular.module('mShipperApp')
         $scope.selectedRole = {};
         $scope.selectedRole.selected = $scope.role[0];
 
+        $scope.driverLicenses = $rootScope.listDriverLicense;
+        $scope.selectedDriverLicenses = {};
+        $scope.selectedDriverLicenses.selected = $scope.driverLicenses[0];
+
 
         $("#birthday").datepicker({
             defaultDate: "+1w",
@@ -34,8 +38,10 @@ angular.module('mShipperApp')
             $scope.identityNumber = '';
             $scope.address = '';
             $scope.phoneNumber = '';
-            $scope.deliveryAddress = '';
-            $scope.vehicleLicense = '';
+            $scope.obj = {};
+            $scope.obj.deliveryAddress = '';
+            $scope.driverLicenseNumber = '';
+            $scope.driverLicenseName = '';
             $scope.company = '';
         }
         $scope.srcImage = {src : '../assets/img/avatar.png'};
@@ -51,21 +57,38 @@ angular.module('mShipperApp')
             else
             {
                 var data = {
-                    _email: $scope.email,
-                    _name: $scope.name,
-                    _date_of_birth: $("#birthday").datepicker("getDate").getTime(),
                     _identify_card: $scope.identityNumber,
+                    _name: $scope.name,
+                    _email: $scope.email,
+                    _date_of_birth: $("#birthday").datepicker("getDate").getTime(),
                     _address: $scope.address,
-                    _deliveryAddress: $scope.deliveryAddress,
                     _phone: $scope.phoneNumber,
-                    _gender: $scope.selectedGender.selected.id,
+                    _gender: $scope.selectedGender.selected.name,
                     _permission_id: $scope.selectedRole.selected.id,
-                    _vehicleLicense: $scope.vehicleLicense,
-                    _image: $scope.srcImage.src,
-                    _company: $scope.company,
-                    _is_enabled : true
-
+                    _is_enabled: true,
+                    _image: $scope.srcImage.src
                 };
+
+                var item = $scope.selectedRole.selected;
+
+                if (item.id == 'C001') {
+                    data._company = $scope.company;
+                }
+                if (item.id == 'C002') {
+                    data._driverLicenseNumber = $scope.driverLicenseNumber;
+                    data._driverLicenseName = $scope.selectedDriverLicenses.selected.id;
+                    data._company = $scope.company;
+                }
+                if (item.id == 'B001') {
+                    data._deliveryAddress = $scope.obj.deliveryAddress;
+                    data._latitude = tempMarker[0];
+                    data._longitude = tempMarker[1];
+                    data._radius = 50;
+                    if($scope.path1.length > 2)
+                    {
+                        data._polygon = JSON.stringify($scope.path1);
+                    }
+                }
 
                 $url = $rootScope.api_url.postAccountCreate;
 
@@ -82,38 +105,32 @@ angular.module('mShipperApp')
             }
         };
 
-        $('#inputVehicle').hide();
-        $('#deliveryAddress').hide();
-        $('#company').hide();
+        $scope.inputVehicle = false;
+        $scope.showCompany = false;
+        $scope.showMap = false;
         $scope.selectRole = function (item) {
             console.log(item);
 
             if(item.id == 'A001' || item.id == 'A002' || item.id == 'A003' || item.id == 'A004')
             {
-                $('#company').hide();
-                $('#inputVehicle').hide();
-                $('#deliveryAddress').hide();
-                $('#mapDeliveryPoint').hide();
+                $scope.showCompany = false;
+                $scope.inputVehicle = false;
+                $scope.showMap = false;
             }
             if(item.id == 'C001')
             {
-                $('#company').show();
-                $('#inputVehicle').show();
-                $('#inputVehicle').hide();
-                $('#deliveryAddress').hide();
-                $('#mapDeliveryPoint').hide();
+                $scope.showCompany = true;
+                $scope.inputVehicle = false;
+                $scope.showMap = false;
             }
             if(item.id == 'C002'){
-                $('#inputVehicle').show();
-                $('#deliveryAddress').hide();
-                $('#company').show();
-                $('#mapDeliveryPoint').hide();
+                $scope.inputVehicle = true;
+                $scope.showCompany = true;
+                $scope.showMap = false;
             }
             if(item.id == 'B001'){
-                $('#deliveryAddress').show();
-                $('#company').show();
-                $('#mapDeliveryPoint').show();
-                window.dispatchEvent(new Event('resize'));
+                $scope.showCompany = true;
+                $scope.showMap = true;
             }
         };
 
@@ -131,6 +148,73 @@ angular.module('mShipperApp')
             });
         });
 
-        $('#mapDeliveryPoint').hide();
+        $scope.obj = {deliveryAddress  : 'Hồ CHí Minh.Việt Nam'};
+        $scope.typeSelects = [{id: '001', name: 'Chọn Điểm'}, {id: '002', name: 'Chọn Vùng'}];
+        $scope.selectedTypeSelect = [];
+        $scope.selectedTypeSelect.selected = $scope.typeSelects[0];
+        $scope.mapAddress = [0, 0];
+        $scope.path1 = [[0, 0]];
+        $scope.path = [];
+        var tempMarker = [0, 0];
+
+        $scope.showMapArea = false;
+        $scope.selectTypeSelect = function (item) {
+            if ($scope.selectedTypeSelect.selected.id === '001') {
+                $scope.showMapArea = false;
+
+                $scope.mapAddress = tempMarker;
+                $scope.path1 = [[0, 0]];
+                $scope.mapAddressCenter = tempMarker;
+            }
+
+            if ($scope.selectedTypeSelect.selected.id === '002') {
+                $scope.showMapArea = true;
+
+                $scope.mapAddress = [0, 0];
+                $scope.path1 = $scope.path;
+                $scope.mapAddressCenter = $scope.path1[0];
+            }
+        };
+        $scope.addMarkerAndPath = function (event) {
+            console.log(event);
+            if ($scope.selectedTypeSelect.selected.id === '001') {
+                $scope.mapAddress = [event.latLng.lat(), event.latLng.lng()];
+
+                tempMarker = [event.latLng.lat(), event.latLng.lng()];
+            }
+
+            if ($scope.selectedTypeSelect.selected.id === '002') {
+                $scope.path.push([event.latLng.lat(), event.latLng.lng()]);
+                $scope.path1 = $scope.path;
+            }
+        };
+
+        $scope.removePoint = function () {
+            $scope.path1.splice(-1, 1)
+        };
+
+        $scope.enterInputMap = function () {
+            console.log('158');
+            getLatLng();
+        }
+
+        function getLatLng(){
+            $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
+                $scope.obj.deliveryAddress + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
+                .then(function (coord_results) {
+                        $scope.queryResults = coord_results.data.results;
+                        $scope.geodata = $scope.queryResults[0].geometry;
+
+                        tempMarker[0] = JSON.stringify($scope.queryResults[0].geometry.location.lat);
+                        tempMarker[1] = JSON.stringify($scope.queryResults[0].geometry.location.lng);
+
+                        $scope.mapAddressCenter = tempMarker;
+                        $scope.mapAddress = tempMarker;
+                    },
+                    function error(_error) {
+                        $scope.queryError = _error;
+                        getLatLng();
+                    });
+        }
     }
 });

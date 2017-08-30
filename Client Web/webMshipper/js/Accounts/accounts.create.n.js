@@ -50,7 +50,6 @@ angular.module('mShipperApp')
             $scope.uploadFile = function () {
                 $("#fileButton").val('');
                 $scope.excel = '';
-
                 console.log('26', new Date().getTime());
             };
 
@@ -66,6 +65,15 @@ angular.module('mShipperApp')
                 $scope.accounts = json.Sheet1;
                 for (var i = 0; i < $scope.accounts.length; i++) {
                     $scope.accounts[i].stt = i + 1;
+                    console.log($scope.accounts[i].stt, isValidDate($scope.accounts[i].BirthDay));
+                    if (!isValidDate($scope.accounts[i].BirthDay)) {
+                        $scope.show = "Sai ngày sinh tại dòng thứ " + $scope.accounts[i].stt;
+                        iAlert(ngDialog, $scope);
+
+                        $scope.accounts = [];
+                        return;
+                    }
+
                 }
 
                 //Nếu là khách hàng thì chuyển địa chỉ giao hàng ra thành LatLng
@@ -231,33 +239,6 @@ angular.module('mShipperApp')
                 }
             };
 
-            function getArea(fullAdress) {
-                var city = '';
-                var district = '';
-                var nation = '';
-                var count = 0;
-                for (var i = fullAdress.length - 1; i >= 0; i--) {
-                    if (fullAdress[i] !== ',') {
-                        if (count === 0) nation += fullAdress[i];
-                        if (count === 1) city += fullAdress[i];
-                        if (count === 2) district += fullAdress[i];
-                    }
-                    else {
-                        count++;
-                    }
-                }
-
-                nation = nation.split("").reverse().join("");
-                city = city.split("").reverse().join("");
-                district = district.split("").reverse().join("");
-
-                if (nation[0] === ' ') nation = nation.substring(1);
-                if (city[0] === ' ') city = city.substring(1);
-                if (district[0] === ' ') district = district.substring(1);
-
-                return {city: city, district: district};
-            }
-
             NgMap.getMap().then(function (map) {
                 google.maps.event.trigger(map, "resize");
             });
@@ -270,208 +251,101 @@ angular.module('mShipperApp')
                 $scope.markers.push({pos: [event._latitude, event._longitude], label: event.DeliveryAddress});
             }
 
-            $scope.status = [
-                "Tất cả",
-                "Hoàn thành",
-                "Đang vận chuyển",
-                "Hủy"
-            ];
-            $scope.selectStatus = $scope.status[0];
-
-
-            $scope.changeStatus = function () {
-                console.log('change Trang thai');
-                filterAll();
-            }
-
-
-            $scope.example6data = [];
-            $scope.example6model = [];
-            $scope.example6settings = {
-                showCheckAll: false,
-                showUncheckAll: false
+            $scope.showImage = false;
+            $scope.showImageButton = function (x) {
+                clickingRow = x.stt - 1;
+                console.log(x);
+                $scope.showImage = true;
             };
 
-            $scope.myEventListeners = {
-                onSelectionChanged: onSelectionChanged
+            $scope.closeShowImage = function () {
+                $scope.srcImage = "";
+                $scope.showImage = false;
             };
 
-            function onSelectionChanged() {
-                console.log('select all : ' + $scope.example6model);
+            $scope.createImage = function () {
 
-                filterAll();
-            }
+                $scope.accounts[clickingRow].image = $scope.srcImage;
+                $scope.showImage = false;
 
-            function formatDate(inDate) {
-                var dd = '';
-                var mm = '';
-                var yy = '';
-                var count = 0;
-                for (var i = 0; i < inDate.length; i++) {
-                    if (inDate[i] === '/') {
-                        count++;
-                    }
-                    else {
-                        if (count === 0) {
-                            dd += inDate[i];
-                        }
-
-                        if (count === 1) {
-                            mm += inDate[i];
-                        }
-
-                        if (count === 2) {
-                            yy += inDate[i];
-                        }
-                    }
-                }
-                if (dd.length === 1) dd = '0' + dd;
-                if (mm.length === 1) mm = '0' + mm;
-                if (yy.length === 2) yy = '20' + yy;
-                return dd + '/' + mm + '/' + yy;
-            }
-
-            function filterAll() {
-                listOrders = rootListOrders;
-
-                // timeBeginDate = $("#beginDate").datepicker('getDate').getTime();
-                // timeEndDate = $("#endDate").datepicker('getDate').getTime();
-                // var listTemp = [];
-                // for (var i = 0; i < listOrders.length; i++) {
-                //     var d = new Date(getY(listOrders[i]._created_date), getM(listOrders[i]._created_date) - 1, getD(listOrders[i]._created_date));
-                //     if (d.getTime() >= timeBeginDate && d.getTime() <= timeEndDate) {
-                //         console.log("Sao ma bang duoc nhi");
-                //         listTemp.push(listOrders[i]);
-                //     }
-                // }
-                // listOrders = listTemp;
-                // console.log('begin : ' + timeBeginDate + " : " + 'end : ' + timeEndDate);
-
-                if ($scope.example6model.length != 0) {
-                    listTemp = [];
-                    for (var i = 0; i < listOrders.length; i++) {
-                        for (var j = 0; j < $scope.example6model.length; j++) {
-                            if ($scope.example6model[j].id == listOrders[i]._area_id) {
-                                listTemp.push(listOrders[i]);
-                                break;
-                            }
-                        }
-                    }
-                    listOrders = listTemp;
-                }
-
-                // if ($scope.selectStatus != 'Tất cả') {
-                //     listTemp = [];
-                //     for (var i = 0; i < listOrders.length; i++) {
-                //         if (listOrders[i]._order_status == $scope.selectStatus) {
-                //             listTemp.push(listOrders[i]);
-                //         }
-                //     }
-                //     listOrders = listTemp;
-                // }
-
-                $scope.orders = listOrders;
-                $scope.$evalAsync();
-
-                $scope.markers = [];
-                for (var i = 0; i < $scope.orders.length; i++) {
-                    addMarker($scope.orders[i]);
-                }
-            }
-
-            var timeBeginDate, timeEndDate;
-
-            var dateFormat = "dd/mm/yy",
-                from = $("#beginDate")
-                    .datepicker({
-                        defaultDate: "+1w",
-                        changeMonth: true,
-                        changeYear: true,
-                        maxDate: "+0D",
-                        dateFormat: "dd/mm/yy",
-                        onSelect: function () {
-                            var dateObject = $(this).datepicker('getDate');
-                            console.log('beginDate: ' + dateObject.getTime());
-                            filterAll();
-                        }
-                    }).datepicker("setDate", new Date())
-                    .on("change", function () {
-                        to.datepicker("option", "minDate", getDate(this));
-                    }),
-                to = $("#endDate").datepicker({
-                    defaultDate: "+1w",
-                    changeMonth: true,
-                    changeYear: true,
-                    maxDate: "+0D",
-                    dateFormat: "dd/mm/yy",
-                    onSelect: function () {
-                        var dateObject = $(this).datepicker('getDate');
-                        console.log('endDate: ' + dateObject.getTime());
-                        filterAll();
-                    }
-                }).datepicker("setDate", new Date())
-                    .on("change", function () {
-                        from.datepicker("option", "maxDate", getDate(this));
-                    });
-
-            function getDate(element) {
-                var date;
-                try {
-                    date = $.datepicker.parseDate(dateFormat, element.value);
-                } catch (error) {
-                    date = null;
-                }
-
-                return date;
+            };
+            $scope.uploadImage = function () {
+                $("#fileButtonImage").val('');
+                console.log('26', new Date().getTime());
             };
 
-            $scope.loadDetails = function (x) {
-                console.log(x._latitude);
-                console.log(x._longitude);
+            $scope.uploadFile = function (event) {
+                console.log('285');
 
-                // Show modal
-                var listDetailModal = [];
-                for (var i = 0; i < details.length; i++) {
-                    if (details[i]._order_id === x._id) {
-                        listDetailModal.push(details[i]);
-                    }
-                }
+                var file = event.target.files[0];
+                var storageRef = firebase.storage().ref(file.name);
 
-                modalOrderCreate.show(listDetailModal, function (selected) {
-                    if (selected) {
-                        console.log("Nhan duoc::" + selected.toString());
-
-                    }
-                    else {
-                        console.log("không có");
-                    }
-                });
-            }
+                storageRef.put(file).then((snapshot) => {
+                    var image = snapshot.downloadURL;
+                console.log('link', image);
+                $scope.srcImage = image;
+            })
+                ;
+            };
 
             $scope.saveAccounts = function () {
                 //Save toàn bộ thông tin.
                 if ($scope.accounts.length == 0) {
-                    $scope.show = "Bạn chưa chọn tập tin đơn hàng!";
+                    $scope.show = "Bạn chưa chọn tập tin tài khoản!";
                     iAlert(ngDialog, $scope);
                 }
                 else {
-                    var tempOr = JSON.stringify($scope.orders);
-                    tempOr = JSON.parse(tempOr);
+                    // console.log($scope.accounts);
 
-                    for (var i = 0; i < tempOr.length; i++) {
+                    var listData = [];
+                    for (var i = 0; i < $scope.accounts.length; i++) {
+                        var splitDate = $scope.accounts[i].BirthDay.split('/');
+                        var date = new Date(splitDate[2], splitDate[1] - 1, splitDate[0]);
 
-                        console.log("Created : " + tempOr[i]._created_date + " : " + tempOr[i]._expected_date);
-                        tempOr[i]._created_date = new Date(getY(tempOr[i]._created_date), getM(tempOr[i]._created_date) - 1, getD(tempOr[i]._created_date)).getTime();
-                        tempOr[i]._expected_date = new Date(getY(tempOr[i]._expected_date), getM(tempOr[i]._expected_date) - 1, getD(tempOr[i]._expected_date)).getTime();
+                        var data = {
+                            _identify_card: $scope.accounts[i].IdNumber,
+                            _name: $scope.accounts[i].FullName,
+                            _email: $scope.accounts[i].Email,
+                            _date_of_birth: date.getTime(),
+                            _address: $scope.accounts[i].Address,
+                            _phone: $scope.accounts[i].PhoneNumber,
+                            _gender: $scope.accounts[i].Gender,
+                            _permission_id: $scope.selectedRole.selected.id,
+                            _is_enabled: true,
+                            _image: $scope.accounts[i].image,
+
+                        };
+
+                        var item = $scope.selectedRole.selected;
+
+                        if (item.id == 'C001') {
+                            data._company = $scope.accounts[i].CompanyName;
+                        }
+                        if (item.id == 'C002') {
+                            data._driverLicenseNumber = $scope.accounts[i].DriverLicenseNumber;
+                            data._driverLicenseName = $scope.accounts[i].DriverLicenseName;
+                            data._company = $scope.accounts[i].CompanyName;
+                        }
+                        if (item.id == 'B001') {
+                            data._deliveryAddress = $scope.accounts[i].DeliveryAddress;
+                            data._latitude = $scope.accounts[i]._latitude;
+                            data._longitude = $scope.accounts[i]._longitude;
+                            data._radius = 50;
+                            data._polygon = $scope.accounts[i].polygon;
+                        }
+
+                        listData.push(data);
                     }
 
-                    $urll = 'http://localhost:9999/orders/adds'
+                    console.log(listData);
+
+                    $urll = $rootScope.api_url.postAccountCreate_N;
 
                     $http({
                         method: 'POST',
                         url: $urll,
                         headers: {'Content-Type': 'application/json'},
-                        data: tempOr
+                        data: listData
                     }).then(function successCallback(response) {
                         console.log(response.data);
                         $scope.show = response.data;
@@ -479,45 +353,13 @@ angular.module('mShipperApp')
                     }, function errorCallback(response) {
                         $scope.statustext = 'error';
                     });
-
-                    $urll = 'http://localhost:9999/details/adds'
-
-                    $http({
-                        method: 'POST',
-                        url: $urll,
-                        headers: {'Content-Type': 'application/json'},
-                        data: details
-                    }).then(function successCallback(response) {
-                        console.log(response.data);
-                    }, function errorCallback(response) {
-                        $scope.statustext = 'error';
-                    });
                 }
             };
 
-            function towWordNumber(number) {
-                if (number < 10) {
-                    return ("0" + number.toString());
-                }
-                return number.toString();
-            }
-
-            function getD(date) {
-                var temp = date.charAt(0) + date.charAt(1);
-                temp = Number(temp);
-                return temp;
-            }
-
-            function getM(date) {
-                var temp = date.charAt(3) + date.charAt(4);
-                temp = Number(temp);
-                return temp;
-            }
-
-            function getY(date) {
-                var temp = date.charAt(6) + date.charAt(7) + date.charAt(8) + date.charAt(9);
-                temp = Number(temp);
-                return temp;
+            function isValidDate(s) {
+                var bits = s.split('/');
+                var d = new Date(bits[2], bits[1] - 1, bits[0]);
+                return d && (d.getMonth() + 1) == bits[1];
             }
 
         }
