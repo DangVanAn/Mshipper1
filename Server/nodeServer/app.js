@@ -142,6 +142,31 @@ app.listen(9999, function () {
     //     .catch(function (error) {
     //         console.log("Error sending message:", error);
     //     });
+
+
+    // Gửi theo topic
+    // var notificationKey = "some-notification-key";
+    
+    // // See the "Defining the message payload" section below for details
+    // // on how to define a message payload.
+    // var payload = {
+    //   data: {
+    //     score: "850",
+    //     time: "2:45"
+    //   }
+    // };
+    
+    // // Send a message to the device group corresponding to the provided
+    // // notification key.
+    // admin.messaging().sendToDeviceGroup(notificationKey, payload)
+    //   .then(function(response) {
+    //     // See the MessagingDeviceGroupResponse reference documentation for
+    //     // the contents of response.
+    //     console.log("Successfully sent message:", response);
+    //   })
+    //   .catch(function(error) {
+    //     console.log("Error sending message:", error);
+    //   });
 });
 
 module.exports = app;
