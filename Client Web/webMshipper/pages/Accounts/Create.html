@@ -142,7 +142,7 @@
                                         </div>
                                     </div>
 
-                                    <div ng-if="showMap">
+                                    <div id="idShowMap">
                                         <ng-map center="{{ mapAddressCenter }}" zoom="14" scrollwheel="false" on-click="addMarkerAndPath()">
                                             <marker position="{{mapAddress}}"></marker>
                                             <shape name="polygon"

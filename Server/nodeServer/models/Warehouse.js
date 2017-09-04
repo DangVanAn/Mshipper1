@@ -2,27 +2,34 @@ var mongoose = require('mongoose');
 
 //User Schema
 var warehouseSchema = mongoose.Schema({
-    _id_area : {
+    _id_warehouse : {
         type: String,
         required: true
     },
-    _name_area : {
+    _name : {
         type: String,
-        required: true
     },
     _address : {
         type: String,
-        required: true
     },
-    _list_latLng : {
+    _polygon : {
         type: String,
-        required: true
+    },
+    _latitude : {
+        type: String,
+    },
+    _longitude : {
+        type: String,
+    },
+    _radius : {
+        type: Number,
     },
     _note : {
         type: String,
-        required: true
     },
-
+    _is_enabled : {
+        type: Boolean,
+    }
 });
 
 

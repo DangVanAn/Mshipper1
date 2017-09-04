@@ -102,11 +102,35 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/accountscreate/:phone", {
                     template: '<account-update></account-update>',
                 })
+                .when("/productgroupsmain", {
+                    template: '<productgroups-main></productgroups-main>',
+                })
+                .when("/productgroupsshow", {
+                    template: '<productgroups-show></productgroups-show>',
+                })
+                .when("/productgroupscreate", {
+                    template: '<productgroups-create></productgroups-create>',
+                })
+                .when("/productgroupscreate.n", {
+                    template: '<productgroups-create-n></productgroups-create-n>',
+                })
+                .when("/productgroupscreate/:id", {
+                    template: '<productgroups-update></productgroups-update>',
+                })
+                .when("/warehousesmain", {
+                    template: '<warehouses-main></warehouses-main>',
+                })
                 .when("/warehousesshow", {
                     template: '<warehouses-show></warehouses-show>',
                 })
                 .when("/warehousescreate", {
                     template: '<warehouses-create></warehouses-create>',
+                })
+                .when("/warehousescreate.n", {
+                    template: '<warehouses-create-n></warehouses-create-n>',
+                })
+                .when("/warehousescreate/:id", {
+                    template: '<warehouse-update></warehouse-update>',
                 })
                 .when("/teamscreate", {
                     template: '<teams-create></teams-create>',
@@ -322,6 +346,17 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
 
                 getWarehouse: 'http://localhost:9999/warehouses/getall',
                 postWarehouseCreate: 'http://localhost:9999/warehouses/add',
+                postWarehouseCreate_N: 'http://localhost:9999/warehouses/adds',
+                postWarehouseRemove : 'http://localhost:9999/warehouses/remove',
+                getWarehouseId : 'http://localhost:9999/warehouses/getbyid',
+                postWarehouseUpdate : 'http://localhost:9999/warehouses/updatebyid',
+
+                getProductGroup: 'http://localhost:9999/productgroups/getall',
+                postProductGroupCreate: 'http://localhost:9999/productgroups/add',
+                postProductGroupCreate_N: 'http://localhost:9999/productgroups/adds',
+                postProductGroupRemove : 'http://localhost:9999/productgroups/remove',
+                getProductGroupId : 'http://localhost:9999/productgroups/getbyid',
+                postProductGroupUpdate : 'http://localhost:9999/productgroups/updatebyid',
             };
 
             $rootScope.globals = $cookieStore.get('globals') || {};

@@ -1,57 +1,96 @@
 <div id="wrapper">
     <div id="page-wrapper">
-        <div class="row">
-            <div class="col-lg-12">
-                <h1 class="page-header">Thêm khu vực vận chuyển</h1>
+        <div id="AccountCreate">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Thêm Thông Tin Kho Mới</h1>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        Thêm dữ liệu
-                    </div>
-                    <div class="panel-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <form role="form">
-
-                                    <div class="form-group">
-                                        <label>Mã khu vực</label>
-                                        <input ng-model="idArea" class="form-control" placeholder="A01">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Thành phố</label>
-                                        <input ng-model="city" class="form-control" placeholder="Hồ Chí Minh">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Quận / Huyện</label>
-                                        <input ng-model="district" class="form-control" placeholder="Quận 11">
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label>Mô tả</label>
-                                        <input ng-model="description" class="form-control" placeholder="Mô tả">
-                                    </div>
-
-                                </form>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div style="padding-top: 24px">
-                                    <button type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu thông tin</button>
-                                    <button type="reset"  ng-click="reset()" class="btn btn-outline btn-primary">Làm mới</button>
-                                </div>
-                            </div>
-                            <!-- /.col-lg-6 (nested) -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Thêm dữ liệu
                         </div>
-                        <!-- /.row (nested) -->
-                    </div>
+                        <div class="panel-body">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div id="idForm" class="form-group">
+                                        <label>Mã Địa Điểm</label>
+                                        <input ng-model="idWarehouse" class="form-control" placeholder="KNTB1">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tên Địa Điểm</label>
+                                        <input ng-model="nameWarehouse" class="form-control" placeholder="Kho Van 1">
+                                    </div>
+
+                                    <div ng-if="showMap" class="form-group">
+                                        <label>Địa chỉ</label>
+                                        <input ng-model="obj.address" class="form-control" my-enter="enterInputMap()"
+                                               placeholder="150A Nguyễn Thị Nhỏ,...">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Ghi Chú</label>
+                                        <input ng-model="note" class="form-control" placeholder="...">
+                                    </div>
+
+
+                                    <div style="float: right">
+                                        <button type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu
+                                            thông tin
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div>
+                                        <div class="col-xs-6" style="padding-left: 0">
+                                            <div ng-if="showMap">
+                                                <ui-select ng-model="selectedTypeSelect.selected" theme="bootstrap" on-select = "selectTypeSelect($item)">
+                                                    <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                                                    </ui-select-match>
+                                                    <ui-select-choices
+                                                            repeat="item as item in typeSelects | filter: $select.search">
+                                                        <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                                    </ui-select-choices>
+                                                </ui-select>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-xs-6">
+                                            <button ng-if="showMapArea" ng-click="removePoint()">Xóa Điểm</button>
+                                        </div>
+                                    </div>
+
+                                    <div ng-if="showMap">
+                                        <ng-map center="{{ mapAddressCenter }}" zoom="14" scrollwheel="false" on-click="addMarkerAndPath()">
+                                            <marker position="{{mapAddress}}"></marker>
+                                            <shape name="polygon"
+                                                   paths="{{path1}}"
+                                                   stroke-color="#FF0000"
+                                                   stroke-opacity="0.8"
+                                                   stroke-weight="2"
+                                                   fill-color="#FF0000"
+                                                   fill-opacity="0.35">
+                                            </shape>
+                                        </ng-map>
+                                    </div>
+
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+
     </div>
+</div>
 </div>

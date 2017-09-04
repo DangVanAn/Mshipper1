@@ -84,9 +84,9 @@ angular.module('mShipperApp')
                     data._latitude = tempMarker[0];
                     data._longitude = tempMarker[1];
                     data._radius = 50;
-                    if($scope.path1.length > 2)
+                    if($scope.path.length > 2)
                     {
-                        data._polygon = JSON.stringify($scope.path1);
+                        data._polygon = JSON.stringify($scope.path);
                     }
                 }
 
@@ -108,6 +108,7 @@ angular.module('mShipperApp')
         $scope.inputVehicle = false;
         $scope.showCompany = false;
         $scope.showMap = false;
+        $('#idShowMap').hide();
         $scope.selectRole = function (item) {
             console.log(item);
 
@@ -116,21 +117,26 @@ angular.module('mShipperApp')
                 $scope.showCompany = false;
                 $scope.inputVehicle = false;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'C001')
             {
                 $scope.showCompany = true;
                 $scope.inputVehicle = false;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'C002'){
                 $scope.inputVehicle = true;
                 $scope.showCompany = true;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'B001'){
                 $scope.showCompany = true;
                 $scope.showMap = true;
+                $('#idShowMap').show();
+                window.dispatchEvent(new Event('resize'));
             }
         };
 
@@ -190,7 +196,7 @@ angular.module('mShipperApp')
         };
 
         $scope.removePoint = function () {
-            $scope.path1.splice(-1, 1)
+            $scope.path.splice(-1, 1)
         };
 
         $scope.enterInputMap = function () {

@@ -291,7 +291,7 @@ angular.module('mShipperApp')
             $scope.saveAccounts = function () {
                 //Save toàn bộ thông tin.
                 if ($scope.accounts.length == 0) {
-                    $scope.show = "Bạn chưa chọn tập tin tài khoản!";
+                    $scope.show = "Bạn chưa chọn tập tin!";
                     iAlert(ngDialog, $scope);
                 }
                 else {

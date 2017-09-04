@@ -57,63 +57,68 @@ router.post('/add', function (req, res) {
 
 router.post('/adds', function (req, res) {
 
-    // console.log(req.body);
     var listData = req.body;
     console.log(listData.length);
 
     var index = 0;
     var listPhoneExist = '';
 
-    createAccouts(index);
+    findFuntion(index);
 
-    function createAccouts(index) {
+    function findFuntion(index) {
         User.findOne({_phone: listData[index]._phone
         }).select().exec(function (err, user) {
             if (err)
                 return console.error(err);
             else {
-                if (!user) {
-                    var newUser = new User(listData[index]);
-
-                    var time = new Date().getTime().toString();
-                    newUser._token = (jwt.sign({bum: time + keyJWT, user: newUser._phone}, keyJWT) + ' ' + time).split(".")[2];
-
-                    bcrypt.hash('123456', 10, function(err, hash) {
-                        newUser._hashed_password = hash;
-                        newUser.save(function (err) {
-                            if (err)
-                                return console.error(err);
-                            else {
-                                console.log('85');
-                                index++;
-                                if(index < listData.length)
-                                {
-                                    createAccouts(index);
-                                }
-                                else {
-                                    if(listPhoneExist.length > 0)
-                                    {
-                                        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
-                                    }
-                                    else{
-                                        res.status(200).send('User created!');
-                                        console.log('User created!');
-                                    }
-                                }
-                            }});
-                    });
-                }
-                else
-                {
+                if (user) {
                     listPhoneExist += ' ' + listData[index]._phone;
+                }
+                index++;
+                if(index < listData.length){
+                    findFuntion(index);
+                }
+                else {
+                    bcryptFuntion();
                 }
             }
         });
     }
 
-    if(listPhoneExist.length > 0)
-    {
-        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+    var mainHash = '';
+    function bcryptFuntion() {
+        if(listPhoneExist.length > 0)
+        {
+            res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+        }
+        else {
+            bcrypt.hash('123456', 10, function(err, hash) {
+                mainHash = hash;
+
+                saveFuntion();
+            });
+
+        }
+    }
+
+    function saveFuntion() {
+        for(var i = 0; i < listData.length; i++)
+        {
+            var time = new Date().getTime().toString();
+            listData[i]._token = (jwt.sign({bum: time + keyJWT, user: listData[i]._phone}, keyJWT) + ' ' + time).split(".")[2];
+            listData[i]._hashed_password = mainHash;
+        }
+
+        User.insertMany(listData, function(err, docs) {
+            if(err) {
+                res.status(200).send('Error!');
+                console.log('Error!');
+            }
+            else {
+                res.status(200).send('Users created!');
+                console.log('Users created!');
+            }
+        });
     }
 });
 
@@ -173,8 +178,15 @@ router.post('/updatebyphone', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send('User successfully updated!');
-            console.log('User successfully updated!');
+            if(user)
+            {
+                res.status(200).send('User successfully updated!');
+                console.log('User successfully updated!');
+            }
+            else {
+                res.status(200).send('User unsuccessfully updated!');
+                console.log('User unsuccessfully updated!');
+            }
         }
     });
 });
