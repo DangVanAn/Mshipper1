@@ -22,15 +22,22 @@ public class User implements Parcelable{
     private String _company ;
     private String _vehicleLicense ;
     private String _deliveryAddress ;
+    private String _device_token;
     public User() {
     }
 
-    public User(String _password, String _phone) {
-        this._password = _password;
+    public User(String _phone, String _device_token) {
         this._phone = _phone;
+        this._device_token = _device_token;
     }
 
-    public User(String _identify_card, String _name, String _email, String _hashed_password, String _password, String _token, String _assign_code, String _pass_code, long _date_of_birth, String _address, String _image, String _phone, String _gender, String _permission_id, boolean _is_enabled, String _company, String _vehicleLicense, String _deliveryAddress) {
+    public User(String _password, String _phone, String _device_token) {
+        this._password = _password;
+        this._phone = _phone;
+        this._device_token = _device_token;
+    }
+
+    public User(String _identify_card, String _name, String _email, String _hashed_password, String _password, String _token, String _assign_code, String _pass_code, long _date_of_birth, String _address, String _image, String _phone, String _gender, String _permission_id, boolean _is_enabled, String _company, String _vehicleLicense, String _deliveryAddress, String _device_token) {
         this._identify_card = _identify_card;
         this._name = _name;
         this._email = _email;
@@ -49,6 +56,7 @@ public class User implements Parcelable{
         this._company = _company;
         this._vehicleLicense = _vehicleLicense;
         this._deliveryAddress = _deliveryAddress;
+        this._device_token = _device_token;
     }
 
     protected User(Parcel in) {
@@ -70,6 +78,7 @@ public class User implements Parcelable{
         _company = in.readString();
         _vehicleLicense = in.readString();
         _deliveryAddress = in.readString();
+        _device_token = in.readString();
     }
 
     @Override
@@ -92,6 +101,7 @@ public class User implements Parcelable{
         dest.writeString(_company);
         dest.writeString(_vehicleLicense);
         dest.writeString(_deliveryAddress);
+        dest.writeString(_device_token);
     }
 
     @Override
@@ -253,5 +263,13 @@ public class User implements Parcelable{
 
     public void set_deliveryAddress(String _deliveryAddress) {
         this._deliveryAddress = _deliveryAddress;
+    }
+
+    public String get_device_token() {
+        return _device_token;
+    }
+
+    public void set_device_token(String _device_token) {
+        this._device_token = _device_token;
     }
 }
