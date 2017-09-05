@@ -29,14 +29,7 @@ router.post('/add', function (req, res) {
                 var newUser = new User(req.body);
 
                 var time = new Date().getTime().toString();
-<<<<<<< HEAD
                 newUser._token = (jwt.sign({ bum: time + keyJWT, user: newUser._phone }, keyJWT) + ' ' + time).split(".")[2];
-=======
-                newUser._token = (jwt.sign({
-                    bum: time + keyJWT,
-                    user: newUser._phone
-                }, keyJWT) + ' ' + time).split(".")[2];
->>>>>>> 051f47b154184b74d14c280716557dccdcf25713
 
                 bcrypt.hash('123456', 10, function (err, hash) {
                     newUser._hashed_password = hash;
