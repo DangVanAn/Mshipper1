@@ -20,6 +20,9 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     _weigh_for_vehicle : {
         type: Number,
     },
+    _driver_accept :{
+        type : Number,
+    },
     _is_enabled : {
         type: Boolean,
     }
