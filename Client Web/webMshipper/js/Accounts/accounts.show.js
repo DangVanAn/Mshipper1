@@ -56,9 +56,9 @@ angular.module('mShipperApp').component('accountShow', {
                 $('#showMap').hide();
             }
 
-            $scope.mapAddress = $scope.accounts[clickingRow]._deliveryAddress;
+            $scope.mapAddress = [$scope.accounts[clickingRow]._latitude, $scope.accounts[clickingRow]._longitude];
+            $scope.mapAddressCenter = [$scope.accounts[clickingRow]._latitude, $scope.accounts[clickingRow]._longitude];
             $scope.path1 = [[0, 0]];
-            $scope.mapAddressCenter = $scope.accounts[clickingRow]._deliveryAddress;
 
             $('#overlay-showmore').show();
             window.dispatchEvent(new Event('resize'));
@@ -90,9 +90,9 @@ angular.module('mShipperApp').component('accountShow', {
             if ($scope.selectedTypeSelect.selected.id === '001') {
                 $scope.showMapArea = false;
 
-                $scope.mapAddress = $scope.accounts[clickingRow]._deliveryAddress;
+                $scope.mapAddress = [$scope.accounts[clickingRow]._latitude, $scope.accounts[clickingRow]._longitude];
+                $scope.mapAddressCenter = [$scope.accounts[clickingRow]._latitude, $scope.accounts[clickingRow]._longitude];
                 $scope.path1 = [[0, 0]];
-                $scope.mapAddressCenter = $scope.accounts[clickingRow]._deliveryAddress;
             }
 
             if ($scope.selectedTypeSelect.selected.id === '002') {

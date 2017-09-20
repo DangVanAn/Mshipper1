@@ -105,11 +105,9 @@ angular.module('mShipperApp')
                             tempMarker = [0, 0];
                         }
 
-                        console.log('93', $scope.mapAddress);
-                        console.log('94', response.data[0]._polygon);
                         if(response.data[0]._polygon != undefined && response.data[0]._polygon.length > 0){
                             $scope.path = JSON.parse(response.data[0]._polygon);
-                            $scope.path1 = JSON.parse(response.data[0]._polygon);
+                            // $scope.path1 = JSON.parse(response.data[0]._polygon);
                         }
                     }
 
@@ -120,6 +118,7 @@ angular.module('mShipperApp')
                 });
         }
 
+        $('#idShowMap').hide();
         function selectRole(item) {
             console.log(item);
 
@@ -128,23 +127,40 @@ angular.module('mShipperApp')
                 $scope.showCompany = false;
                 $scope.inputVehicle = false;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'C001')
             {
                 $scope.showCompany = true;
                 $scope.inputVehicle = false;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'C002'){
                 $scope.inputVehicle = true;
                 $scope.showCompany = true;
                 $scope.showMap = false;
+                $('#idShowMap').hide();
             }
             if(item.id == 'B001'){
                 $scope.showCompany = true;
                 $scope.showMap = true;
+                $('#idShowMap').show();
+                window.dispatchEvent(new Event('resize'));
             }
         };
+
+        var fileButton = document.getElementById("fileButton");
+        fileButton.addEventListener('change', function(e){
+            var file = e.target.files[0];
+            var storageRef = firebase.storage().ref(file.name);
+
+            storageRef.put(file).then((snapshot) => {
+                var image = snapshot.downloadURL;
+            console.log('link', image);
+            $scope.srcImage = {src : image};
+        });
+        });
 
         var tempMarker = [];
         $scope.selectTypeSelect = function (item) {
@@ -183,7 +199,7 @@ angular.module('mShipperApp')
         };
 
         $scope.removePoint = function () {
-            $scope.path1.splice(-1, 1)
+            $scope.path.splice(-1, 1)
         };
 
         $scope.enterInputMap = function () {
@@ -250,9 +266,9 @@ angular.module('mShipperApp')
                     data._latitude = tempMarker[0];
                     data._longitude = tempMarker[1];
                     data._radius = 50;
-                    if($scope.path1.length > 2)
+                    if($scope.path.length > 2)
                     {
-                        data._polygon = JSON.stringify($scope.path1);
+                        data._polygon = JSON.stringify($scope.path);
                     }
                 }
 

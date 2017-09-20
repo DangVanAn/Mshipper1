@@ -1,0 +1,67 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="AccountCreateN">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Tạo Danh Sách Kho</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+
+                        <br>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-2">
+                                    <input id="fileButton" type="file" ng-click="uploadFile()" xlsx-model="excel" style="display: none;">
+                                    <button style="width: 150px" type="button" class="btn btn-primary" onclick="document.getElementById('fileButton').click();">Nhập tập tin</button>
+                                    <div  ng-if="excel" ng-init="GetImport()"></div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button style="width: 150px; float: left" type="button" class="btn btn-primary" ng-click="saveProductGroups()">Lưu thông tin</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <!-- /.panel-heading -->
+                        <div class="panel-body">
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>ID</th>
+                                    <th>Tên Loại Hàng</th>
+                                    <th>Ghi Chú</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="pointer" ng-repeat="x in productgroups">
+                                    <td>{{$index + 1}}</td>
+                                    <td>{{x.id}}</td>
+                                    <td>{{x.name}}</td>
+                                    <td>{{x.note}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+</div>

@@ -1,86 +1,91 @@
 <div id="wrapper">
     <div id="page-wrapper">
-        <div id="WarehouseShow">
+        <div id="AccountShow">
+
             <!--textBox overlay-->
-            <div class="overlay" id="overlay-showmore1" style="display: block;">
+            <div class="overlay" id="overlay-showmore" style="display: block;">
                 <div class="model glx-container" style="margin-top: -166.5px;">
                     <div class="row closeOver">
-                        <img ng-click="closeShowMore1()" src="../assets/img/icons/xController.png">
+                        <img ng-click="closeShowMore()" src="../assets/img/icons/xController.png">
                     </div>
                     <div class="row core">
-                        <p>Nhập địa chỉ kho</p>
+                        <p id="scoreRate">Thông Tin Chi Tiết</p>
                     </div>
                     <div class="row panel-body">
                         <div class="col-xs-6">
-                            <div class="form-group">
-                                <label>Mã Địa Điểm</label>
-                                <input ng-model="idArea" class="form-control" placeholder="ADM">
+                            <div class="row">
+                                <div class="col-xs-4"><p>Id</p></div>
+                                <div class="col-xs-8"><p>{{detail_id}}</p></div>
                             </div>
-
-                            <div class="form-group">
-                                <label>Địa chỉ</label>
-                                <input ng-model="address" class="form-control" placeholder="152 Tô Hiến Thành, Phường 15, Quận 11, Hồ Chí Minh">
+                            <div class="row">
+                                <div class="col-xs-4"><p>Tên</p></div>
+                                <div class="col-xs-8"><p>{{detail_name}}</p></div>
                             </div>
                         </div>
 
                         <div class="col-xs-6">
-                            <div class="form-group">
-                                <label>Tên Địa Điểm</label>
-                                <input ng-model="nameArea" class="form-control" placeholder="Co.op Tô Hiến Thành">
+                            <div class="row">
+                                <div class="col-xs-4"><p>Địa Chỉ</p></div>
+                                <div class="col-xs-8"><p>{{detail_address}}</p></div>
                             </div>
+                            <div class="row">
+                                <div class="col-xs-4"><p>Ghi Chú</p></div>
+                                <div class="col-xs-8"><p>{{detail_note}}</p></div>
+                            </div>
+                        </div>
+                        <div>
 
-                            <div class="form-group">
-                                <label>Ghi Chú</label>
-                                <input ng-model="note" class="form-control" placeholder="...">
-                            </div>
                         </div>
                     </div>
 
-                    <div class="row panel-body" id="mapAccountAddress">
-                        <button ng-click="removePoint()">Xóa Điểm</button>
-                        <button ng-click="createZone()">Lập vùng</button>
-                        <ng-map center="{{ address }}" zoom="10" scrollwheel="false" on-click="addMarkerAndPath()">
-                            <marker position="{{address}}" title="{{address}}"></marker>
-                            <shape name="polyline" id="foo"
-                                   path="{{path}}"
-                                   stroke-color="#FF0000"
-                                   stroke-opacity="1.0"
-                                   stroke-weight="0">
-                            </shape>
-                            <shape name="polygon"
-                                   paths="{{path1}}"
-                                   stroke-color="#FF0000"
-                                   stroke-opacity="0.8"
-                                   stroke-weight="2"
-                                   fill-color="#FF0000"
-                                   fill-opacity="0.35">
-                            </shape>
-                        </ng-map>
+                    <div id="showMap" class="row" style="padding: 10px">
+                        <div class="panel-body">
+                            <div>
+                                <div class="col-xs-6" style="padding-left: 0">
+                                    <ui-select ng-model="selectedTypeSelect.selected" theme="bootstrap"
+                                               on-select="selectTypeSelect($item)">
+                                        <ui-select-match placeholder="Chọn...">{{$select.selected.name}}
+                                        </ui-select-match>
+                                        <ui-select-choices
+                                                repeat="item as item in typeSelects | filter: $select.search">
+                                            <div ng-bind-html="item.name | highlight: $select.search"></div>
+                                        </ui-select-choices>
+                                    </ui-select>
+                                </div>
+
+                            </div>
+
+                            <ng-map center="{{ mapAddressCenter }}" zoom="14" scrollwheel="false"
+                                    style="padding-bottom: 40px">
+                                <marker position="{{mapAddress}}"></marker>
+                                <shape name="polygon"
+                                       paths="{{path1}}"
+                                       stroke-color="#FF0000"
+                                       stroke-opacity="0.8"
+                                       stroke-weight="2"
+                                       fill-color="#FF0000"
+                                       fill-opacity="0.35">
+                                </shape>
+                            </ng-map>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <!--textBox overlay-->
-            <div class="overlay" id="overlay-showmore2" style="display: block;">
+            <div class="overlay" ng-if="showRemoveYN" style="display: block;">
                 <div class="model glx-container" style="margin-top: -166.5px;">
                     <div class="row closeOver">
-                        <img ng-click="closeShowMore2()" src="../assets/img/icons/xController.png">
+                        <img ng-click="closeShowMore()" src="../assets/img/icons/xController.png">
                     </div>
                     <div class="row core">
-                        <p>Bản đồ</p>
+                        <p>Bạn có chắc chắn xóa thông tin kho này không?</p>
                     </div>
-
-                    <div class="row panel-body" id="mapAccountAddress2">
-                        <ng-map center="{{ address }}" zoom="16" scrollwheel="false">
-                            <shape name="polygon"
-                                   paths="{{path1}}"
-                                   stroke-color="#FF0000"
-                                   stroke-opacity="0.8"
-                                   stroke-weight="2"
-                                   fill-color="#FF0000"
-                                   fill-opacity="0.35">
-                            </shape>
-                        </ng-map>
+                    <div class="row panel-body">
+                        <div class="col-xs-6">
+                            <button ng-click="clickYesRemove()">Có</button>
+                            <button ng-click="clickNoRemove()">Không</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,13 +103,7 @@
                         <div class="panel-heading">
                             Bảng dữ liệu
                         </div>
-                        <br>
 
-                        <div >
-                            <div class="col-lg-12">
-                                <button ng-click="addWarehouse()" type="button" class="btn btn-primary">Thêm khu vực vận chuyển</button>
-                            </div>
-                        </div>
                         <br>
                         <br>
                         <div class="panel-body">
@@ -121,48 +120,58 @@
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="#" ng-click="sortType = '_id_area'; sortReverse = !sortReverse">
-                                            Mã
-                                            <span ng-show="sortType == '_id_area' && !sortReverse"
+                                        <a href="#" ng-click="sortType = '_phone'; sortReverse = !sortReverse">
+                                            Id
+                                            <span ng-show="sortType == '_phone' && !sortReverse"
                                                   class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_id_area' && sortReverse"
+                                            <span ng-show="sortType == '_phone' && sortReverse"
                                                   class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="#" ng-click="sortType = '_name_area'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = '_name'; sortReverse = !sortReverse">
                                             Tên
-                                            <span ng-show="sortType == '_name_area' && !sortReverse"
+                                            <span ng-show="sortType == '_name' && !sortReverse"
                                                   class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_name_area' && sortReverse"
+                                            <span ng-show="sortType == '_name' && sortReverse"
                                                   class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="#" ng-click="sortType = '_address'; sortReverse = !sortReverse">
+                                        <a href="#" ng-click="sortType = '_permission'; sortReverse = !sortReverse">
                                             Địa Chỉ
-                                            <span ng-show="sortType == '_address' && !sortReverse"
+                                            <span ng-show="sortType == '_permission' && !sortReverse"
                                                   class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_address' && sortReverse"
+                                            <span ng-show="sortType == '_permission' && sortReverse"
                                                   class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
                                     <th>
-                                        <a href="#">
-                                            Tọa độ
+                                        <a href="#" ng-click="sortType = '_permission'; sortReverse = !sortReverse">
+                                            Ghi Chú
+                                            <span ng-show="sortType == '_permission' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_permission' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
                                         </a>
                                     </th>
-                                    <th>Ghi Chú</th>
+                                    <th>Chi Tiết</th>
+                                    <th>Xóa Tài Khoản</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr ng-repeat="x in warehouses | orderBy:sortType:sortReverse | filter:searchFish">
-                                    <td class="center">{{x.stt}}</td>
-                                    <td><a href="" ng-click="updateArea(x)">{{x._id_area}}</a></td>
-                                    <td>{{x._name_area}}</td>
+                                <tr ng-repeat="x in warehouses | orderBy:sortType:sortReverse | filter:{ _permission: selectedRole.selected.name }">
+                                    <td>{{$index + 1}}</td>
+                                    <td><a href="#/warehousescreate/{{x._id_warehouse}}">{{x._id_warehouse}}</a></td>
+                                    <td>{{x._name}}</td>
                                     <td>{{x._address}}</td>
-                                    <td><button ng-click="viewMaps(x)">Xem</button></td>
                                     <td>{{x._note}}</td>
+                                    <td>
+                                        <button ng-click="showMore(x)">Chi Tiết</button>
+                                    </td>
+                                    <td>
+                                        <button ng-click="remove(x)">Xóa</button>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>

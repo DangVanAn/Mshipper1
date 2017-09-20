@@ -33,6 +33,8 @@ angular.module('mShipperApp')
             var tempOrders = [];
             var json = $scope.excel;
 
+            console.log(json);
+
             console.log('36', new Date().getTime());
 
             // for (var i = 0; i < json.Sheet1.length; i++) {
