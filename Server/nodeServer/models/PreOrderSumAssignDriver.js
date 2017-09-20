@@ -14,6 +14,9 @@ var PreOrderSumAssignDriverSchema = mongoose.Schema({
     _driver_accept : {
         type: Number,
     },
+    _lead_driver : {
+        type: Boolean,
+    },
     _is_enabled : {
         type: Boolean,
     }

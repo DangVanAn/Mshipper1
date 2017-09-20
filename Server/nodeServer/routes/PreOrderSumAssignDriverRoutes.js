@@ -24,8 +24,7 @@ router.post('/getbydriver', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send(driver);
-            res.status(200).send({success: true, message: "OK", data: JSON.stringify(preordersumassigndriver)});
+            res.status(200).send({success: true, message: "OK", data: JSON.stringify(driver)});
             console.log('Find pre order sum assign success!!!');
         }
     });
@@ -36,7 +35,6 @@ router.post('/getbyidpresumassign', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send(preordersumassigndriver);
             res.status(200).send({success: true, message: "OK", data: JSON.stringify(preordersumassigndriver)});
             console.log('Find pre order sum assign success!!!');
         }
