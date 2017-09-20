@@ -253,9 +253,7 @@ router.post('/login', function (req, res) {
                             _token: user._token
                         };
 
-                        res.status(200).send({
-                            success: true, message: "OK", data: JSON.stringify(userRes)
-                        });
+                        res.status(200).send({success: true, message: "OK", data: JSON.stringify(userRes)});
                     }
                     else {
                         res.status(200).send({ success: false, message: "Password is incorrect" });
