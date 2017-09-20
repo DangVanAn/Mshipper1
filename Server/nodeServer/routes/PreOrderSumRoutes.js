@@ -9,6 +9,20 @@ var Product = require('../models/Product');
 
 var hashmap = new HashMap();
 
+var listPreOrderSum = [];
+createListPreOrderSum();
+function createListPreOrderSum() {
+    listPreOrderSum = [];
+    PreOrderSum.find({}, function (err, preordersum) {
+        if (err)
+            return console.error(err);
+        else {
+            listPreOrderSum = preordersum;
+            console.log('Find all success!!!');
+        }
+    });
+}
+
 router.post('/getall', function (req, res) {
 // get all
     PreOrderSum.find({}, function (err, preorders) {
@@ -20,6 +34,21 @@ router.post('/getall', function (req, res) {
         }
     });
 //     res.status(200).send(listPreOrdersSum);
+});
+
+router.post('/getbyidpresum', function (req, res) {
+    console.log(req.body);
+    var listGet = [];
+    for(var i = 0; i < req.body.length; i++)
+    {
+        for(var j = 0; j < listPreOrderSum.length; j++)
+        {
+            if(listPreOrderSum[j]._id == req.body[i]._id){
+                listGet.push(listPreOrderSum[j]);
+            }
+        }
+    }
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listGet)});
 });
 
 router.post('/settimeaccept', function (req, res) {
