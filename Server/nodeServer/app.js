@@ -13,6 +13,8 @@ var areas = require('./routes/AreaRoutes');
 var deliveryareas = require('./routes/DeliveryAreaRoutes');
 var warehouses = require('./routes/WarehouseRoutes');
 var productgroups = require('./routes/ProductGroupRoutes');
+var products = require('./routes/ProductRoutes');
+var vehicles = require('./routes/VehicleRoutes');
 var assigns = require('./routes/AssignRoutes');
 var details = require('./routes/DetailsRoutes');
 var locations = require('./routes/LocationsRoutes');
@@ -26,6 +28,10 @@ var permissiontypelists = require('./routes/PermissionTypeList');
 var teamleads = require('./routes/TeamLeadRoutes');
 var teamlists = require('./routes/TeamListRoutes');
 var userteamlists = require('./routes/UserTeamListRoutes');
+var preorders = require('./routes/PreOrderRoutes');
+var preorderssum = require('./routes/PreOrderSumRoutes');
+var preorderssumassign = require('./routes/PreOrderSumAssign');
+var preordersassign = require('./routes/PreOrderAssignRoutes');
 
 var app = express()
     , http = require('http')
@@ -60,8 +66,8 @@ app.set('view engine', 'jade');
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -71,6 +77,8 @@ app.use('/areas', areas);
 app.use('/deliveryareas', deliveryareas);
 app.use('/warehouses', warehouses);
 app.use('/productgroups', productgroups);
+app.use('/products', products);
+app.use('/vehicles', vehicles);
 app.use('/assigns', assigns);
 app.use('/details', details);
 app.use('/locations', locations);
@@ -84,6 +92,10 @@ app.use('/permissiontypelists', permissiontypelists);
 app.use('/teamleads', teamleads);
 app.use('/teamlists', teamlists);
 app.use('/userteamlists', userteamlists);
+app.use('/preorders', preorders);
+app.use('/preorderssum', preorderssum);
+app.use('/preorderssumassign', preorderssumassign);
+app.use('/preordersassign', preordersassign);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

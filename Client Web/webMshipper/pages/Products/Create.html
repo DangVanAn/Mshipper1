@@ -1,0 +1,84 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="AccountCreate">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Thông Tin Mặt Hàng</h1>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Thêm dữ liệu
+                        </div>
+                        <div class="panel-body">
+
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div id="idForm" class="form-group">
+                                        <label>Mã Mặt Hàng</label>
+                                        <input ng-model="idProduct" class="form-control" placeholder="XDZ301">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Tên Mặt Hàng</label>
+                                        <input ng-model="nameProduct" class="form-control" placeholder="Sữa tươi 300ml">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Loại Hàng</label>
+                                        <ui-select ng-model="selectedProduct.selected" theme="bootstrap" on-select = "selectProduct($item)">
+                                            <ui-select-match placeholder="Chọn...">{{$select.selected.info}}</ui-select-match>
+                                            <ui-select-choices
+                                                    repeat="item as item in productgroups | filter: $select.search">
+                                                <div ng-bind-html="item.info | highlight: $select.search"></div>
+                                            </ui-select-choices>
+                                        </ui-select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Đơn Vị</label>
+                                        <input ng-model="unit" class="form-control" placeholder="Bịch">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Khối Lượng (kg)</label>
+                                        <input ng-model="weigh" class="form-control" placeholder="0.2" type="number">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Thể Tích (l)</label>
+                                        <input ng-model="volume" class="form-control" placeholder="0.33" type="number">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Ghi Chú</label>
+                                        <input ng-model="note" class="form-control" placeholder="...">
+                                    </div>
+
+
+                                    <div style="float: right">
+                                        <button type="submit" ng-click="submit()" class="btn btn-outline btn-primary">Lưu
+                                            thông tin
+                                        </button>
+                                    </div>
+
+                                </div>
+
+                                <div class="col-lg-6">
+
+                                </div>
+                                <!-- /.col-lg-6 (nested) -->
+                            </div>
+                            <!-- /.row (nested) -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</div>

@@ -25,7 +25,7 @@ var userSchema = mongoose.Schema({
         type: String,
     },
     _date_of_birth: {
-        type: Number,
+        type: String,
     },
     _address: {
         type: String,
@@ -48,10 +48,22 @@ var userSchema = mongoose.Schema({
     _image : {
         type: String,
     },
+    _id_delivery_manager : {
+        type : String,
+    },
+    _name_delivery_manager : {
+        type : String,
+    },
     _driverLicenseNumber : {
         type: String,
     },
     _driverLicenseName : {
+        type: String,
+    },
+    _id_customer : {
+        type: String,
+    },
+    _id_delivery : {
         type: String,
     },
     _deliveryAddress : {

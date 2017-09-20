@@ -17,6 +17,29 @@ router.get('/getall', function (req, res) {
     }).select('-_token -_hashed_password -_id');
 });
 
+router.post('/getbypermission', function (req, res) {
+    User.find({_permission_id : req.body._permission_id}, function (err, users) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send(users);
+            console.log('Find all success!!!');
+        }
+    }).select('-_token -_hashed_password -_id');
+});
+
+router.post('/getbypermissionandidmanager', function (req, res) {
+    console.log(req.body);
+    User.find({_permission_id : req.body._permission_id, _id_delivery_manager : req.body._id_delivery_manager}, function (err, users) {
+        if (err)
+            return console.error(err);
+        else {
+            res.status(200).send(users);
+            console.log('Find all success!!!');
+        }
+    }).select('-_token -_hashed_password -_id');
+});
+
 router.post('/add', function (req, res) {
 
     User.findOne({
@@ -204,15 +227,15 @@ router.post('/login', function (req, res) {
                     // res == true
                     if (resp == true) {
                         //user update _device_token
-                        console.log(req.body)
-                        if (!req.body._device_token) {
-                            res.status(200).send({
-                                success: false, message: "_device_token is empty", data: ""
-                            });
-                            return
-                        }
+                        // console.log(req.body)
+                        // if (!req.body._device_token) {
+                        //     res.status(200).send({
+                        //         success: false, message: "_device_token is empty", data: ""
+                        //     });
+                        //     return
+                        // }
 
-                        user._device_token = req._device_token
+                        user._device_token = req.body._device_token;
                         user.save(function (err) {
                             if (err)
                             {
@@ -221,9 +244,11 @@ router.post('/login', function (req, res) {
                             }
                         });
                         var userRes = {
+                            _id : user._id,
                             _phone: user._phone,
                             _permission_id: user._permission_id,
                             _identify_card: user._identify_card,
+                            _id_delivery_manager : user._id_delivery_manager,
                             _name: user._name,
                             _token: user._token
                         };

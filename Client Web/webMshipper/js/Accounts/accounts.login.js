@@ -12,6 +12,8 @@ angular.module('mShipperApp').component('login', {
 
                     response.data = JSON.parse(response.data);
 
+                    console.log(response.data);
+
                     switch (response.data._permission_id) {
                         case "A001":
                             // Manager điều phối
@@ -85,7 +87,8 @@ angular.module('mShipperApp')
 
                     $user = {
                         "_phone": phone,
-                        "_password": password
+                        "_password": password,
+                        "_device_token" : "11111"
                     };
 
                     console.log($user);

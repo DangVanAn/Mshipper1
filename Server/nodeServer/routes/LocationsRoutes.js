@@ -2,12 +2,12 @@ var express = require('express');
 var router = express.Router();
 var Locations = require('../models/Locations');
 
-router.get('/getall', function (req, res) {
+router.post('/getall', function (req, res) {
 
+    console.log(req.body);
 // get all
     Locations.find({}, function (err, locations) {
         if (err) {
-            res.status(200).send(repHttp(false, err));
             return console.error(err);
         }
         else {
