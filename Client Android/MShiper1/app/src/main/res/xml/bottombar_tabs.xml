@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs>
+    <tab
+        icon="@drawable/ic_truck"
+        id="@+id/tab_truck"
+        activeColor="#FF0000"
+        title="Vehicles" />
+    <tab
+        icon="@drawable/ic_order"
+        id="@+id/tab_order"
+        activeColor="#FF0000"
+        title="Orders" />
+    <tab
+        icon="@drawable/ic_more"
+        id="@+id/tab_more"
+        activeColor="#FF0000"
+        title="More" />
+</tabs>

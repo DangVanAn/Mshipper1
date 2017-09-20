@@ -29,14 +29,12 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
         switch (position) {
             case 0:
                 return OrderListFragment.newInstance(orders);
-            case 1:
-                return Fragment_Maps.newInstance(orders);
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 }

@@ -168,7 +168,7 @@ public class Fragment_Maps extends Fragment implements GoogleApiClient.Connectio
         mMap.setMyLocationEnabled(true);
         mMap.getUiSettings().setMyLocationButtonEnabled(false);
 
-        addMarkerListOrder();
+//        addMarkerListOrder();
     }
 
     private void addMarkerListOrder() {

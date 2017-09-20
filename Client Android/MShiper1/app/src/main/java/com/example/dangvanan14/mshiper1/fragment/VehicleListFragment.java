@@ -5,10 +5,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +12,6 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
-import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
@@ -29,14 +23,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class OrderListFragment extends BaseFragment implements View.OnClickListener {
+public class VehicleListFragment extends BaseFragment implements View.OnClickListener {
     private TextView txtNgay;
-    List<Order> orders;
     Calendar cal;
     Date dateFinish;
 
-    public static OrderListFragment newInstance(List<Order> orders) {
-        OrderListFragment order = new OrderListFragment();
+    public static VehicleListFragment newInstance(List<Order> orders) {
+        VehicleListFragment order = new VehicleListFragment();
         Bundle args = new Bundle();
         args.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) orders);
         order.setArguments(args);
@@ -47,7 +40,6 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
-        orders = args.getParcelableArrayList("data");
         View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
         txtNgay = (TextView) v.findViewById(R.id.btnDate);
 
@@ -61,7 +53,7 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void setupTabLayout(View v) {
-        OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), orders);
+        OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), null);
         CustomViewPager viewPager = (CustomViewPager) v.findViewById(R.id.orderViewPager);
         viewPager.setPagingEnabled(false);
         viewPager.setAdapter(mAdapter);

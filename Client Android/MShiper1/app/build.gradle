@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -23,6 +24,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    realm {
+        syncEnabled = true;
+    }
 }
 
 dependencies {
@@ -44,6 +49,8 @@ dependencies {
     compile 'com.android.support:design:25.3.1'
     compile 'com.android.support:support-v4:25.3.1'
     testCompile 'junit:junit:4.12'
+    // sửa conflict
+    androidTestCompile 'com.google.code.findbugs:jsr305:3.0.2'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     compile 'com.google.collections:google-collections:1.0'
     //retrofit
@@ -55,5 +62,6 @@ dependencies {
     compile ('com.github.nkzawa:socket.io-client:0.6.0'){
         exclude group: 'org.json', module: 'json'
     }
+    compile 'com.roughike:bottom-bar:2.3.1'
 }
 apply plugin: 'com.google.gms.google-services'
