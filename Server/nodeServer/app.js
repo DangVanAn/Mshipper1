@@ -32,6 +32,7 @@ var preorders = require('./routes/PreOrderRoutes');
 var preorderssum = require('./routes/PreOrderSumRoutes');
 var preorderssumassign = require('./routes/PreOrderSumAssign');
 var preordersassign = require('./routes/PreOrderAssignRoutes');
+var preordersassigndriver = require('./routes/PreOrderSumAssignDriverRoutes');
 
 var app = express()
     , http = require('http')
@@ -96,6 +97,7 @@ app.use('/preorders', preorders);
 app.use('/preorderssum', preorderssum);
 app.use('/preorderssumassign', preorderssumassign);
 app.use('/preordersassign', preordersassign);
+app.use('/preordersassigndriver', preordersassigndriver);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
