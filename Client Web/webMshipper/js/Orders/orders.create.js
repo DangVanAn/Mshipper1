@@ -33,55 +33,46 @@ angular.module('mShipperApp')
             var tempOrders = [];
             var json = $scope.excel;
 
-            console.log(json);
+            // console.log(json);
 
+            var listOrderHandling1 = [];
+            for (var i = 0; i < json.Sheet1.length; i++) {
+                var obj = json.Sheet1[i];
+                var data = {
+                    _id_warehouse : obj['Mã điểm lấy hàng'],
+                    _id_delivery : obj['Mã điểm giao hàng'],
+                    _id_customer : obj['Mã nhà phân phối'],
+                    _id_order : obj['Mã đơn hàng'],
+                    _id_product : obj['Mã hàng hóa'],
+                    _id_product_group : obj['Mã nhóm hàng'],
+                    _number : obj['Số lượng'],
+                    _etd : obj['ETD'],
+                    _eta : obj['ETA'],
+                };
+                listOrderHandling1.push(data);
+            }
+
+            console.log(listOrderHandling1.length);
             console.log('36', new Date().getTime());
 
-            // for (var i = 0; i < json.Sheet1.length; i++) {
-            //     var obj = json.Sheet1[i];
-            //     var objStr = JSON.stringify(json.Sheet1[i]);
-            //     console.log("object :" + i + " : " + objStr);
-            //     if (i !== 0 && json.Sheet1[i].Id !== json.Sheet1[i - 1].Id || i == 0)
-            //         tempOrders.push({
-            //             _id: obj.Id,
-            //             _created_date: formatDate(obj.CreatedDay),
-            //             _expected_date: formatDate(obj.ExpectedDay),
-            //             _address: obj.Address,
-            //             _latitude: '0',
-            //             _longitude: '0',
-            //             _area_id: '',
-            //             _order_status: 'Đang vận chuyển',
-            //             _note: obj.Note
-            //         })
-            // }
+            $urll = 'http://localhost:9991/orders/posthandling';
+
+            $http({
+                method: 'POST',
+                url: $urll,
+                headers: {'Content-Type': 'application/json'},
+                data: listOrderHandling1
+            }).then(function successCallback(response) {
+                console.log(response.data);
+                $scope.show = response.data;
+                iAlert(ngDialog, $scope);
+            }, function errorCallback(response) {
+                $scope.statustext = 'error';
+            });
 
             rootListOrders = tempOrders;
             $scope.orders = tempOrders;
-
-            // addDetails();
-            // convertAddressToLatLng();
         };
-
-        var details = [];
-
-        function addDetails() {
-            var json = $scope.excel;
-            console.log(json.Sheet1);
-
-            for (var i = 0; i < json.Sheet1.length; i++) {
-                var obj = json.Sheet1[i];
-
-                details.push({
-                    _order_id: obj.Id,
-                    _id_package: obj.IdPackage,
-                    _total_pay: obj.TotalPay,
-                    _pay_type: obj.PayType,
-                    _package_type: obj.PackageType
-                })
-
-                // console.log("detail : " + details[i]);
-            }
-        }
 
         var countListLatLng = 0;
 

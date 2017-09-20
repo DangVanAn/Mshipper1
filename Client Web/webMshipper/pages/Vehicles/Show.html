@@ -1,0 +1,115 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="AccountShow">
+
+            <!--textBox overlay-->
+            <div class="overlay" ng-if="showRemoveYN" style="display: block;">
+                <div class="model glx-container" style="margin-top: -166.5px;">
+                    <div class="row closeOver">
+                        <img ng-click="closeShowMore()" src="../assets/img/icons/xController.png">
+                    </div>
+                    <div class="row core">
+                        <p>Bạn có chắc chắn xóa thông tin kho này không?</p>
+                    </div>
+                    <div class="row panel-body">
+                        <div class="col-xs-6">
+                            <button ng-click="clickYesRemove()">Có</button>
+                            <button ng-click="clickNoRemove()">Không</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Danh sách phương tiện</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+
+                        <br>
+                        <br>
+                        <div class="panel-body">
+                            <table width="100%" class="table table-bordered table-hover">
+                                <thead>
+                                <tr>
+                                    <th>
+                                        <a href="#" ng-click="sortType = 'stt'; sortReverse = !sortReverse">
+                                            STT
+                                            <span ng-show="sortType == 'stt' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == 'stt' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_name'; sortReverse = !sortReverse">
+                                            Tên Phương Tiện
+                                            <span ng-show="sortType == '_name' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_name' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_weigh'; sortReverse = !sortReverse">
+                                            Tải Trọng(kg)
+                                            <span ng-show="sortType == '_weigh' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_weigh' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_volume'; sortReverse = !sortReverse">
+                                            Thể Tích(l)
+                                            <span ng-show="sortType == '_volume' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_volume' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>
+                                        <a href="#" ng-click="sortType = '_note'; sortReverse = !sortReverse">
+                                            Ghi Chú
+                                            <span ng-show="sortType == '_note' && !sortReverse"
+                                                  class="fa fa-caret-down"></span>
+                                            <span ng-show="sortType == '_note' && sortReverse"
+                                                  class="fa fa-caret-up"></span>
+                                        </a>
+                                    </th>
+                                    <th>Xóa phương tiện</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="x in vehicles | orderBy:sortType:sortReverse | filter:{ _permission: selectedRole.selected.name }">
+                                    <td>{{$index + 1}}</td>
+                                    <td><a href="#/vehiclescreate/{{x._id}}">{{x._name}}</a></td>
+                                    <td>{{x._weigh}}</td>
+                                    <td>{{x._volume}}</td>
+                                    <td>{{x._note}}</td>
+                                    <td>
+                                        <button ng-click="remove(x)">Xóa</button>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.panel-body -->
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /#page-wrapper -->
+</div>

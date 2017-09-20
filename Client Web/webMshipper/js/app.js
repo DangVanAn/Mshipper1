@@ -117,6 +117,36 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/productgroupscreate/:id", {
                     template: '<productgroups-update></productgroups-update>',
                 })
+                .when("/productsmain", {
+                    template: '<products-main></products-main>',
+                })
+                .when("/productsshow", {
+                    template: '<products-show></products-show>',
+                })
+                .when("/productscreate", {
+                    template: '<products-create></products-create>',
+                })
+                .when("/productscreate.n", {
+                    template: '<products-create-n></products-create-n>',
+                })
+                .when("/vehiclescreate/:id", {
+                    template: '<vehicles-update></vehicles-update>',
+                })
+                .when("/vehiclesmain", {
+                    template: '<vehicles-main></vehicles-main>',
+                })
+                .when("/vehiclesshow", {
+                    template: '<vehicles-show></vehicles-show>',
+                })
+                .when("/vehiclescreate", {
+                    template: '<vehicles-create></vehicles-create>',
+                })
+                .when("/vehiclescreate.n", {
+                    template: '<vehicles-create-n></vehicles-create-n>',
+                })
+                .when("/vehiclescreate/:id", {
+                    template: '<vehicles-update></vehicles-update>',
+                })
                 .when("/warehousesmain", {
                     template: '<warehouses-main></warehouses-main>',
                 })
@@ -144,8 +174,8 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/tablethongbao", {
                     template: '<thong-bao></thong-bao>',
                 })
-                .when("/bieudo", {
-                    template: '<bieu-do></bieu-do>',
+                .when("/reportsmain", {
+                    template: '<reports-main></reports-main>',
                 })
                 .when("/mapquanly", {
                     template: '<map-quan-ly></map-quan-ly>',
@@ -357,6 +387,21 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 postProductGroupRemove : 'http://localhost:9999/productgroups/remove',
                 getProductGroupId : 'http://localhost:9999/productgroups/getbyid',
                 postProductGroupUpdate : 'http://localhost:9999/productgroups/updatebyid',
+
+                getProduct: 'http://localhost:9999/products/getall',
+                postProductCreate: 'http://localhost:9999/products/add',
+                postProductCreate_N: 'http://localhost:9999/products/adds',
+                postProductRemove : 'http://localhost:9999/products/remove',
+                getProductId : 'http://localhost:9999/products/getbyid',
+                postProductUpdate : 'http://localhost:9999/products/updatebyid',
+
+                getVehicle: 'http://localhost:9999/vehicles/getall',
+                getVehicleByPhone: 'http://localhost:9999/vehicles/getbyphone',
+                postVehicleCreate: 'http://localhost:9999/vehicles/add',
+                postVehicleCreate_N: 'http://localhost:9999/vehicles/adds',
+                postVehicleRemove : 'http://localhost:9999/vehicles/remove',
+                getVehicleId : 'http://localhost:9999/vehicles/getbyid',
+                postVehicleUpdate : 'http://localhost:9999/vehicles/updatebyid',
             };
 
             $rootScope.globals = $cookieStore.get('globals') || {};
