@@ -35,6 +35,22 @@ router.post('/getall', function (req, res) {
 //     res.status(200).send(listPreOrdersSum);
 });
 
+router.post('/getbyidpresumassign', function (req, res) {
+    console.log(req.body);
+    var listGet = [];
+    for(var i = 0; i < req.body.length; i++)
+    {
+        for(var j = 0; j < listPreOrderSumAssign.length; j++)
+        {
+            if(listPreOrderSumAssign[j]._id == req.body[i]._id){
+                listGet.push(listPreOrderSumAssign[j]);
+            }
+        }
+    }
+
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listGet)});
+});
+
 router.post('/getbyidpresum', function (req, res) {
     console.log(req.body);
     var listGet = [];
