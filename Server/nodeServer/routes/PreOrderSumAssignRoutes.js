@@ -76,12 +76,7 @@ router.post('/getbyidpresum', function (req, res) {
 });
 
 router.post('/add', function (req, res) {
-    var listData = [];
-    for(var i = 0; i < req.body.number; i++){
-        listData.push(req.body);
-    }
-
-    PreOrderSumAssign.insertMany(listData, function (err, docs) {
+    PreOrderSumAssign.insertMany(req.body, function (err, docs) {
         if (err) {
             res.status(200).send('error!');
             console.log('error!');

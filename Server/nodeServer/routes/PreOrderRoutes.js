@@ -7,6 +7,7 @@ var Warehouse = require('../models/Warehouse');
 var ProductGroup = require('../models/ProductGroup');
 var Product = require('../models/Product');
 var PreOrderSum = require('../models/PreOrderSum');
+var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 
 var hashmap = new HashMap();
 
@@ -127,6 +128,7 @@ function createPreOrderReport() {
             _eta: listPreOrders[i]._eta,
             _id_delivery_manager: listPreOrders[i]._id_delivery_manager,
             _time_send : new Date().getTime(),
+            _pre_sum_time : new Date().getTime(),
             _is_enabled : true
         };
 
@@ -150,7 +152,7 @@ function createPreOrderReport() {
         for(var j = 0; j < listPreOrdersSum.length; j++)
         {
             //kiểm tra có giống cái cũ không
-            if(comparePreOrderSum(preOrderReport[i], listPreOrdersSum[j])){
+            if(listPreOrdersSum[j]._is_enabled === true && comparePreOrderSum(preOrderReport[i], listPreOrdersSum[j])){
                 boolCheck = j;
                 break;
             }
@@ -159,14 +161,53 @@ function createPreOrderReport() {
             //Giống --> kiểm tra xem có khác _ton không.
             if(preOrderReport[i]._ton != listPreOrdersSum[boolCheck]._ton){
                 //Cập nhật lại _ton
-                listPreOrdersSum[boolCheck]._ton = preOrderReport[i]._ton;
-                PreOrderSum.findOneAndUpdate({ _id: listPreOrdersSum[boolCheck]._id }, listPreOrdersSum[boolCheck], function (err, user) {
-                    if (err)
-                        return console.error(err);
-                    else {
-                        console.log('ton updated!');
-                    }
-                });
+                if(preOrderReport[i]._ton > listPreOrdersSum[boolCheck]._ton){
+                    //trong trường hợp lớn hơn thì tạo một cái mới bằng phần lớn hơn
+                    preOrderReport[i]._ton -= listPreOrdersSum[boolCheck]._ton;
+                    preOrderSumNew.push(preOrderReport[i]);
+                }
+                else {
+                    //trong trường hợp nhỏ hơn, thì tạo một cái mới và hủy cái cũ, đồng thời gán xe từ bên cũ chuyển qua bên mới
+                    var preSumTimeNew = preOrderReport[i]._pre_sum_time;
+                    var preSumTimeOld = 0;
+                    PreOrderSum.findOne({ _id:  listPreOrdersSum[boolCheck]._id}, function (err, preodersum) {
+                        if (err)
+                            return console.error(err);
+                        else {
+                            preodersum._is_enabled = false;
+                            preodersum._time_refuse = new Date().getTime();
+                            preodersum._note_refuse = "update sum lower";
+                            preSumTimeOld = preodersum._pre_sum_time;
+
+                            preodersum.save(function (err) {
+                                if (err)
+                                    return console.error(err);
+                                else {
+                                    console.log('158 - save preordersum!');
+                                    preOrderSumNew.push(preOrderReport[i]);
+
+                                    //cập nhật lại xe đã assign vào preordersum mới
+                                    PreOrderSumAssign.find({_pre_sum_time : preSumTimeOld}, function (err, preordersumassign) {
+                                        if (err)
+                                            return console.error(err);
+                                        else {
+                                            for(var ii = 0; ii < preordersumassign.length; ii++){
+                                                preordersumassign[ii]._pre_sum_time = preSumTimeNew;
+                                                preordersumassign[ii].save(function (err) {
+                                                    if (err)
+                                                        return console.error(err);
+                                                    else {
+                                                        console.log('200 save ok');
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
             }
         }
         else {

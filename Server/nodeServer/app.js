@@ -30,7 +30,7 @@ var teamlists = require('./routes/TeamListRoutes');
 var userteamlists = require('./routes/UserTeamListRoutes');
 var preorders = require('./routes/PreOrderRoutes');
 var preorderssum = require('./routes/PreOrderSumRoutes');
-var preorderssumassign = require('./routes/PreOrderSumAssign');
+var preorderssumassign = require('./routes/PreOrderSumAssignRoutes');
 var preordersassign = require('./routes/PreOrderAssignRoutes');
 var preordersassigndriver = require('./routes/PreOrderSumAssignDriverRoutes');
 
@@ -97,7 +97,7 @@ app.use('/preorders', preorders);
 app.use('/preorderssum', preorderssum);
 app.use('/preorderssumassign', preorderssumassign);
 app.use('/preordersassign', preordersassign);
-app.use('/preordersassigndriver', preordersassigndriver);
+app.use('/preorderssumassigndriver', preordersassigndriver);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -35,6 +35,9 @@ var PreOrderSumSchema = mongoose.Schema({
     _time_send : {
         type: Number,
     },
+    _pre_sum_time : {
+        type: Number,
+    },
     _time_accept : {
         type: Number,
     },
