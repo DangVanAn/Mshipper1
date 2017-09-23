@@ -75,9 +75,7 @@ router.post('/getallinfo', function (req, res) {
             listData.push(JSON.parse(JSON.stringify(listPreOrderSumAssignDriver[i])));
         }
     }
-    // for(var i = 0; i < listData.length; i++){
-    //     listData[i]._other_driver = 'concobebe';
-    // }
+
     for(var i = 0; i < listData.length; i++){
         listData[i]._other_driver = [];
         for(var j = 0; j < listPreOrderSumAssignDriver.length; j++){
@@ -88,8 +86,6 @@ router.post('/getallinfo', function (req, res) {
         }
     }
 
-    console.log(listData);
-
     for(var i = 0; i < listData.length; i++){
         listData[i]._pre_order_sum_assign = [];
         for(var j = 0; j < listPreOrderSumAssign.length; j++){
@@ -98,7 +94,7 @@ router.post('/getallinfo', function (req, res) {
             }
         }
     }
-    //
+    
     for(var i = 0; i < listData.length; i++){
         for(var ii = 0; ii < listData[i]._pre_order_sum_assign.length; ii++){
             listData[i]._pre_order_sum_assign[ii]._pre_order_sum = [];
