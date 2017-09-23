@@ -3,14 +3,15 @@ var HashMap = require('hashmap');
 var router = express.Router();
 
 var PreOrder = require('../models/PreOrders');
+var preOrderRoute = require('../routes/PreOrderRoutes');
 var PreOrderSum = require('../models/PreOrderSum');
-var ProductGroup = require('../models/ProductGroup');
-var Product = require('../models/Product');
+var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 
 var hashmap = new HashMap();
 
 var listPreOrderSum = [];
 createListPreOrderSum();
+
 function createListPreOrderSum() {
     listPreOrderSum = [];
     PreOrderSum.find({}, function (err, preordersum) {
@@ -37,13 +38,11 @@ router.post('/getall', function (req, res) {
 });
 
 router.post('/getbyidpresum', function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     var listGet = [];
-    for(var i = 0; i < req.body.length; i++)
-    {
-        for(var j = 0; j < listPreOrderSum.length; j++)
-        {
-            if(listPreOrderSum[j]._id == req.body[i]._id){
+    for (var i = 0; i < req.body.length; i++) {
+        for (var j = 0; j < listPreOrderSum.length; j++) {
+            if (listPreOrderSum[j]._id == req.body[i]._id) {
                 listGet.push(listPreOrderSum[j]);
             }
         }
@@ -51,7 +50,7 @@ router.post('/getbyidpresum', function (req, res) {
     res.status(200).send({success: true, message: "OK", data: JSON.stringify(listGet)});
 });
 
-router.post('/settimeaccept', function (req, res) {
+router.post('/accept', function (req, res) {
     PreOrderSum.findOne({_id: req.body._id}).select().exec(function (err, preordersum) {
         if (err)
             return console.error(err);
@@ -65,6 +64,7 @@ router.post('/settimeaccept', function (req, res) {
                     else {
                         res.status(200).send("success!");
                         console.log('success!')
+                        preOrderRoute.resetPreOrderSum();
                     }
                 });
             }
@@ -76,7 +76,7 @@ router.post('/settimeaccept', function (req, res) {
     });
 });
 
-router.post('/settimerefuse', function (req, res) {
+router.post('/refuse', function (req, res) {
     PreOrderSum.findOne({_id: req.body._id}).select().exec(function (err, preordersum) {
         if (err)
             return console.error(err);
@@ -93,6 +93,7 @@ router.post('/settimerefuse', function (req, res) {
                     else {
                         res.status(200).send("success!");
                         console.log('success!')
+                        preOrderRoute.resetPreOrderSum();
                     }
                 });
             }
@@ -103,173 +104,86 @@ router.post('/settimerefuse', function (req, res) {
         }
     });
 });
-//
-// router.post('/getreport', function (req, res) {
-// // get report
-//     res.status(200).send(preOrderReport);
-// });
-//
-// var listPreOrdersSum = [];
-//
-// getListPreOrdersSum();
-// function getListPreOrdersSum() {
-//     listPreOrdersSum = [];
-//     PreOrderSum.find({}, function (err, preordersSum) {
-//         if (err)
-//             return console.error(err);
-//         else {
-//             listPreOrdersSum = preordersSum;
-//         }
-//     });
-// }
-//
-// router.post('/adds', function (req, res) {
-//
-//     var listData = req.body;
-//     console.log(listData.length);
-//
-//     PreOrderSum.insertMany(listData, function (err, docs) {
-//         if (err) {
-//             res.status(200).send('error!');
-//             console.log('Error!');
-//         }
-//         else {
-//             res.status(200).send('created!');
-//             console.log('created!');
-//         }
-//     });
-// });
-//
-// router.post('/delete', function (req, res) {
-//
-//     PreOrder.remove({_id_order: req.body._id_order}, function (err) {
-//         if (err) {
-//             res.status(200).send('error');
-//             console.log('error!');
-//         }
-//         else {
-//             var index = findIdOrder(req.body._id_order);
-//             if (index > -1) {
-//                 listPreOrders.splice(index, 1);
-//             }
-//             var bool = createPreOrderReport();
-//             if(bool) res.status(200).send('removed');
-//             console.log('Preorder removed!');
-//         }
-//     });
-// });
-//
-// router.post('/update', function (req, res) {
-//     PreOrder.findOne({_id_order: req.body._id_order})
-//         .select().exec(function (err, preorder) {
-//         if (err) {
-//             res.status(200).send('error');
-//             console.log('error!');
-//         }
-//         else {
-//             if (preorder) {
-//                 //Kiểm tra các thành phần có cho phép hay không
-//                 preorder._id_delivery = req.body._id_delivery;
-//                 preorder._id_customer = req.body._id_customer;
-//                 preorder._address = req.body._address;
-//                 preorder._id_warehouse = req.body._id_warehouse;
-//                 preorder._id_product = req.body._id_product;
-//                 preorder._name_product = req.body._name_product;
-//                 preorder._id_product_group = req.body._id_product_group;
-//                 preorder._type_product = req.body._type_product;
-//                 preorder._number = req.body._number;
-//                 preorder._ton = req.body._ton;
-//                 preorder._etd = req.body._etd;
-//                 preorder._eta = req.body._eta;
-//                 preorder._etd_long = req.body._etd_long;
-//                 preorder._eta_long = req.body._eta_long;
-//
-//                 preorder.save(function (err) {
-//                     if (err)
-//                         return console.error(err);
-//                     else {
-//                         var index = findIdOrder(req.body._id_order);
-//                         if (index > -1) {
-//                             listPreOrders[index] = req.body;
-//                         }
-//                         var bool = createPreOrderReport();
-//                         if(bool) res.status(200).send('updated');
-//                         console.log('updated');
-//
-//                     }
-//                 });
-//             }
-//             else {
-//                 res.status(200).send('error');
-//                 console.log('error!');
-//             }
-//         }
-//     });
-// });
-//
-// function findIdOrder(_id_order) {
-//     for (var i = 0; i < listPreOrders.length; i++) {
-//         if (listPreOrders[i]._id_order == _id_order) {
-//             return i;
-//         }
-//     }
-// }
-//
-// router.post('/remove', function (req, res) {
-//
-//     Warehouse.findOne({
-//         _id_warehouse: req.body._id_warehouse
-//     }).select().exec(function (err, warehouse) {
-//         if (err)
-//             return console.error(err);
-//         else {
-//             if (warehouse) {
-//                 warehouse._is_enabled = false;
-//
-//                 warehouse.save(function (err) {
-//                     if (err)
-//                         return console.error(err);
-//                     else {
-//                         res.status(200).send('Warehouse removed!');
-//                         console.log('Warehouse removed!');
-//                     }
-//                 });
-//             }
-//             else {
-//                 res.status(200).send("Thông tin kho không tồn tại!");
-//             }
-//         }
-//     });
-// });
-//
-// router.post('/getbyid', function (req, res) {
-//     console.log(req.body);
-//
-//     Warehouse.find({_id_warehouse: req.body.id}, function (err, warehouse) {
-//         if (err)
-//             return console.error(err);
-//         else {
-//             res.status(200).send(warehouse);
-//             console.log('Find one success!!!');
-//         }
-//     }).select('-_token -_hashed_password -_id');
-// });
-//
-// router.post('/updatebyid', function (req, res) {
-//     Warehouse.findOneAndUpdate({_id_warehouse: req.body._id_warehouse}, req.body, function (err, warehouse) {
-//         if (err)
-//             return console.error(err);
-//         else {
-//             if (warehouse) {
-//                 res.status(200).send('Warehouse successfully updated!');
-//                 console.log('Warehouse successfully updated!');
-//             }
-//             else {
-//                 res.status(200).send('Warehouse unsuccessfully updated!');
-//                 console.log('Warehouse unsuccessfully updated!');
-//             }
-//         }
-//     });
-// });
+
+router.post('/cancel', function (req, res) {
+    PreOrderSum.findOne({_id: req.body._id}).select().exec(function (err, preordersum) {
+        if (err)
+            return console.error(err);
+        else {
+            if (preordersum) {
+
+                if (req.body._time_accept !== undefined) {
+                    //kiểm tra nếu đã được accept
+                    //có 2 trường hợp
+                    // + TH1: danh sách xe assign chưa chạy thì hủy toàn bộ
+                    // + TH2: danh sách xe assign đã có xe chạy, thì hủy sum cũ, tạo sum mới bằng tổng xe assign đã chạy.
+                    PreOrderSumAssign.findOne({_pre_sum_time: req.body._pre_sum_time}).select().exec(function (err, preordersumassign) {
+                        if (err)
+                            return console.error(err);
+                        else {
+                            var listSumAssignGoing = [];
+                            for (var i = 0; i < preordersumassign.length; i++) {
+                                console.log('going going going going going going');
+                                console.log(preordersumassign[i]._out_line_driver, preordersumassign[i]._out_line_manager_warehouse);
+                                if (preordersumassign[i]._out_line_driver !== undefined && preordersumassign[i]._out_line_manager_warehouse !== undefined) {
+                                    listSumAssignGoing.push(preordersumassign[i]);
+                                }
+                                else {
+                                    //nếu chưa chạy thì cho _is_enabled = false
+                                    preordersumassign[i]._is_enabled = false;
+                                    preordersumassign[i].save(function (err) {
+                                        if (err)
+                                            console.error(err);
+                                        else {
+                                            console.log('set sum assign _is_enabled = false success');
+                                        }
+                                    });
+                                }
+                            }
+                            if(listSumAssignGoing.length > 0){
+                                console.log('142', 'co', listSumAssignGoing.length, 'ra khoi hang lay don hang');
+                                var newPreOrderSum = PreOrderSumAssign(preordersum);
+                                newPreOrderSum._id = undefined;
+                                newPreOrderSum._time_update = new Date().getTime();
+                                newPreOrderSum._note_update = 'cancel sum old';
+                                newPreOrderSum._ton = 0;
+                                for(var i = 0; i < listSumAssignGoing.length; i++)
+                                {
+                                    newPreOrderSum._ton += listSumAssignGoing[i]._ton_for_vehicle;
+                                }
+                                newPreOrderSum.save(function (err) {
+                                    if (err)
+                                        console.error(err);
+                                    else {
+                                        console.log('create preorder sum new success');
+                                    }
+                                })
+                            }
+                        }
+                    });
+                }
+
+                preordersum._time_cancel = new Date().getTime();
+                preordersum._is_enabled = false;
+                preordersum._note_cancel = req.body._note;
+                preordersum._user_cancel = req.body._user;
+
+                preordersum.save(function (err) {
+                    if (err)
+                        return console.error(err);
+                    else {
+                        res.status(200).send("success!");
+                        console.log('success!');
+                        preOrderRoute.resetPreOrderSum();
+                    }
+                });
+            }
+            else {
+                res.status(200).send("error!");
+                console.log('error!')
+            }
+        }
+    });
+});
 
 module.exports = router;

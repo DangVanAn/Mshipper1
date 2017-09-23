@@ -1,5 +1,6 @@
 var express = require('express');
 var HashMap = require('hashmap');
+const uuidv1 = require('uuid/v1');
 var router = express.Router();
 
 var PreOrder = require('../models/PreOrders');
@@ -128,7 +129,7 @@ function createPreOrderReport() {
             _eta: listPreOrders[i]._eta,
             _id_delivery_manager: listPreOrders[i]._id_delivery_manager,
             _time_send : new Date().getTime(),
-            _pre_sum_time : new Date().getTime(),
+            _pre_sum_time : uuidv1(),
             _is_enabled : true
         };
 
@@ -148,65 +149,92 @@ function createPreOrderReport() {
 
     for(var i = 0; i < preOrderReport.length; i++)
     {
-        var boolCheck = -1;
+        var boolCheck = [];
         for(var j = 0; j < listPreOrdersSum.length; j++)
         {
             //kiểm tra có giống cái cũ không
             if(listPreOrdersSum[j]._is_enabled === true && comparePreOrderSum(preOrderReport[i], listPreOrdersSum[j])){
-                boolCheck = j;
-                break;
+                boolCheck.push(j);
             }
         }
-        if(boolCheck != -1){
+        if(boolCheck.length > 0){
             //Giống --> kiểm tra xem có khác _ton không.
-            if(preOrderReport[i]._ton != listPreOrdersSum[boolCheck]._ton){
+            var sumTonInSum = 0;
+            for(var ii = 0; ii < boolCheck.length; ii++)
+            {
+                sumTonInSum += listPreOrdersSum[boolCheck[ii]]._ton;
+            }
+            if(preOrderReport[i]._ton != sumTonInSum){
                 //Cập nhật lại _ton
-                if(preOrderReport[i]._ton > listPreOrdersSum[boolCheck]._ton){
+                if(preOrderReport[i]._ton > sumTonInSum){
                     //trong trường hợp lớn hơn thì tạo một cái mới bằng phần lớn hơn
-                    preOrderReport[i]._ton -= listPreOrdersSum[boolCheck]._ton;
+                    console.log(preOrderReport[i]._ton, '>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>', sumTonInSum);
+                    preOrderReport[i]._ton -= sumTonInSum;
                     preOrderSumNew.push(preOrderReport[i]);
+                    //kiểm tra xem preOrderSum đã được Assign chưa
+                    // if(listPreOrdersSum[boolCheck]._time_accept === undefined){
+                    //     preOrderSumNew.push(preOrderReport[i]);
+                    //     console.log('171', listPreOrdersSum[boolCheck]);
+                    //     listPreOrdersSum[boolCheck]._time_update = new Date().getTime();
+                    //     listPreOrdersSum[boolCheck]._note_update = "sum higher before accept";
+                    //     listPreOrdersSum[boolCheck]._is_enabled = false;
+                    //     PreOrderSum.findOneAndUpdate({ _pre_sum_time:  listPreOrdersSum[boolCheck]._pre_sum_time }, listPreOrdersSum[boolCheck], function (err, preodersum) {
+                    //         if (err)
+                    //             return console.error(err);
+                    //         else {
+                    //             console.log('preodersum successfully updated!');
+                    //         }
+                    //     });
+                    // }
+                    // else {
+                    //     //trong trường hợp đã accept thì tạo một cái mới
+                    //     preOrderReport[i]._ton -= listPreOrdersSum[boolCheck]._ton;
+                    //     preOrderSumNew.push(preOrderReport[i]);
+                    // }
                 }
                 else {
+                    //tạm thời không xét trường hợp nhỏ hơn, vì logic
                     //trong trường hợp nhỏ hơn, thì tạo một cái mới và hủy cái cũ, đồng thời gán xe từ bên cũ chuyển qua bên mới
-                    var preSumTimeNew = preOrderReport[i]._pre_sum_time;
-                    var preSumTimeOld = 0;
-                    PreOrderSum.findOne({ _id:  listPreOrdersSum[boolCheck]._id}, function (err, preodersum) {
-                        if (err)
-                            return console.error(err);
-                        else {
-                            preodersum._is_enabled = false;
-                            preodersum._time_refuse = new Date().getTime();
-                            preodersum._note_refuse = "update sum lower";
-                            preSumTimeOld = preodersum._pre_sum_time;
-
-                            preodersum.save(function (err) {
-                                if (err)
-                                    return console.error(err);
-                                else {
-                                    console.log('158 - save preordersum!');
-                                    preOrderSumNew.push(preOrderReport[i]);
-
-                                    //cập nhật lại xe đã assign vào preordersum mới
-                                    PreOrderSumAssign.find({_pre_sum_time : preSumTimeOld}, function (err, preordersumassign) {
-                                        if (err)
-                                            return console.error(err);
-                                        else {
-                                            for(var ii = 0; ii < preordersumassign.length; ii++){
-                                                preordersumassign[ii]._pre_sum_time = preSumTimeNew;
-                                                preordersumassign[ii].save(function (err) {
-                                                    if (err)
-                                                        return console.error(err);
-                                                    else {
-                                                        console.log('200 save ok');
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
+                    // console.log(preOrderReport[i]._ton, '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<', listPreOrdersSum[boolCheck]._ton)
+                    // var preSumTimeNew = preOrderReport[i]._pre_sum_time;
+                    // var preSumTimeOld = 0;
+                    // PreOrderSum.findOne({ _pre_sum_time:  listPreOrdersSum[boolCheck]._pre_sum_time}, function (err, preodersum) {
+                    //     if (err)
+                    //         return console.error(err);
+                    //     else {
+                    //         preodersum._is_enabled = false;
+                    //         preodersum._time_update = new Date().getTime();
+                    //         preodersum._note_update = "sum lower";
+                    //         preSumTimeOld = preodersum._pre_sum_time;
+                    //
+                    //         preodersum.save(function (err) {
+                    //             if (err)
+                    //                 return console.error(err);
+                    //             else {
+                    //                 console.log('158 - save preordersum!');
+                    //                 preOrderSumNew.push(preOrderReport[i]);
+                    //
+                    //                 //cập nhật lại xe đã assign vào preordersum mới
+                    //                 PreOrderSumAssign.find({_pre_sum_time : preSumTimeOld}, function (err, preordersumassign) {
+                    //                     if (err)
+                    //                         return console.error(err);
+                    //                     else {
+                    //                         for(var ii = 0; ii < preordersumassign.length; ii++){
+                    //                             preordersumassign[ii]._pre_sum_time = preSumTimeNew;
+                    //                             preordersumassign[ii].save(function (err) {
+                    //                                 if (err)
+                    //                                     return console.error(err);
+                    //                                 else {
+                    //                                     console.log('200 save ok');
+                    //                                 }
+                    //                             });
+                    //                         }
+                    //                     }
+                    //                 });
+                    //             }
+                    //         });
+                    //     }
+                    // });
                 }
             }
         }
@@ -233,7 +261,6 @@ function createPreOrderReport() {
             }
         });
     }
-    console.log(listPreOrdersSum[0]);
     console.log('listPreOrdersSum', listPreOrdersSum.length);
     return true;
 }
@@ -298,6 +325,7 @@ router.post('/posthandling', function (req, res) {
             //đã tồn tại, kiểm tra tiếp bên đơn hàng đã thực hiện
             if (!checkComparePreOrder(req.body[i], getOrderHashmap)) {
                 //có thay đổi
+                console.log(i, 'có thay đổi');
                 PreOrder.deleteOne({_id_order: req.body[i]._id_order}, function (err) {
                     if (err) {
                     }
@@ -308,15 +336,16 @@ router.post('/posthandling', function (req, res) {
 
                 var index = findIdOrder(req.body[i]._id_order);
                 if (index > -1) {
+                    console.log('315 vi tri index:', index);
                     listPreOrders.splice(index, 1);
                 }
-                console.log('co thay doi');
                 hashmap.set(req.body[i]._id_order, req.body[i]);
                 listNewOrders.push(req.body[i]);
+                listPreOrders.push(req.body[i]);
             }
             else {
                 //Đã tồn tại, không thay đổi.
-                console.log(i, 'không thay đổi');
+                // console.log(i, 'không thay đổi');
             }
         }
         else {
@@ -587,5 +616,20 @@ router.post('/updatebyid', function (req, res) {
         }
     });
 });
+
+router.resetPreOrderSum = function () {
+    PreOrder.find({}, function (err, preorders) {
+        if (err)
+            return console.error(err);
+        else {
+            listPreOrders = [];
+            for (var i = 0; i < preorders.length; i++) {
+                hashmap.set(preorders[i]._id_order, preorders[i]);
+                listPreOrders.push(preorders[i]);
+            }
+            console.log('LitsPreorders', preorders.length);
+        }
+    });
+};
 
 module.exports = router;

@@ -30,8 +30,8 @@ router.post('/getbydriver', function (req, res) {
     });
 });
 
-router.post('/getbyidpresumassign', function (req, res) {
-    PreOrderSumAssignDriver.find({_id_pre_sum_assign : req.body._id_pre_sum_assign}, function (err, preordersumassigndriver) {
+router.post('/getbypresumassigntime', function (req, res) {
+    PreOrderSumAssignDriver.find({_pre_sum_assign_time : req.body._pre_sum_assign_time}, function (err, preordersumassigndriver) {
         if (err)
             return console.error(err);
         else {
