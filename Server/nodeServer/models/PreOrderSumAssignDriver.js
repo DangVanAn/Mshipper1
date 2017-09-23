@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 //Schema
 var PreOrderSumAssignDriverSchema = mongoose.Schema({
     _pre_sum_assign_time : {
-        type: Number,
+        type: String,
     },
     _driver : {
         type: String,

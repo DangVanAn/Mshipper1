@@ -3,7 +3,7 @@ var mongoose = require('mongoose');
 //Schema
 var PreOrderSumAssignSchema = mongoose.Schema({
     _pre_sum_time : {
-        type: Number,
+        type: String,
     },
     // _id_pre_sum : {
     //     type: String,
@@ -12,7 +12,7 @@ var PreOrderSumAssignSchema = mongoose.Schema({
         type: String,
     },
     _pre_sum_assign_time : {
-        type: Number,
+        type: String,
     },
     _number_plate : {
         type: String,
