@@ -10,8 +10,8 @@ var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 var hashmap = new HashMap();
 
 var listPreOrderSumAssign = [];
-createListPreOrderSumAssign();
-function createListPreOrderSumAssign() {
+resetListPreOrderSumAssign();
+function resetListPreOrderSumAssign() {
     listPreOrderSumAssign = [];
     PreOrderSumAssign.find({}, function (err, preordersumassign) {
         if (err)
@@ -25,15 +25,7 @@ function createListPreOrderSumAssign() {
 
 router.post('/getall', function (req, res) {
 // get all
-    PreOrderSumAssign.find({}, function (err, preordersumassign) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(preordersumassign);
-            console.log('Find all success!!!');
-        }
-    });
-//     res.status(200).send(listPreOrdersSum);
+    res.status(200).send(listPreOrderSumAssign);
 });
 
 router.post('/getbyidpresumassign', function (req, res) {
@@ -53,7 +45,7 @@ router.post('/getbyidpresumassign', function (req, res) {
 });
 
 router.post('/getbypresumtime', function (req, res) {
-    console.log(req.body);
+    // console.log(req.body);
     var listGet = [];
     for(var i = 0; i < req.body.length; i++)
     {
@@ -79,9 +71,34 @@ router.post('/add', function (req, res) {
         else {
             res.status(200).send(timeId);
             console.log('created!');
-            createListPreOrderSumAssign();
+            resetListPreOrderSumAssign();
         }
     });
 });
+
+router.getListPreOrderSumAssign = function () {
+    return listPreOrderSumAssign;
+};
+
+router.findPreOrderSumAssignByPreSumTime = function(_pre_sum_time){
+    var listData = [];
+    for(var i = 0; i < listPreOrderSumAssign.length; i++){
+        if(listPreOrderSumAssign[i]._pre_sum_time == _pre_sum_time){
+            listData.push(listPreOrderSumAssign[i]);
+        }
+    }
+    return listData;
+};
+
+router.savePreOrderSumAssign = function (data) {
+    data.save(function (err) {
+        if (err)
+            console.error(err);
+        else {
+            console.log('set sum assign _is_enabled = false success');
+            resetListPreOrderSumAssign();
+        }
+    });
+};
 
 module.exports = router;

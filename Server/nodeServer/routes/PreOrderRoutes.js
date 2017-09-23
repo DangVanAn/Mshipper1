@@ -9,6 +9,7 @@ var ProductGroup = require('../models/ProductGroup');
 var Product = require('../models/Product');
 var PreOrderSum = require('../models/PreOrderSum');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
+var preOrderSumRoute = require('../routes/PreOrderSumRoutes');
 
 var hashmap = new HashMap();
 
@@ -24,12 +25,6 @@ router.post('/getall', function (req, res) {
 //     });
 
     res.status(200).send(listPreOrders);
-});
-
-router.post('/getreport', function (req, res) {
-// get report
-
-    res.status(200).send(preOrderReportYesPlate);
 });
 
 getLitsProductGroup();
@@ -89,30 +84,19 @@ function getLitsPreOrder() {
                 listPreOrders.push(preorders[i]);
             }
             console.log('LitsPreorders', preorders.length);
-
-            getLitsPreOrderSum();
         }
     });
 }
 
 var listPreOrdersSum = [];
 function getLitsPreOrderSum() {
-    listPreOrdersSum = [];
-    PreOrderSum.find({}, function (err, preorderssum) {
-        if (err)
-            return console.error(err);
-        else {
-            for (var i = 0; i < preorderssum.length; i++) {
-                listPreOrdersSum.push(preorderssum[i]);
-            }
-            console.log('listPreOrdersSum--', preorderssum.length);
-            createPreOrderReport();
-        }
-    });
+    listPreOrdersSum = preOrderSumRoute.getListPreOrderSum();
+    console.log('99', listPreOrdersSum.length);
 }
 
 var preOrderReport = [];
 function createPreOrderReport() {
+    getLitsPreOrderSum();
     preOrderReport = [];
     var preOrderSumNew = [];
     console.log('95', listPreOrders.length);
@@ -246,22 +230,8 @@ function createPreOrderReport() {
 
     if(preOrderSumNew.length > 0)
     {
-        for( var i = 0; i < preOrderSumNew.length; i++)
-        {
-            listPreOrdersSum.push(preOrderSumNew[i]);
-        }
-        PreOrderSum.insertMany(preOrderSumNew, function (err, docs) {
-            if (err) {
-                // res.status(200).send('Error!');
-                console.log('Error!');
-            }
-            else {
-                // res.status(200).send('PreOrders created!');
-                console.log('PreOrdersSum created!');
-            }
-        });
+        preOrderSumRoute.insertPreOrderSum(preOrderSumNew);
     }
-    console.log('listPreOrdersSum', listPreOrdersSum.length);
     return true;
 }
 
@@ -616,20 +586,5 @@ router.post('/updatebyid', function (req, res) {
         }
     });
 });
-
-router.resetPreOrderSum = function () {
-    PreOrder.find({}, function (err, preorders) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrders = [];
-            for (var i = 0; i < preorders.length; i++) {
-                hashmap.set(preorders[i]._id_order, preorders[i]);
-                listPreOrders.push(preorders[i]);
-            }
-            console.log('LitsPreorders', preorders.length);
-        }
-    });
-};
 
 module.exports = router;

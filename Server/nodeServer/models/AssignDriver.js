@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 //Schema
-var PreOrderSumAssignDriverSchema = mongoose.Schema({
+var AssignDriverSchema = mongoose.Schema({
     _pre_sum_assign_time : {
         type: String,
     },
@@ -26,6 +26,6 @@ var PreOrderSumAssignDriverSchema = mongoose.Schema({
 });
 
 
-var PreOrderSumAssignDriver = mongoose.model('PreOrderSumAssignDrivers', PreOrderSumAssignDriverSchema);
+var AssignDriver = mongoose.model('AssignDrivers', AssignDriverSchema);
 
-module.exports = PreOrderSumAssignDriver;
+module.exports = AssignDriver;
