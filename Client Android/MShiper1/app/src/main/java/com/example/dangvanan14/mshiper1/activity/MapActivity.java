@@ -36,9 +36,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.maps.android.ui.IconGenerator;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.net.URISyntaxException;
 
 public class MapActivity extends FragmentActivity
@@ -70,10 +67,10 @@ public class MapActivity extends FragmentActivity
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket(DefinedApp.URL_SOCKET);
+            mSocket = IO.socket(DefinedApp.URL_SOCKET_GPS);
         } catch (URISyntaxException e) {
             e.printStackTrace();
-    }
+        }
     }
 
     @Override

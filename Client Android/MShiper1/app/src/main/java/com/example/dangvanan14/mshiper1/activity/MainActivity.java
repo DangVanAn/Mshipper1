@@ -3,25 +3,25 @@ package com.example.dangvanan14.mshiper1.activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
-import com.example.dangvanan14.mshiper1.application.DefinedApp;
+import com.example.dangvanan14.mshiper1.fragment.ChatFragment;
+import com.example.dangvanan14.mshiper1.fragment.VehicleListFragment;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.model.PreOrderSumAssignDrivers;
 import com.example.dangvanan14.mshiper1.model.User;
+import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabSelectListener;
@@ -29,6 +29,9 @@ import com.roughike.bottombar.OnTabSelectListener;
 import org.slf4j.Logger;
 
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import retrofit2.Call;
 
 
 public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
@@ -39,12 +42,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_mshipper);
-
-        User u = ((App) getApplication()).getUser();
-        SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
-        String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
-
-        Log.d(TAG, "onCreate: " + userStr);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
@@ -65,7 +62,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         .runtime_permissions_txt
                 , REQUEST_PERMISSIONS);
         loadModelAssign();
-
+//        loadStepOrder();
         ////////////////////////////
         FirebaseMessaging.getInstance().subscribeToTopic("fcm");
 
@@ -73,15 +70,28 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                if (tabId == R.id.tab_truck) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
-                }
-                if (tabId == R.id.tab_more) {
-                    // The tab with id R.id.tab_favorites was selected,
-                    // change your content accordingly.
-                    Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
-                    startActivity(intent);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                switch (tabId) {
+                    case R.id.tab_truck:
+                        VehicleListFragment vehicleListFragment = new VehicleListFragment();
+                        transaction.replace(R.id.container_fragment, vehicleListFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+
+                        break;
+                    case R.id.tab_order:
+                        ChatFragment newFragment = new ChatFragment();
+                        transaction.replace(R.id.container_fragment, newFragment);
+                        transaction.addToBackStack(null);
+                        transaction.commit();
+
+                        break;
+                    case R.id.tab_more:
+                        // The tab with id R.id.tab_favorites was selected,
+                        // change your content accordingly.
+                        Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
+                        startActivity(intent);
+                        break;
                 }
             }
         });
@@ -100,6 +110,21 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 //                return loadData.CreateRetrofit().getOrderByIdDeliveryMan(App.user.get_email());
 //            }
 //        }, new LoadData.CallbackDelegate<List<Order>>(this, new CallBackImpl()));
+    }
+    private void loadStepOrder() {
+        if (!isNetworkConnected(getApplicationContext())) {
+            Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        showProgressDialog();
+
+        final LoadData<RepPost> loadData = new LoadData<>();
+        loadData.loadData(new Callable<Call<RepPost>>() {
+            @Override
+            public Call<RepPost> call() throws Exception {
+                return loadData.CreateRetrofit().getbydriver(new PreOrderSumAssignDrivers(((App) getApplication()).getUser().get_id()));
+            }
+        }, new LoadData.CallbackDelegate<>(this, new CallBackStepOrderImpl()));
     }
 
     @Override
@@ -153,7 +178,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         loadModelAssign();
-        swipeRefreshLayout.setRefreshing(true);
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -164,12 +189,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             unregisterReceiver(receiver);
         }
     }
-    private static class CallBackImpl implements ICallbackApi<List<Order>> {
-        @Override
-        public void onResponse(Fragment fragment, List<Order> body, Logger LOG) {
-
-        }
-
+    private static class CallBackImpl extends ICallbackApi<List<Order>> {
         @Override
         public void onResponse(Activity activity, List<Order> body, Logger LOG) {
             MainActivity ac = (MainActivity) activity;
@@ -179,17 +199,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
         }
-
-        @Override
-        public void onResponse(List<Order> body, Logger log) {
-
-        }
-
-        @Override
-        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-        }
-
         @Override
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e(TAG, "onFailure: Load data failed");
@@ -198,10 +207,25 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
         }
+    }
 
+    private static class CallBackStepOrderImpl extends ICallbackApi<List<Order>> {
         @Override
-        public void onFailure(Throwable t, Logger LOG) {
-
+        public void onResponse(Activity activity, List<Order> body, Logger LOG) {
+            MainActivity ac = (MainActivity) activity;
+            ac.orders = body;
+            ((App) ac.getApplication()).setOrders(body);
+            Log.d(TAG, "onResponse: có rồi nè" + body.size());
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
+        }
+        @Override
+        public void onFailure(Activity activity, Throwable t, Logger LOG) {
+            Log.e(TAG, "onFailure: Load data failed");
+            MainActivity ac = (MainActivity) activity;
+            ac.dismissProgressDialog();
+            ac.swipeRefreshLayout.setRefreshing(false);
+            // show trống dữ liệu
         }
     }
 }

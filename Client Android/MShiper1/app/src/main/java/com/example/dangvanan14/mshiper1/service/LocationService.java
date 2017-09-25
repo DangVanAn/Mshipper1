@@ -294,30 +294,10 @@ public class LocationService extends Service {
             }
         }
 
-        public class CallBackImpl implements ICallbackApi<RepPost> {
-            @Override
-            public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
-
-            }
-
-            @Override
-            public void onResponse(Activity activity, RepPost body, Logger LOG) {
-
-            }
-
+        public class CallBackImpl extends ICallbackApi<RepPost> {
             @Override
             public void onResponse(RepPost body, Logger log) {
                 Log.d("TAG", "onResponse: " + body.getMessage());
-            }
-
-            @Override
-            public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-            }
-
-            @Override
-            public void onFailure(Activity activity, Throwable t, Logger LOG) {
-
             }
 
             @Override

@@ -32,11 +32,11 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:showIn="@layout/app_bar_mshipper1">
 
-            <fragment android:name="com.example.dangvanan14.mshiper1.fragment.VehicleListFragment"
-                android:id="@+id/headlines_fragment"
+            <FrameLayout
+                android:id="@+id/container_fragment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_above="@+id/bottomBar"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:weightSum="1" />

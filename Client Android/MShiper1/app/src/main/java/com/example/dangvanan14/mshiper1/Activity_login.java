@@ -82,12 +82,7 @@ public class Activity_login extends BaseActivity {
         }, new LoadData.CallbackDelegate<RepPost>(this, new CallBackImpl()));
     }
 
-    static class CallBackImpl implements ICallbackApi<RepPost> {
-        @Override
-        public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
-
-        }
-
+    static class CallBackImpl extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(Activity activity, RepPost body, Logger LOG) {
             Activity_login ac = (Activity_login) activity;
@@ -108,21 +103,6 @@ public class Activity_login extends BaseActivity {
             } else {
                 Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }
-
-        @Override
-        public void onResponse(RepPost body, Logger log) {
-            Log.d("TAG", "onResponse: " + body.getMessage());
-        }
-
-        @Override
-        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-        }
-
-        @Override
-        public void onFailure(Activity activity, Throwable t, Logger LOG) {
-
         }
 
         @Override

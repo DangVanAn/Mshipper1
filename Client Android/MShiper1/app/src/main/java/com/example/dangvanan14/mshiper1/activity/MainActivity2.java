@@ -294,12 +294,7 @@ public class MainActivity2 extends BaseActivity
         Toast.makeText(context, "GPS thay đổi nè : " + latitude + " , " + longitude, Toast.LENGTH_LONG).show();
     }
 
-    private static class CallBackImpl implements ICallbackApi<List<Order>> {
-        @Override
-        public void onResponse(Fragment fragment, List<Order> body, Logger LOG) {
-
-        }
-
+    private static class CallBackImpl extends ICallbackApi<List<Order>> {
         @Override
         public void onResponse(Activity activity, List<Order> body, Logger LOG) {
             MainActivity2 ac = (MainActivity2) activity;
@@ -312,27 +307,12 @@ public class MainActivity2 extends BaseActivity
         }
 
         @Override
-        public void onResponse(List<Order> body, Logger log) {
-
-        }
-
-        @Override
-        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-        }
-
-        @Override
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e(TAG, "onFailure: Load data failed");
             MainActivity2 ac = (MainActivity2) activity;
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
-        }
-
-        @Override
-        public void onFailure(Throwable t, Logger LOG) {
-
         }
     }
 }
