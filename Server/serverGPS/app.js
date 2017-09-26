@@ -9,6 +9,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+var locations = require('./routes/LocationsRoutes');
+
 app.use(express.static(__dirname + '/node_modules'));
 app.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
@@ -35,6 +37,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/locations', locations);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -55,7 +60,7 @@ app.use(function (err, req, res, next) {
 
 repHttp = function (success, message) {
     return {success: success, message: message};
-}
+};
 
 var Locations = require('./models/Locations');
 io.on('connection', function (client) {
@@ -69,17 +74,7 @@ io.on('connection', function (client) {
     });
 
     client.on('messages', function (data) {
-        console.log(JSON.parse(data));
-
-        var newLocation = new Locations(JSON.parse(data));
-        newLocation.save(function (err) {
-            if (err) {
-                console.log('Location error!');
-            }
-            else {
-                console.log('Location created!');
-            }
-        });
+        locations.saveLocation(data);
         //Dòng này có tác dụng trả thông tin về những client trong room1
         // Nếu mất comment đi, thì client chỉ có gửi, chứ không có nhận, như vậy sẽ nhanh hơn.
         // client.broadcast.to('room1').emit('broad', data);
@@ -89,7 +84,7 @@ io.on('connection', function (client) {
 //port socket
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6969, function() {
-    console.log("dm");
+    console.log("chay tot roi ba con oi!!!");
   });
 //port express
 // app.listen(1111, function () {

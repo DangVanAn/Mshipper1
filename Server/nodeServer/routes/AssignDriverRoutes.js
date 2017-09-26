@@ -94,7 +94,7 @@ router.post('/getallinfo', function (req, res) {
             }
         }
     }
-    
+
     for(var i = 0; i < listData.length; i++){
         for(var ii = 0; ii < listData[i]._pre_order_sum_assign.length; ii++){
             listData[i]._pre_order_sum_assign[ii]._pre_order_sum = [];
