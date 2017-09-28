@@ -37,7 +37,7 @@ router.post('/getbypermissionandidmanager', function (req, res) {
             res.status(200).send(users);
             console.log('Find all success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
 });
 
 router.post('/add', function (req, res) {
