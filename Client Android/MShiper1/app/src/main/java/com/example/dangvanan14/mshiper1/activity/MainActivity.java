@@ -16,11 +16,9 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
-import com.example.dangvanan14.mshiper1.fragment.ChatFragment;
 import com.example.dangvanan14.mshiper1.fragment.VehicleListFragment;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssignDrivers;
-import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.roughike.bottombar.BottomBar;
@@ -80,11 +78,8 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
                         break;
                     case R.id.tab_order:
-                        ChatFragment newFragment = new ChatFragment();
-                        transaction.replace(R.id.container_fragment, newFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-
+                        Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
+                        startActivity(intentChat);
                         break;
                     case R.id.tab_more:
                         // The tab with id R.id.tab_favorites was selected,

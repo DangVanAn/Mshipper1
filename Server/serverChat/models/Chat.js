@@ -20,9 +20,8 @@ var chatSchema = mongoose.Schema({
     _timestamp_receiver: {
         type: Number,
     },
-    _is_group: {
-        type: Boolean,
-        required: true
+    _timestamp_seen: {
+        type: Number,
     },
     _group_id: {
         type: String

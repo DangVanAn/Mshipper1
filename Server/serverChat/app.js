@@ -70,7 +70,18 @@ io.on('connection', function (client) {
     });
     client.on('chat', function (data) {
         //gửi lời mời tới các thành viên bằng FCM
-        client.broadcast.to('room1').emit('chat', "Connected" + data);
+
+        var messageRes = new Chat()
+        messageRes._message = "có nè, có nè"
+        messageRes._sender = "1111"
+        messageRes._receiver = "1112"
+        messageRes._timestamp_sender = 1506527983
+        // messageRes._timestamp_receiver = 
+        messageRes._is_group = true
+        messageRes._group_id = "room1"
+        messageRes._is_enable = true
+        client.emit('chat', JSON.stringify(messageRes.toObject()))
+        // client.broadcast.to('room1').emit('chat', JSON.stringify(messageRes));
         console.log(data);
     });
     client.on('messages', function (data) {
@@ -94,7 +105,7 @@ io.on('connection', function (client) {
 
 //port socket
 // server.listen(process.env.PORT || 6969);
-server.listen(process.env.PORT || 6969, function() {
+server.listen(process.env.PORT || 6968, function() {
     console.log("dm");
   });
 //port express
