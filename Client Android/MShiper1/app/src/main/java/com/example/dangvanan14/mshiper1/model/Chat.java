@@ -10,9 +10,25 @@ public class Chat implements Parcelable{
     private String _receiver;
     private long _timestamp_sender;
     private long _timestamp_receiver;
-    private boolean _is_group;
+    private long _timestamp_seen;
     private String _group_id;
     private boolean _is_enable;
+
+    public Chat(String _message, String _sender, long _timestamp_sender) {
+        this._message = _message;
+        this._sender = _sender;
+        this._timestamp_sender = _timestamp_sender;
+    }
+
+    public Chat(String _message, String _sender, String _receiver, long _timestamp_sender, String _group_id, boolean _is_enable) {
+        this._message = _message;
+        this._sender = _sender;
+        this._receiver = _receiver;
+        this._timestamp_sender = _timestamp_sender;
+        this._group_id = _group_id;
+        this._is_enable = _is_enable;
+    }
+
 
     protected Chat(Parcel in) {
         _id = in.readString();
@@ -21,7 +37,7 @@ public class Chat implements Parcelable{
         _receiver = in.readString();
         _timestamp_sender = in.readLong();
         _timestamp_receiver = in.readLong();
-        _is_group = in.readByte() != 0;
+        _timestamp_seen = in.readLong();
         _group_id = in.readString();
         _is_enable = in.readByte() != 0;
     }
@@ -34,7 +50,7 @@ public class Chat implements Parcelable{
         dest.writeString(_receiver);
         dest.writeLong(_timestamp_sender);
         dest.writeLong(_timestamp_receiver);
-        dest.writeByte((byte) (_is_group ? 1 : 0));
+        dest.writeLong(_timestamp_seen);
         dest.writeString(_group_id);
         dest.writeByte((byte) (_is_enable ? 1 : 0));
     }
@@ -55,24 +71,6 @@ public class Chat implements Parcelable{
             return new Chat[size];
         }
     };
-
-    public Chat(String _id, String _message, String _sender, String _receiver, long _timestamp_sender, long _timestamp_receiver, boolean _is_group, String _group_id, boolean _is_enable) {
-        this._id = _id;
-        this._message = _message;
-        this._sender = _sender;
-        this._receiver = _receiver;
-        this._timestamp_sender = _timestamp_sender;
-        this._timestamp_receiver = _timestamp_receiver;
-        this._is_group = _is_group;
-        this._group_id = _group_id;
-        this._is_enable = _is_enable;
-    }
-
-    public Chat(String _message, String _sender, long _timestamp_sender) {
-        this._message = _message;
-        this._sender = _sender;
-        this._timestamp_sender = _timestamp_sender;
-    }
 
     public String get_id() {
         return _id;
@@ -122,12 +120,12 @@ public class Chat implements Parcelable{
         this._timestamp_receiver = _timestamp_receiver;
     }
 
-    public boolean is_is_group() {
-        return _is_group;
+    public long get_timestamp_seen() {
+        return _timestamp_seen;
     }
 
-    public void set_is_group(boolean _is_group) {
-        this._is_group = _is_group;
+    public void set_timestamp_seen(long _timestamp_seen) {
+        this._timestamp_seen = _timestamp_seen;
     }
 
     public String get_group_id() {

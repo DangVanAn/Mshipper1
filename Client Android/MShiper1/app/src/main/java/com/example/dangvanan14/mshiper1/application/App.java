@@ -1,6 +1,8 @@
 package com.example.dangvanan14.mshiper1.application;
 
 import android.app.Application;
+import android.content.Context;
+import android.support.multidex.MultiDex;
 
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.User;
@@ -56,6 +58,13 @@ public class App extends Application {
         RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
         Realm.setDefaultConfiguration(config);
     }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
+    }
+
     public static Boolean isInDebugMode() {
         return false;
     }

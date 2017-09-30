@@ -75,7 +75,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         mAdapter = new ChatListRecyclerAdapter(chatList);
         recyclerView.setAdapter(mAdapter);
 
-        mSocket.on("messages", onNewMessage);
+        mSocket.on("connectUser", onConnect);
         mSocket.on("chat", onNewMessage);
         mSocket.connect();
 
@@ -97,7 +97,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     public void onDestroy() {
         super.onDestroy();
         mSocket.disconnect();
-        mSocket.off("messages", onNewMessage);
+        mSocket.off("connectUser", onConnect);
+        mSocket.off("chat", onNewMessage);
     }
 
 
@@ -107,9 +108,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             String text = inputChat.getText().toString();
             inputChat.setText("");
             long time = (new Date()).getTime();
-            Chat chat = new Chat(text, "Me", time);
+            Chat chat = new Chat(text, "1101", "1102", time, "room1", true);
             chatList.add(chat);
-            mAdapter.notifyDataSetChanged();
             int id = chatList.size() - 1;
             mAdapter.notifyItemInserted(id);
             recyclerView.scrollToPosition(id);
@@ -118,19 +118,32 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    private Emitter.Listener onConnect = new Emitter.Listener() {
+        @Override
+        public void call(final Object... args) {
+            String json = (String) args[0];
+            Log.d("TAG", "run: " + json + "   ");
+        }
+    };
+
     private Emitter.Listener onNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
             String json = (String) args[0];
             Log.d("TAG", "run: " + json + "   ");
-//            Gson gson = new Gson();
-//            Chat chat = gson.fromJson(json, Chat.class);
-//
-//            chatList.add(chat);
-//            mAdapter.notifyDataSetChanged();
-//            int id = chatList.size() - 1;
-//            mAdapter.notifyItemInserted(id);
-//            recyclerView.scrollToPosition(id);
+            Gson gson = new Gson();
+            Chat chat = gson.fromJson(json, Chat.class);
+
+            chatList.add(chat);
+            int id = chatList.size() - 1;
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mAdapter.notifyItemInserted(id);
+                    recyclerView.scrollToPosition(id);
+                }
+            });
         }
     };
 }
