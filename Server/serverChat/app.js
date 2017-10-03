@@ -9,6 +9,8 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+var chats = require('./routes/ChatRoutes');
+
 app.use(express.static(__dirname + '/node_modules'));
 app.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
@@ -35,6 +37,9 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/chats', chats);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -71,16 +76,16 @@ io.on('connection', function (client) {
     client.on('chat', function (data) {
         //gửi lời mời tới các thành viên bằng FCM
 
-        var messageRes = new Chat()
-        messageRes._message = "có nè, có nè"
-        messageRes._sender = "1111"
-        messageRes._receiver = "1112"
-        messageRes._timestamp_sender = 1506527983
+        var messageRes = new Chat();
+        messageRes._message = "có nè, có nè";
+        messageRes._sender = "1111";
+        messageRes._receiver = "1112";
+        messageRes._timestamp_sender = 1506527983;
         // messageRes._timestamp_receiver = 
-        messageRes._is_group = true
-        messageRes._group_id = "room1"
-        messageRes._is_enable = true
-        client.emit('chat', JSON.stringify(messageRes.toObject()))
+        messageRes._is_group = true;
+        messageRes._group_id = "room1";
+        messageRes._is_enable = true;
+        client.emit('chat', JSON.stringify(messageRes.toObject()));
         // client.broadcast.to('room1').emit('chat', JSON.stringify(messageRes));
         console.log(data);
     });
@@ -106,7 +111,7 @@ io.on('connection', function (client) {
 //port socket
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6968, function() {
-    console.log("dm");
+    console.log("------------server chat on-------------");
   });
 //port express
 // app.listen(1111, function () {
