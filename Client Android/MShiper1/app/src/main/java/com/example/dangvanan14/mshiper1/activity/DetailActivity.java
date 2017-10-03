@@ -104,13 +104,7 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
 
     }
 
-    private static class CallBackImplModelDetail implements ICallbackApi<List<Detail>> {
-
-        @Override
-        public void onResponse(Fragment fragment, List<Detail> body, Logger LOG) {
-
-        }
-
+    private static class CallBackImplModelDetail extends ICallbackApi<List<Detail>> {
         @Override
         public void onResponse(Activity activity, List<Detail> body, Logger LOG) {
             DetailActivity ac = (DetailActivity) activity;
@@ -120,17 +114,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             ac.swipeRefreshLayout.setRefreshing(false);
             ac.setupTabLayout();
         }
-
-        @Override
-        public void onResponse(List<Detail> body, Logger log) {
-
-        }
-
-        @Override
-        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-        }
-
         @Override
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e(TAG, "onFailure: Load data failed");
@@ -138,10 +121,6 @@ public class DetailActivity extends BaseActivity implements View.OnClickListener
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
             ac.setupTabLayout();
-        }
-
-        @Override
-        public void onFailure(Throwable t, Logger LOG) {
         }
     }
 

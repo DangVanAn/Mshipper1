@@ -160,42 +160,19 @@ public class CancelOrderDialogFragment extends BaseDialogFragment implements Vie
         loadData.loadData(() -> loadData.CreateRetrofit().updateStatus(gson.toJson(senddetail)), new LoadData.CallbackDelegate<>(this, new CallBackImpl()));
     }
 
-    private class CallBackImpl implements ICallbackApi<RepPost> {
+    private class CallBackImpl extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
             Toast.makeText(getContext(), R.string.repUpdateSuccess, Toast.LENGTH_SHORT).show();
             dismiss();
             dismissProgressDialog();
         }
-
-        @Override
-        public void onResponse(Activity activity, RepPost body, Logger LOG) {
-
-        }
-
-        @Override
-        public void onResponse(RepPost body, Logger log) {
-
-        }
-
         @Override
         public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
             Log.e("TAG", "onFailure: Load data failed");
             Toast.makeText(getContext(), R.string.repUpdateFailed, Toast.LENGTH_SHORT).show();
             CancelOrderDialogFragment ac = (CancelOrderDialogFragment) fragment;
             ac.dismissProgressDialog();
-        }
-
-        @Override
-        public void onFailure(Activity activity, Throwable t, Logger LOG) {
-
-        }
-
-        @Override
-        public void onFailure(Throwable t, Logger LOG) {
-            Toast.makeText(getContext(), R.string.repUpdateFailed, Toast.LENGTH_SHORT).show();
-            dismiss();
-            dismissProgressDialog();
         }
     }
 }

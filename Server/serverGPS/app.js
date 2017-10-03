@@ -65,7 +65,7 @@ repHttp = function (success, message) {
 var Locations = require('./models/Locations');
 io.on('connection', function (client) {
     console.log('Client connected...');
-    client.emit('messages', "connected được nhá");
+    client.emit('messages', "Connected");
 
     client.on('join', function (data) {
 

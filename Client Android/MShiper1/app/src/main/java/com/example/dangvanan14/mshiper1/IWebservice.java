@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1;
 import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.model.PreOrderSumAssignDrivers;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
@@ -44,4 +45,14 @@ public interface IWebservice {
 
     @POST("details/getbyidorder")
     Call<List<Detail>> getDetailByIdOrder(@Body Order _id_order);
+
+    @POST("preorderssumassigndriver/getbydriver")
+    Call<RepPost> getbydriver(@Body PreOrderSumAssignDrivers drivers);
+
+    @POST("locations/postLocation")
+    Call<RepPost> postLocation3(@Body LocationCustom locationCustom);
+
+    @POST("locations/postLocation")
+    Call<RepPost> postLocation4(@Body LocationCustom locationCustom);
+
 }

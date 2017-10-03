@@ -13,6 +13,7 @@ import android.view.View;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.customview.MapWrapperLayout;
 import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.github.nkzawa.emitter.Emitter;
@@ -34,9 +35,6 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.maps.android.ui.IconGenerator;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 
@@ -69,7 +67,7 @@ public class MapActivity extends FragmentActivity
     private Socket mSocket;
     {
         try {
-            mSocket = IO.socket("https://servergpsmhiper.herokuapp.com");
+            mSocket = IO.socket(DefinedApp.URL_SOCKET_GPS);
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
@@ -81,6 +79,7 @@ public class MapActivity extends FragmentActivity
         setContentView(R.layout.activity_map);
 
         mSocket.on("messages", onNewMessage);
+        mSocket.on("chat", onNewMessage);
         mSocket.connect();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -283,7 +282,7 @@ public class MapActivity extends FragmentActivity
 
         LocationCustom data = new LocationCustom(location.getLatitude(), location.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone());
 
-        mSocket.emit("messages", gson.toJson(data));
+//        mSocket.emit("messages", gson.toJson(data));
         if (mMap != null) updateUI();
     }
     void updateUI() {

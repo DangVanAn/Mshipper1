@@ -54,13 +54,13 @@ public class OrderFragment extends BaseFragment {
         } else
             status = getResources().getString(R.string.statusShippingOrder);
 
-        Predicate<Order> predicate = input -> status.equals(input != null ? input.get_order_status() : "");
-        Collection<Order> result = Collections2.filter(data, predicate);
-        orders = new ArrayList<>(result);
+//        Predicate<Order> predicate = input -> status.equals(input != null ? input.get_order_status() : "");
+//        Collection<Order> result = Collections2.filter(data, predicate);
+//        orders = new ArrayList<>(result);
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_order);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAdapter = new OrderListRecyclerAdapter(orders);
+//        mAdapter = new OrderListRecyclerAdapter(orders);
         recyclerView.setAdapter(mAdapter);
         return v;
     }

@@ -39,17 +39,7 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
         }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
     }
 
-    private static class CallBackImpl implements ICallbackApi<RepPost> {
-        @Override
-        public void onResponse(Fragment fragment, RepPost body, Logger LOG) {
-
-        }
-
-        @Override
-        public void onResponse(Activity activity, RepPost body, Logger LOG) {
-
-        }
-
+    private static class CallBackImpl extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(RepPost body, Logger log) {
             Log.d(TAG, "onResponse: " + body.getMessage());
@@ -59,16 +49,6 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
             } else {
 //                Toast.makeText(, body.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }
-
-        @Override
-        public void onFailure(Fragment fragment, Throwable t, Logger LOG) {
-
-        }
-
-        @Override
-        public void onFailure(Activity activity, Throwable t, Logger LOG) {
-
         }
 
         @Override

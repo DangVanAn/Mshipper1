@@ -114,6 +114,4 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         }
         return resultSearch;
     }
-
-
 }

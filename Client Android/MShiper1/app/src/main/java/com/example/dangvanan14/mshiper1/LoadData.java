@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +33,7 @@ import static com.example.dangvanan14.mshiper1.activity.BaseActivity.newDefaultL
 // E : kiểu trả về từ server
 public class LoadData<E> {
     //    public static String url = "https://mshipperserver.herokuapp.com/";
-    public static String url = "http://192.168.137.1:9999/";
+    public static String url = DefinedApp.URL_SERVER;
 
     public IWebservice CreateRetrofit() {
         OkHttpClient client = new OkHttpClient.Builder()

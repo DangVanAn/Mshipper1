@@ -69,9 +69,10 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.orderTabLayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setText("Chờ");
-        tabLayout.getTabAt(1).setText("Hoàn thành");
-        tabLayout.getTabAt(2).setText("Hủy");
+        tabLayout.getTabAt(0).setText("Đang đến");
+        tabLayout.getTabAt(1).setText("Đang chờ");
+        tabLayout.getTabAt(2).setText("Đã vào");
+        viewPager.setCurrentItem(1);
     }
 
     @Override
