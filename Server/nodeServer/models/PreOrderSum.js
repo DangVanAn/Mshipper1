@@ -23,6 +23,9 @@ var PreOrderSumSchema = mongoose.Schema({
     _ton : {
         type : Number,
     },
+    _ton_action : {
+        type : Number,
+    },
     _etd  : {
         type: String,
     },
@@ -53,6 +56,9 @@ var PreOrderSumSchema = mongoose.Schema({
     _time_refuse : {
         type: Number,
     },
+    _note_refuse : {
+        type: String,
+    },
     _note_accept : {
         type: String,
     },
@@ -72,9 +78,6 @@ var PreOrderSumSchema = mongoose.Schema({
         type: String,
     },
     _user_cancel_delivery : {
-        type: String,
-    },
-    _note_refuse : {
         type: String,
     },
     _user_refuse : {

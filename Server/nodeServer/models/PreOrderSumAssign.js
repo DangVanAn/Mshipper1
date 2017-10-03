@@ -5,10 +5,10 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     _pre_sum_time : {
         type: String,
     },
-    // _id_pre_sum : {
-    //     type: String,
-    // },
     _name_drivers : {
+        type: String,
+    },
+    _id_drivers : {
         type: String,
     },
     _pre_sum_assign_time : {
@@ -23,8 +23,20 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     _weigh_for_vehicle : {
         type: Number,
     },
+    _note_trip : {
+        type: String,
+    },
     _driver_accept :{
         type : Number,
+    },
+    _time_create : {
+        type: Number,
+    },
+    _note_cancel : {
+        type: String,
+    },
+    _time_cancel : {
+        type: Number,
     },
     _start_pickup :{
         type : Number,

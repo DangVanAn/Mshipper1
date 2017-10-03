@@ -20,6 +20,12 @@ var AssignDriverSchema = mongoose.Schema({
     _lead_driver : {
         type: Boolean,
     },
+    _time_cancel : {
+        type: String,
+    },
+    _note_cancel : {
+        type: String,
+    },
     _is_enabled : {
         type: Boolean,
     }

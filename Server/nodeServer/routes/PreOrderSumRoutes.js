@@ -51,17 +51,8 @@ router.post('/accept', function (req, res) {
             return console.error(err);
         else {
             if (preordersum) {
-                preordersum._time_accept = new Date().getTime();
-                preordersum._user_accept = req.body._user_accept;
-                preordersum.save(function (err) {
-                    if (err)
-                        return console.error(err);
-                    else {
-                        res.status(200).send("success!");
-                        console.log('success!');
-                        resetListPreOrderSum();
-                    }
-                });
+                accept(preordersum, req.body._ton_action, req.body._user_accept);
+                res.status(200).send("success!");
             }
             else {
                 res.status(200).send("error!");
@@ -77,20 +68,8 @@ router.post('/refuse', function (req, res) {
             return console.error(err);
         else {
             if (preordersum) {
-                preordersum._time_refuse = new Date().getTime();
-                preordersum._is_enabled = false;
-                preordersum._note_refuse = req.body._note_refuse;
-                preordersum._user_refuse = req.body._user_refuse;
-
-                preordersum.save(function (err) {
-                    if (err)
-                        return console.error(err);
-                    else {
-                        res.status(200).send("success!");
-                        console.log('success!');
-                        resetListPreOrderSum();
-                    }
-                });
+                refuse(preordersum, req.body._ton_action, req.body._note_refuse, req.body._user_refuse);
+                res.status(200).send("success!");
             }
             else {
                 res.status(200).send("error!");
@@ -171,6 +150,61 @@ router.post('/cancel', function (req, res) {
         }
     });
 });
+
+router.post('/verifyrequest', function (req, res) {
+    PreOrderSum.find({_id_delivery_manager: req.body[0]._id_delivery_manager, _is_enabled  : true}).select().exec(function (err, preordersum) {
+        if (err)
+            return console.error(err);
+        else {
+            for(var i = 0; i < preordersum.length; i++)
+            {
+                for(var j = 0; j < req.body.length; j++){
+                    if(req.body[j]._id == preordersum[i]._id){
+                        //Nếu số tấn thực hiện nhỏ hơn thì refuse
+                        //Nếu số tấn thực hiện lớn hơn hoặc bằng thì accept
+                        if(req.body[j]._ton_action < req.body[j]._ton){
+                            refuse(preordersum[i], req.body[j]._ton_action, 'delivery manager refuse', req.body[0]._id_delivery_manager);
+                        }
+                        else {
+                            accept(preordersum[i], req.body[j]._ton_action, req.body[0]._id_delivery_manager);
+                        }
+                    }
+                }
+            }
+            res.status(200).send("success!");
+        }
+    });
+});
+
+function refuse(preordersum, ton_action, note, user_action) {
+    preordersum._ton_action = ton_action;
+    preordersum._time_refuse = new Date().getTime();
+    preordersum._note_refuse = note;
+    preordersum._user_refuse = user_action;
+
+    preordersum.save(function (err) {
+        if (err)
+            return console.error(err);
+        else {
+            console.log('success refuse!');
+            resetListPreOrderSum();
+        }
+    });
+}
+
+function accept(preordersum, ton_action, user_action) {
+    preordersum._ton_action = ton_action;
+    preordersum._time_accept = new Date().getTime();
+    preordersum._user_accept = user_action;
+    preordersum.save(function (err) {
+        if (err)
+            return console.error(err);
+        else {
+            console.log('success accept!');
+            resetListPreOrderSum();
+        }
+    });
+}
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
     AssignDriver.find({_pre_sum_assign_time: _pre_sum_assign_time}).select().exec(function (err, preordersumassigndriver) {

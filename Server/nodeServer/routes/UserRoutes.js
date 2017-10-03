@@ -14,7 +14,7 @@ router.get('/getall', function (req, res) {
             res.status(200).send(users);
             console.log('Find all success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
 });
 
 router.post('/getbypermission', function (req, res) {
@@ -25,7 +25,7 @@ router.post('/getbypermission', function (req, res) {
             res.status(200).send(users);
             console.log('Find all success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
 });
 
 router.post('/getbypermissionandidmanager', function (req, res) {
@@ -190,7 +190,7 @@ router.post('/getbyphone', function (req, res) {
             res.status(200).send(user);
             console.log('Find one success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
 });
 
 router.post('/updatebyphone', function (req, res) {
@@ -253,7 +253,9 @@ router.post('/login', function (req, res) {
                             _token: user._token
                         };
 
-                        res.status(200).send({success: true, message: "OK", data: JSON.stringify(userRes)});
+                        res.status(200).send({
+                            success: true, message: "OK", data: JSON.stringify(userRes)
+                        });
                     }
                     else {
                         res.status(200).send({ success: false, message: "Password is incorrect" });

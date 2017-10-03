@@ -20,6 +20,12 @@ var productSchema = mongoose.Schema({
     _note : {
         type: String,
     },
+    _name_driver : {
+        type: String,
+    },
+    _id_driver : {
+        type: String,
+    },
     _is_enabled : {
         type: Boolean,
     }
