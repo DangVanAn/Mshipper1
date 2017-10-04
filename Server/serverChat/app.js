@@ -10,6 +10,8 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
 var chats = require('./routes/ChatRoutes');
+var groupchats = require('./routes/GroupChatRoutes');
+var groupchatmembers = require('./routes/GroupChatMemberRoutes');
 
 app.use(express.static(__dirname + '/node_modules'));
 app.get('/', function(req, res,next) {
@@ -40,6 +42,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/chats', chats);
+app.use('/groupchats', chats);
+app.use('/groupchatmembs', chats);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -88,23 +92,6 @@ io.on('connection', function (client) {
         client.emit('chat', JSON.stringify(messageRes.toObject()));
         // client.broadcast.to('room1').emit('chat', JSON.stringify(messageRes));
         console.log(data);
-    });
-    client.on('messages', function (data) {
-        console.log(JSON.parse(data));
-        //Dòng này có tác dụng trả thông tin về những client trong room1
-        // Nếu mất comment đi, thì client chỉ có gửi, chứ không có nhận, như vậy sẽ nhanh hơn.
-        client.broadcast.to('room1').emit('broad', data);
-
-        var newLocation = new Chat(JSON.parse(data));
-        newLocation.save(function (err) {
-            if (err) {
-                console.log('Location error!');
-            }
-            else {
-                console.log('Location created!');
-            }
-        });
-       
     });
 });
 

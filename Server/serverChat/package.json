@@ -19,6 +19,7 @@
     "node-gcm": "^0.14.6",
     "socket.io": "1.7.2",
     "express-jwt": "0.2.1",
-    "jsonwebtoken": "0.4.0"
+    "jsonwebtoken": "0.4.0",
+    "uuid": "3.1.0"
   }
 }
