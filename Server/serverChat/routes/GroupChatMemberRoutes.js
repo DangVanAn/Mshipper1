@@ -87,16 +87,30 @@ router.post('/getgroupchat2member', function (req, res) {
 });
 
 router.post('/addmembertogroup', function (req, res) {
-    req.body._is_enable = true;
-    var newGroupChatMember = new GroupChatMember(req.body);
-    newGroupChatMember.save(function (err) {
-        if (err)
-            return console.error(err);
-        else {
-            console.log('groupchatmember created!');
-            res.status(200).send({success: true, message: "OK", data: req.body._group_id});
+    var boolExist = false;
+    for(var i = 0; i < listGroupChatMember.length; i++)
+    {
+        if(listGroupChatMember[i]._group_id == req.body._group_id && listGroupChatMember[i]._user_id == req.body._user_id)
+        {
+            boolExist = true;
+            break;
         }
-    });
+    }
+    if(!boolExist){
+        req.body._is_enable = true;
+        var newGroupChatMember = new GroupChatMember(req.body);
+        newGroupChatMember.save(function (err) {
+            if (err)
+                return console.error(err);
+            else {
+                console.log('groupchatmember created!');
+                res.status(200).send({success: true, message: "OK", data: req.body._group_id});
+            }
+        });
+    }
+    else {
+        res.status(200).send({success: true, message: "OK", data: req.body._group_id});
+    }
 });
 
 function findGroupChat2Member(member1, member2) {
