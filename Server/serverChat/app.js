@@ -42,8 +42,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/chats', chats);
-app.use('/groupchats', chats);
-app.use('/groupchatmembs', chats);
+app.use('/groupchats', groupchats);
+app.use('/groupchatmembers', groupchatmembers);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
