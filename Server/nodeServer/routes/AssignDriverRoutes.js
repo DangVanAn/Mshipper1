@@ -61,6 +61,42 @@ router.post('/add', function (req, res) {
     });
 });
 
+router.post('/updatebysumassign', function (req, res) {
+    console.log('-----------------------------------------');
+    console.log(req.body._pre_sum_assign_time);
+    AssignDriver.find({_pre_sum_assign_time : req.body._pre_sum_assign_time, _is_enabled : true}, function (err, preordersumassigndriver) {
+        if (err)
+            return console.error(err);
+        else {
+            for(var i = 0; i < preordersumassigndriver.length; i++)
+            {
+                preordersumassigndriver[i]._is_enabled = false;
+                preordersumassigndriver[i]._time_cancel = new Date().getTime();
+                preordersumassigndriver[i]._note_cancel = 'change driver';
+                preordersumassigndriver[i].save(function (err) {
+                    if (err)
+                        console.error(err);
+                    else {
+                        console.log('delete driver done!');
+                    }
+                });
+            }
+        }
+    });
+
+    AssignDriver.insertMany(req.body.data, function (err, docs) {
+        if (err) {
+            res.status(200).send('error!');
+            console.log('error!');
+        }
+        else {
+            res.status(200).send('updated!');
+            console.log('90 - updated!');
+            resetListPreOrderSumAssignDriver();
+        }
+    });
+});
+
 
 var listPreOrderSum = [];
 var listPreOrderSumAssign = [];

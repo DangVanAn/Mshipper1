@@ -15,6 +15,6 @@ var groupChatSchema = mongoose.Schema({
     }
 });
 
-var GroupChat = mongoose.model('GroupChat', groupChatSchema);
+var GroupChat = mongoose.model('GroupChatMember', groupChatSchema);
 
 module.exports = GroupChat;

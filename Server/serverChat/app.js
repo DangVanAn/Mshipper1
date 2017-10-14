@@ -9,6 +9,10 @@ var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 
+var chats = require('./routes/ChatRoutes');
+var groupchats = require('./routes/GroupChatRoutes');
+var groupchatmembers = require('./routes/GroupChatMemberRoutes');
+
 app.use(express.static(__dirname + '/node_modules'));
 app.get('/', function(req, res,next) {
     res.sendFile(__dirname + '/index.html');
@@ -35,6 +39,11 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use('/chats', chats);
+app.use('/groupchats', chats);
+app.use('/groupchatmembs', chats);
 
 app.use(function (req, res, next) {
     var err = new Error('Not Found');
@@ -69,6 +78,18 @@ io.on('connection', function (client) {
     });
     client.on('chat', function (data) {
         //gửi lời mời tới các thành viên bằng FCM
+
+        var messageRes = new Chat();
+        messageRes._message = "có nè, có nè";
+        messageRes._sender = "1111";
+        messageRes._receiver = "1112";
+        messageRes._timestamp_sender = 1506527983;
+        // messageRes._timestamp_receiver = 
+        messageRes._is_group = true;
+        messageRes._group_id = "room1";
+        messageRes._is_enable = true;
+        client.emit('chat', JSON.stringify(messageRes.toObject()));
+        // client.broadcast.to('room1').emit('chat', JSON.stringify(messageRes));
         console.log(data);
         var chatTemp = JSON.parse(data)
         // client.broadcast.to(chatTemp._group_id).emit('chat', data);
@@ -83,29 +104,12 @@ io.on('connection', function (client) {
             }
         });
     });
-    client.on('messages', function (data) {
-        console.log(JSON.parse(data));
-        //Dòng này có tác dụng trả thông tin về những client trong room1
-        // Nếu mất comment đi, thì client chỉ có gửi, chứ không có nhận, như vậy sẽ nhanh hơn.
-        client.broadcast.to('room1').emit('broad', data);
-
-        var newLocation = new Chat(JSON.parse(data));
-        newLocation.save(function (err) {
-            if (err) {
-                console.log('Location error!');
-            }
-            else {
-                console.log('Location created!');
-            }
-        });
-       
-    });
 });
 
 //port socket
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6968, function() {
-    console.log("dm");
+    console.log("------------server chat on-------------");
   });
 //port express
 // app.listen(1111, function () {

@@ -6,15 +6,22 @@ var bcrypt = require('bcrypt');
 const saltRounds = 10;
 const keyJWT = 'djs235Ajhs668DDflb';
 
-router.get('/getall', function (req, res) {
+var listUser = [];
+resetListUser();
+function resetListUser() {
+    listUser = [];
     User.find({_is_enabled : true}, function (err, users) {
         if (err)
             return console.error(err);
         else {
-            res.status(200).send(users);
+            listUser = users;
             console.log('Find all success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
+}
+
+router.get('/getall', function (req, res) {
+    res.status(200).send(listUser);
 });
 
 router.post('/getbypermission', function (req, res) {
@@ -25,7 +32,19 @@ router.post('/getbypermission', function (req, res) {
             res.status(200).send(users);
             console.log('Find all success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
+});
+
+router.post('/findbyphone', function (req, res) {
+    var listData = [];
+    for(var i = 0; i < listUser.length; i++){
+        var re = new RegExp(req.body._phone, 'g');
+        if(listUser[i]._phone.match(re)){
+            listData.push(listUser[i]);
+        }
+    }
+
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listData)});
 });
 
 router.post('/getbypermissionandidmanager', function (req, res) {
@@ -61,6 +80,7 @@ router.post('/add', function (req, res) {
                             return console.error(err);
                         else {
                             res.status(200).send('User created!');
+                            resetListUser();
                             console.log('User created!');
                         }
                     });
@@ -136,6 +156,7 @@ router.post('/adds', function (req, res) {
             }
             else {
                 res.status(200).send('Users created!');
+                resetListUser();
                 console.log('Users created!');
             }
         });
@@ -158,6 +179,7 @@ router.post('/remove', function (req, res) {
                         return console.error(err);
                     else {
                         res.status(200).send('User removed!');
+                        resetListUser();
                         console.log('User removed!');
                     }
                 });
@@ -175,6 +197,7 @@ router.post('/update', function (req, res) {
             return console.error(err);
         else {
             res.status(200).send(user);
+            resetListUser();
             console.log('User successfully updated!');
         }
     });
@@ -190,7 +213,7 @@ router.post('/getbyphone', function (req, res) {
             res.status(200).send(user);
             console.log('Find one success!!!');
         }
-    }).select('-_token -_hashed_password -_id');
+    }).select('-_token -_hashed_password');
 });
 
 router.post('/updatebyphone', function (req, res) {
@@ -201,6 +224,7 @@ router.post('/updatebyphone', function (req, res) {
             if(user)
             {
                 res.status(200).send('User successfully updated!');
+                resetListUser();
                 console.log('User successfully updated!');
             }
             else {
@@ -253,7 +277,9 @@ router.post('/login', function (req, res) {
                             _token: user._token
                         };
 
-                        res.status(200).send({success: true, message: "OK", data: JSON.stringify(userRes)});
+                        res.status(200).send({
+                            success: true, message: "OK", data: JSON.stringify(userRes)
+                        });
                     }
                     else {
                         res.status(200).send({ success: false, message: "Password is incorrect" });

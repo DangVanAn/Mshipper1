@@ -9,6 +9,10 @@ var groupChatSchema = mongoose.Schema({
         type: String,
         required: true
     },
+    _is_enable: {
+        type: Boolean,
+        required: true
+    },
 });
 
 var GroupChat = mongoose.model('GroupChat', groupChatSchema);

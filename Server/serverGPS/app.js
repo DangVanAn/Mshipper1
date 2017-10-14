@@ -84,7 +84,7 @@ io.on('connection', function (client) {
 //port socket
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6969, function() {
-    console.log("chay tot roi ba con oi!!!");
+    console.log("------------server gps on-------------");
   });
 //port express
 // app.listen(1111, function () {
