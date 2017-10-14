@@ -6,7 +6,9 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -14,8 +16,10 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.fragment.VehicleListFragment;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssignDrivers;
@@ -35,7 +39,7 @@ import retrofit2.Call;
 public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
     private SwipeRefreshLayout swipeRefreshLayout;
-
+    private CustomViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,33 +68,40 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         ////////////////////////////
         FirebaseMessaging.getInstance().subscribeToTopic("fcm");
 
+        setupTabLayout();
+        setupBottomBar();
+    }
+
+    public void setupBottomBar() {
         BottomBar bottomBar = (BottomBar) findViewById(R.id.bottomBar);
         bottomBar.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
             public void onTabSelected(@IdRes int tabId) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 switch (tabId) {
                     case R.id.tab_truck:
-                        VehicleListFragment vehicleListFragment = new VehicleListFragment();
-                        transaction.replace(R.id.container_fragment, vehicleListFragment);
-                        transaction.addToBackStack(null);
-                        transaction.commit();
-
+                        viewPager.setCurrentItem(0);
                         break;
                     case R.id.tab_order:
                         Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
                         startActivity(intentChat);
                         break;
                     case R.id.tab_more:
-                        // The tab with id R.id.tab_favorites was selected,
-                        // change your content accordingly.
-                        Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
-                        startActivity(intent);
+//                        Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
+//                        startActivity(intent);
+                        viewPager.setCurrentItem(1);
                         break;
                 }
             }
         });
     }
+
+    public void setupTabLayout() {
+        MainPagerAdapter mAdapter = new MainPagerAdapter(getSupportFragmentManager(), orders);
+        viewPager = (CustomViewPager) findViewById(R.id.viewpager);
+        viewPager.setPagingEnabled(false);
+        viewPager.setAdapter(mAdapter);
+    }
+
     private void loadModelAssign() {
         if (!isNetworkConnected(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
@@ -106,6 +117,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 //            }
 //        }, new LoadData.CallbackDelegate<List<Order>>(this, new CallBackImpl()));
     }
+
     private void loadStepOrder() {
         if (!isNetworkConnected(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
@@ -179,11 +191,11 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null)
-        {
+        if (receiver != null) {
             unregisterReceiver(receiver);
         }
     }
+
     private static class CallBackImpl extends ICallbackApi<List<Order>> {
         @Override
         public void onResponse(Activity activity, List<Order> body, Logger LOG) {
@@ -194,6 +206,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
         }
+
         @Override
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e(TAG, "onFailure: Load data failed");
@@ -214,6 +227,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ac.dismissProgressDialog();
             ac.swipeRefreshLayout.setRefreshing(false);
         }
+
         @Override
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e(TAG, "onFailure: Load data failed");

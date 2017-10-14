@@ -58,7 +58,7 @@ dependencies {
     //retrofit
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
+    compile 'com.squareup.okhttp3:logging-interceptor:3.9.0'
     //log
     compile 'org.slf4j:slf4j-api:1.7.21'
     compile ('com.github.nkzawa:socket.io-client:0.6.0'){

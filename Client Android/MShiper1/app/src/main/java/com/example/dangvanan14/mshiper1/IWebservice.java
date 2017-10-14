@@ -49,10 +49,7 @@ public interface IWebservice {
     @POST("preorderssumassigndriver/getbydriver")
     Call<RepPost> getbydriver(@Body PreOrderSumAssignDrivers drivers);
 
-    @POST("locations/postLocation")
-    Call<RepPost> postLocation3(@Body LocationCustom locationCustom);
-
-    @POST("locations/postLocation")
-    Call<RepPost> postLocation4(@Body LocationCustom locationCustom);
+    @POST("users/findbyphone")
+    Call<RepPost> postFindByPhone(@Body User user);
 
 }

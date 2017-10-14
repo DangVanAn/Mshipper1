@@ -6,8 +6,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.util.Log;
 
 import com.example.dangvanan14.mshiper1.fragment.Fragment_Maps;
+import com.example.dangvanan14.mshiper1.fragment.MoreFragment;
 import com.example.dangvanan14.mshiper1.fragment.OrderFragment;
 import com.example.dangvanan14.mshiper1.fragment.OrderListFragment;
+import com.example.dangvanan14.mshiper1.fragment.VehicleListFragment;
 import com.example.dangvanan14.mshiper1.model.Order;
 
 import java.util.List;
@@ -28,13 +30,16 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return OrderListFragment.newInstance(orders);
+                return VehicleListFragment.newInstance(orders);
+            case 1:
+                return MoreFragment.newInstance();
+            default:
+                return null;
         }
-        return null;
     }
 
     @Override
     public int getCount() {
-        return 1;
+        return 2;
     }
 }
