@@ -97,8 +97,8 @@ public abstract class BaseActivity extends AppCompatActivity {
             ProgressDialogFragment newFrag = ProgressDialogFragment.newInstance();
             ft.add(newFrag, TAG_PROGRESS_DIALOG);
         } else {
-            ft.remove(prevFrag);
-        }
+//            ft.remove(prevFrag);
+    }
         ft.commitAllowingStateLoss();
     }
 

@@ -21,6 +21,7 @@ import org.slf4j.Logger;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Converter;
@@ -36,8 +37,11 @@ public class LoadData<E> {
     public static String url = DefinedApp.URL_SERVER;
 
     public IWebservice CreateRetrofit() {
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+
         OkHttpClient client = new OkHttpClient.Builder()
-                .addInterceptor(newDefaultLogging())
+                .addInterceptor(logging)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)

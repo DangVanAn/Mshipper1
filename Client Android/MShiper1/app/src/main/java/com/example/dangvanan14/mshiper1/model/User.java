@@ -34,12 +34,13 @@ public class User implements Parcelable{
     private String _device_token;// token để firebase biết thiết bị nào để gửi notify
     private String _password;
 
-    public User() {
-    }
-
     public User(String _phone, String _device_token) {
         this._phone = _phone;
         this._device_token = _device_token;
+    }
+
+    public User(String _phone) {
+        this._phone = _phone;
     }
 
     public User(String _password, String _phone, String _device_token) {

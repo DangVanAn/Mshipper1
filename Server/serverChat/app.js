@@ -69,10 +69,9 @@ repHttp = function (success, message) {
 var Chat = require('./models/Chat');
 io.on('connection', function (client) {
     console.log('Client connected...');
-    client.emit('messages', "Connected");
+    client.emit('connectUser', "Connected");
     client.join('room1');
     client.on('join', function (data) {
-
         client.join('room1');
         //gửi lời mời tới các thành viên bằng FCM
         console.log(data);
@@ -92,6 +91,18 @@ io.on('connection', function (client) {
         client.emit('chat', JSON.stringify(messageRes.toObject()));
         // client.broadcast.to('room1').emit('chat', JSON.stringify(messageRes));
         console.log(data);
+        var chatTemp = JSON.parse(data)
+        // client.broadcast.to(chatTemp._group_id).emit('chat', data);
+        client.broadcast.to('room1').emit('chat', data);
+        var newChat = new Chat(chatTemp);
+        newChat.save(function (err) {
+            if (err) {
+                console.log('Message error!');
+            }
+            else {
+                console.log('Message created!');
+            }
+        });
     });
 });
 

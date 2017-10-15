@@ -28,7 +28,7 @@ var chatSchema = mongoose.Schema({
     },
     _is_enable:{
         type: Boolean,
-    }
+    },
 });
 
 var Chat = mongoose.model('Chat', chatSchema);

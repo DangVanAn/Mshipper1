@@ -5,16 +5,20 @@ import android.os.Parcelable;
 
 public class GroupChat implements Parcelable {
     private String _id;
+    private String _group_id;
     private String _group_name;
+
 
     protected GroupChat(Parcel in) {
         _id = in.readString();
+        _group_id = in.readString();
         _group_name = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(_id);
+        dest.writeString(_group_id);
         dest.writeString(_group_name);
     }
 
@@ -35,6 +39,12 @@ public class GroupChat implements Parcelable {
         }
     };
 
+    public GroupChat(String _id, String _group_id, String _group_name) {
+        this._id = _id;
+        this._group_id = _group_id;
+        this._group_name = _group_name;
+    }
+
     public String get_id() {
         return _id;
     }
@@ -43,16 +53,19 @@ public class GroupChat implements Parcelable {
         this._id = _id;
     }
 
+    public String get_group_id() {
+        return _group_id;
+    }
+
+    public void set_group_id(String _group_id) {
+        this._group_id = _group_id;
+    }
+
     public String get_group_name() {
         return _group_name;
     }
 
     public void set_group_name(String _group_name) {
-        this._group_name = _group_name;
-    }
-
-    public GroupChat(String _id, String _group_name) {
-        this._id = _id;
         this._group_name = _group_name;
     }
 }

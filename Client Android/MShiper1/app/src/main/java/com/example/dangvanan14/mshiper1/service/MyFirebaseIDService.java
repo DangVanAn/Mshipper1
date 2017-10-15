@@ -29,7 +29,7 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
     }
 
     private void updateDeviceToken(String token) {
-        LoadData<RepPost> loadData = new LoadData<>();;
+        LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
