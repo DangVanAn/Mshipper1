@@ -8,11 +8,11 @@ var groupchats = require('../routes/GroupChatRoutes');
 var listGroupChatMember = [];
 resetListGroupChatMember();
 function resetListGroupChatMember() {
-    listGroupChatMember = [];
     GroupChatMember.find({_is_enable : true}, function (err, datas) {
         if (err)
             return console.error(err);
         else {
+            listGroupChatMember = [];
             listGroupChatMember = datas;
             console.log('Find all success!!!');
         }
@@ -59,6 +59,7 @@ router.post('/getgroupchatbyid', function (req, res) {
 });
 
 router.post('/getgroupchat2member', function (req, res) {
+    // req.body = [{_user_id : '59b78c7e7a14a4122c8b720b',_user_name : '11'},{_user_id : '59b793367a14a4122c8b7217',_user_name : '24'}]
     var group_id = findGroupChat2Member(req.body[0]._user_id, req.body[1]._user_id);
     if(group_id == 'false')
     {
@@ -70,11 +71,14 @@ router.post('/getgroupchat2member', function (req, res) {
         for(var i = 0; i < req.body.length; i++){
             var dataTemp = {_group_id : group_id, _user_id : req.body[i]._user_id, _is_enable : true};
             var newGroupChatMember = new GroupChatMember(dataTemp);
+            listGroupChatMember.push(dataTemp);
             newGroupChatMember.save(function (err) {
                 if (err)
                     return console.error(err);
                 else {
+                    resetListGroupChatMember();
                     console.log('groupchatmember created!');
+
                 }
             });
         }
@@ -87,6 +91,7 @@ router.post('/getgroupchat2member', function (req, res) {
 });
 
 router.post('/addmembertogroup', function (req, res) {
+
     var boolExist = false;
     for(var i = 0; i < listGroupChatMember.length; i++)
     {
@@ -122,22 +127,22 @@ function findGroupChat2Member(member1, member2) {
             {
                 if(listGroupChatMember[j]._user_id == member2 && listGroupChatMember[j]._group_id == listGroupChatMember[i]._group_id){
                     var coutnMember = 0;
+                    var tempGroupId = listGroupChatMember[j]._group_id;
                     for(var ii = 0; ii < listGroupChatMember.length; ii++)
                     {
                         if(listGroupChatMember[ii]._group_id == listGroupChatMember[j]._group_id)
                         {
                             coutnMember++;
-                            if(coutnMember === 2)
-                            {
-                                return listGroupChatMember[ii]._group_id;
-                            }
                         }
+                    }
+                    if(coutnMember === 2)
+                    {
+                        return tempGroupId;
                     }
                 }
             }
         }
     }
-
     return 'false';
 }
 

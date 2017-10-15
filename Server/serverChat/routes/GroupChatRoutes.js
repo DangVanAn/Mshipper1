@@ -6,11 +6,11 @@ var GroupChat = require('../models/GroupChat');
 var listGroupChat = [];
 resetListGroupChat();
 function resetListGroupChat() {
-    listGroupChat = [];
     GroupChat.find({_is_enable : true}, function (err, datas) {
         if (err)
             return console.error(err);
         else {
+            listGroupChat = [];
             listGroupChat = datas;
             console.log('Find all success!!!');
         }
@@ -39,6 +39,7 @@ function addGroupChat(data) {
             return console.error(err);
         else {
             console.log('groupchat created!');
+            resetListGroupChat();
             return true;
         }
     });
