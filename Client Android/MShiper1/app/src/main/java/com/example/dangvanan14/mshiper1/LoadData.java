@@ -36,6 +36,20 @@ public class LoadData<E> {
     //    public static String url = "https://mshipperserver.herokuapp.com/";
     public static String url = DefinedApp.URL_SERVER;
 
+    public LoadData() {
+    }
+
+    public LoadData(DefinedApp.API api) {
+        switch (api){
+            case CHAT:
+                url = DefinedApp.URL_SOCKET_CHAT;
+                break;
+            case MAIN:
+                url = DefinedApp.URL_SERVER;
+                break;
+        }
+    }
+
     public IWebservice CreateRetrofit() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -54,10 +68,10 @@ public class LoadData<E> {
     // func : hàm tương ứng trong IWebService
     // callbackDelegate : callback khi server trả lời
     public void loadData(Callable<Call<E>> func, CallbackDelegate callbackDelegate) {
-        Call<E> callGetIngredients;
+        Call<E> call;
         try {
-            callGetIngredients = func.call();
-            callGetIngredients.enqueue(callbackDelegate);
+            call = func.call();
+            call.enqueue(callbackDelegate);
         } catch (Exception e) {
             Log.e("TAG", "loadData: " + e.getMessage());
             e.printStackTrace();

@@ -9,9 +9,15 @@ var chatSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    _receiver: {
+    _sender_name: {
         type: String,
         required: true
+    },
+    _receiver: {
+        type: String,
+    },
+    _receiver_name: {
+        type: String,
     },
     _timestamp_sender: {
         type: Number,

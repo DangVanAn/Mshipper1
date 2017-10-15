@@ -2,34 +2,38 @@ package com.example.dangvanan14.mshiper1.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.activity.BaseActivity;
-import com.example.dangvanan14.mshiper1.activity.DetailActivity;
-import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.activity.ChatActivity;
+import com.example.dangvanan14.mshiper1.activity.ContactActivity;
+import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
+import com.example.dangvanan14.mshiper1.response.RepPost;
 
-import java.text.SimpleDateFormat;
+import org.slf4j.Logger;
+
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
+
+import retrofit2.Call;
 
 public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchContactRecyclerAdapter.ViewHolder> {
+    private static final String TAG = "SearchContactRA";
+    private final ContactActivity context;
     private List<User> users;
-
-    public SearchContactRecyclerAdapter() {
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -49,11 +53,12 @@ public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchCon
     }
 
 
-    public SearchContactRecyclerAdapter(List<User> users) {
+    public SearchContactRecyclerAdapter(ContactActivity context, List<User> users) {
+        this.context = context;
         this.users = users;
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
         private TextView txtIsActive;
         private ImageView imageView;
@@ -72,26 +77,64 @@ public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchCon
         void bind(final User user) {
             txtName.setText(user.get_name());
             txtPhone.setText(user.get_phone());
-            cardView.setOnClickListener(v -> {
-//                Predicate<Order> predicate = input -> order.get_id().equals(input != null ? input.get_id() : "");
-//                Collection<Order> result2 = Collections2.filter(users, predicate);
-//                List<Order> order1 = new ArrayList<>(result2);
-//                if ("MainActivity".equals(v.getContext().getClass().getSimpleName())) {
-//                    Intent intent = new Intent(v.getContext(), DetailActivity.class);
-//                    intent.putExtra("ID", order.get_id());
-//                    intent.putExtra("order", order1.get(0));
-//                    intent.putParcelableArrayListExtra("users", (ArrayList<? extends Parcelable>) users);
-//                    v.getContext().startActivity(intent);
-//                }
-//
-//                if ("SearchActivity".equals(v.getContext().getClass().getSimpleName())) {
-//                    Intent intent = new Intent();
-//                    intent.putExtra("ID", order.get_id());
-//                    intent.putExtra("order", order1.get(0));
-//                    ((Activity)(v.getContext())).setResult(BaseActivity.RESULT_SEARCH, intent);
-//                    ((Activity)(v.getContext())).finish();
-//                }
+            cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.showProgressDialog();
+                    postContact(user);
+                }
             });
+        }
+
+        private void postContact(User user) {
+            context.user2 = user;
+
+            LoadData<RepPost> loadData = new LoadData<>(DefinedApp.API.CHAT);
+            loadData.loadData(new Callable<Call<RepPost>>() {
+                @Override
+                public Call<RepPost> call() throws Exception {
+                    User u1 = new User();
+                    u1.set_id(context.getApp().getUser().get_id());
+                    u1.set_name(context.getApp().getUser().get_name());
+
+                    Log.d(TAG, "call: ");
+
+                    List<User> userList = new ArrayList<>();
+                    userList.add(u1);
+                    userList.add(user);
+                    return loadData.CreateRetrofit().getGroupChat2Member(userList);
+                }
+            }, new LoadData.CallbackDelegate<>(context, new CallBackImpl()));
+        }
+    }
+
+    private static class CallBackImpl extends ICallbackApi<RepPost> {
+        @Override
+        public void onResponse(Activity activity, RepPost body, Logger LOG) {
+            ContactActivity ac = (ContactActivity) activity;
+            ac.dismissProgressDialog();
+            if (body.isSuccess()) {
+                Log.d(TAG, "onResponse: " + body.getMessage());
+                Log.d(TAG, "onResponse data: " + body.getData());
+
+                String idGroup = body.getData();
+
+                Intent i = new Intent(ac, ChatActivity.class);
+                i.putExtra("idGroup", idGroup);
+                i.putExtra("user2", ac.user2);
+                ac.startActivity(i);
+            } else {
+                Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Activity activity, Throwable t, Logger LOG) {
+            ContactActivity ac = (ContactActivity) activity;
+            ac.dismissProgressDialog();
+
+            Log.e("TAG", "onFailure: Sai rồi nè");
+            Toast.makeText(activity, "Không thể kết nối", Toast.LENGTH_SHORT).show();
         }
     }
 }

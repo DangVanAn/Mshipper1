@@ -16,6 +16,7 @@ import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.DetailActivity;
 import com.example.dangvanan14.mshiper1.model.Chat;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.model.User;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 
@@ -24,23 +25,37 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecyclerAdapter.ViewHolder> {
+public class ChatListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private List<Chat> chatList;
+    private User user1;
 
-    public ChatListRecyclerAdapter() {
+    @Override
+    public int getItemViewType(int position) {
+        Chat chat = chatList.get(position);
+        if (chat.get_sender().equals(user1.get_id())) {
+            return 1;
+        }
+        return 0;
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View v;
+        if (viewType == 1) {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat2, parent, false);
+        } else {
+            v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_chat, parent, false);
+        }
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Chat chat = chatList.get(position);
-        holder.bind(chat);
+        ViewHolder view1 = (ViewHolder) holder;
+        view1.bind(chat);
     }
 
     @Override
@@ -49,8 +64,9 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
     }
 
 
-    public ChatListRecyclerAdapter(List<Chat> chatList) {
+    public ChatListRecyclerAdapter(List<Chat> chatList, User user) {
         this.chatList = chatList;
+        this.user1 = user;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
@@ -68,9 +84,11 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<ChatListRecycl
         }
 
         void bind(Chat chat) {
-            txtName.setText(chat.get_sender());
+            txtName.setText(chat.get_sender_name());
             txtMessage.setText(chat.get_message());
-            txtTimeSend.setText(String.valueOf(chat.get_timestamp_sender()));
+            SimpleDateFormat format = new SimpleDateFormat("hh:mm dd/MM/yyyy",Locale.US);
+            String date = format.format(new Date(chat.get_timestamp_sender()));
+            txtTimeSend.setText("Gửi: " + date);
         }
     }
 }

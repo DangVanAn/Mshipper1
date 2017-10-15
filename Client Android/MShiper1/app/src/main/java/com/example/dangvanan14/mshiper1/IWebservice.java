@@ -52,4 +52,9 @@ public interface IWebservice {
     @POST("users/findbyphone")
     Call<RepPost> postFindByPhone(@Body User user);
 
+
+
+    //api server chat
+    @POST("groupchatmembers/getgroupchat2member")
+    Call<RepPost> getGroupChat2Member(@Body List<User> users);
 }

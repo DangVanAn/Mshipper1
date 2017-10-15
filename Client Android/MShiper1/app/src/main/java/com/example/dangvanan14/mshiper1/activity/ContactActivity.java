@@ -42,6 +42,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
     private SearchContactRecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
     private Handler mHandler = new Handler();
+    public User user2;
 
     @Override
     public void onPermissionsGranted(int requestCode) {
@@ -57,10 +58,11 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
 
         recyclerView = (RecyclerView) findViewById(R.id.rv_contact);
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mAdapter = new SearchContactRecyclerAdapter(resultSearch);
+        mAdapter = new SearchContactRecyclerAdapter(this, resultSearch);
         recyclerView.setAdapter(mAdapter);
     }
-    public void setupToolbar(){
+
+    public void setupToolbar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -68,6 +70,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         getSupportActionBar().setTitle(R.string.textContact);
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
@@ -125,7 +128,8 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
                 Gson gson = new Gson();
-                Type listType = new TypeToken<List<User>>() {}.getType();
+                Type listType = new TypeToken<List<User>>() {
+                }.getType();
                 List<User> user = gson.fromJson(body.getData(), listType);
                 ac.resultSearch.addAll(user);
 

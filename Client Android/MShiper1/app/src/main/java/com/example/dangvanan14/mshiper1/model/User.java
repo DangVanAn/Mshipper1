@@ -39,6 +39,9 @@ public class User implements Parcelable{
         this._device_token = _device_token;
     }
 
+    public User() {
+    }
+
     public User(String _phone) {
         this._phone = _phone;
     }

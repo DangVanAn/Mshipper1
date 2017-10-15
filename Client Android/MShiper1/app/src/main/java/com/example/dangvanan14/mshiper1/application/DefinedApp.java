@@ -15,4 +15,8 @@ public class DefinedApp {
     public static final String URL_SOCKET_CHAT = "http://192.168.137.1:6968/";
 
     public static final String URL_SERVER = "http://192.168.137.1:9999/";
+
+    public enum API{
+        MAIN, CHAT, GPS
+    }
 }
