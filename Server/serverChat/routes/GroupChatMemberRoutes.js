@@ -59,17 +59,18 @@ router.post('/getgroupchatbyid', function (req, res) {
 });
 
 router.post('/getgroupchat2member', function (req, res) {
+    console.log(req.body)
     // req.body = [{_user_id : '59b78c7e7a14a4122c8b720b',_user_name : '11'},{_user_id : '59b793367a14a4122c8b7217',_user_name : '24'}]
-    var group_id = findGroupChat2Member(req.body[0]._user_id, req.body[1]._user_id);
+    var group_id = findGroupChat2Member(req.body[0]._id, req.body[1]._id);
     if(group_id == 'false')
     {
         //Nếu chưa có thì tạo một group chat mới.
         group_id = uuidv1();
-        var data = {_group_id : group_id, _group_name : req.body[0]._user_name + ', ' + req.body[1]._user_name, _is_enable : true};
+        var data = {_group_id : group_id, _group_name : req.body[0]._name + ', ' + req.body[1]._name, _is_enable : true};
         groupchats.createGroupChat(data);
 
         for(var i = 0; i < req.body.length; i++){
-            var dataTemp = {_group_id : group_id, _user_id : req.body[i]._user_id, _is_enable : true};
+            var dataTemp = {_group_id : group_id, _user_id : req.body[i]._id, _is_enable : true};
             var newGroupChatMember = new GroupChatMember(dataTemp);
             listGroupChatMember.push(dataTemp);
             newGroupChatMember.save(function (err) {

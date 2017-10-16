@@ -30,6 +30,7 @@ import org.slf4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -42,6 +43,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
     private SearchContactRecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
     private Handler mHandler = new Handler();
+    public User user1;
     public User user2;
 
     @Override
@@ -53,6 +55,8 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_search);
+
+        user1 = getApp().getUser();
 
         setupToolbar();
 
@@ -131,6 +135,15 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                 Type listType = new TypeToken<List<User>>() {
                 }.getType();
                 List<User> user = gson.fromJson(body.getData(), listType);
+
+                Iterator itr = user.iterator();
+                while (itr.hasNext()) {
+                    User u = (User) itr.next();
+                    if (ac.user1.get_id().equals(u.get_id())) {
+                        itr.remove();
+                        break;
+                    }
+                }
                 ac.resultSearch.addAll(user);
 
                 ac.mAdapter.notifyDataSetChanged();

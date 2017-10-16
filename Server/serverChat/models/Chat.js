@@ -11,10 +11,10 @@ var chatSchema = mongoose.Schema({
     },
     _sender_name: {
         type: String,
-        required: true
     },
     _receiver: {
         type: String,
+        required: true
     },
     _receiver_name: {
         type: String,
