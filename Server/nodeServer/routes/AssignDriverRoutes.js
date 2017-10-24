@@ -106,7 +106,7 @@ router.post('/getallinfo', function (req, res) {
     listPreOrderSum = preOrderSumRoute.getListPreOrderSum();
     listPreOrderSumAssign = preOrderSumAssignRoutes.getListPreOrderSumAssign();
     for(var i = 0; i < listPreOrderSumAssignDriver.length; i++){
-        if(listPreOrderSumAssignDriver[i]._driver == req.body._id){
+        if(listPreOrderSumAssignDriver[i]._driver == req.body._id && listPreOrderSumAssignDriver[i]._is_enabled == true){
             console.log('-------74');
             listData.push(JSON.parse(JSON.stringify(listPreOrderSumAssignDriver[i])));
         }
