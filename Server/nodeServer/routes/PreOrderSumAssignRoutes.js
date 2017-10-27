@@ -12,11 +12,11 @@ var hashmap = new HashMap();
 var listPreOrderSumAssign = [];
 resetListPreOrderSumAssign();
 function resetListPreOrderSumAssign() {
-    listPreOrderSumAssign = [];
     PreOrderSumAssign.find({}, function (err, preordersumassign) {
         if (err)
             return console.error(err);
         else {
+            listPreOrderSumAssign = [];
             listPreOrderSumAssign = preordersumassign;
             console.log('Find all success!!!');
         }
@@ -64,6 +64,7 @@ router.post('/add', function (req, res) {
     var timeId = uuidv1();
     req.body._pre_sum_assign_time = timeId;
     req.body._time_create = new Date().getTime();
+
     PreOrderSumAssign.insertMany(req.body, function (err, docs) {
         if (err) {
             res.status(200).send('error!');
@@ -132,6 +133,40 @@ router.post('/cancel', function (req, res) {
                 });
             }
             console.log('Find all success!!!', '85');
+        }
+    });
+});
+
+router.post('/setstatus', function (req, res) {
+    console.log(req.body);
+    console.log(req.body.time);
+
+    PreOrderSumAssign.findOne({_id : req.body._pre_order_sum_assign, _is_enabled : true}, function (err, preordersumassign) {
+        if (err)
+        {
+            console.error(err);
+            res.status(200).send('error!');
+            return console.error(err);
+        }
+        else {
+            if(preordersumassign !== null){
+                preordersumassign[req.body.element] = req.body.time;
+
+                preordersumassign.save(function (err) {
+                    if (err) {
+                        console.error(err);
+                        res.status(200).send('error!');
+                    }
+                    else {
+                        res.status(200).send('updated!');
+                        resetListPreOrderSumAssign();
+                    }
+                });
+            }
+            else {
+                console.log('null!');
+                res.status(200).send('null!');
+            }
         }
     });
 });

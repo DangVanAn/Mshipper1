@@ -40,45 +40,63 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     },
     _start_pickup :{
         type : Number,
+        default : 0
     },
     _in_warehouse_auto :{
         type : Number,
+        default : 0
     },
     _in_warehouse_guard :{
         type : Number,
+        default : 0
     },
     _in_warehouse_driver :{
         type : Number,
+        default : 0
     },
     _in_line_driver :{
         type : Number,
+        default : 0
     },
     _in_line_manager_warehouse :{
         type : Number,
+        default : 0
     },
     _out_line_driver :{
         type : Number,
+        default : 0
     },
     _out_line_manager_warehouse :{
         type : Number,
+        default : 0
     },
     _out_warehouse_auto :{
         type : Number,
+        default : 0
     },
     _out_warehouse_guard :{
         type : Number,
+        default : 0
     },
     _out_warehouse_driver :{
         type : Number,
+        default : 0
     },
     _in_delivery_auto :{
         type : Number,
+        default : 0
     },
     _in_delivery_guard :{
         type : Number,
+        default : 0
     },
     _in_delivery_driver :{
         type : Number,
+        default : 0
+    },
+    _time_done :{
+        type : Number,
+        default : 0
     },
     _is_enabled : {
         type: Boolean,

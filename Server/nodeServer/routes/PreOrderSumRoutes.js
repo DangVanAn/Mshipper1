@@ -3,6 +3,7 @@ var HashMap = require('hashmap');
 var router = express.Router();
 
 // var assignDriverRoute = require('../routes/AssignDriverRoutes');
+const uuidv1 = require('uuid/v1');
 var AssignDriver = require('../models/AssignDriver');
 var PreOrder = require('../models/PreOrders');
 var preOrderRoute = require('../routes/PreOrderRoutes');
@@ -16,11 +17,11 @@ var listPreOrderSum = [];
 
 resetListPreOrderSum();
 function resetListPreOrderSum() {
-    listPreOrderSum = [];
     PreOrderSum.find({}, function (err, preordersum) {
         if (err)
             return console.error(err);
         else {
+            listPreOrderSum = [];
             listPreOrderSum = preordersum;
             console.log('Find all success!!!');
         }
@@ -30,6 +31,65 @@ function resetListPreOrderSum() {
 router.post('/getall', function (req, res) {
 // get all
      res.status(200).send(listPreOrderSum);
+});
+
+router.post('/getrefuse', function (req, res) {
+    var data  =[];
+    for(var i = 0; i < listPreOrderSum.length; i++)
+    {
+        if(listPreOrderSum[i]._time_refuse != undefined && listPreOrderSum[i]._is_enabled == true)
+        {
+            data.push(listPreOrderSum[i]);
+        }
+    }
+    res.status(200).send(data);
+});
+
+router.post('/add', function (req, res) {
+
+    req.body._pre_sum_time = uuidv1();
+    console.log(req.body);
+    var newPreOrderSum = new PreOrderSum(req.body);
+
+    newPreOrderSum.save(function (err) {
+        if (err) {
+            console.log('Error!');
+            res.status(200).send('error!');
+        }
+        else {
+            res.status(200).send('success!');
+            resetListPreOrderSum();
+        }
+    });
+});
+
+router.post('/setfalse', function (req, res) {
+
+    PreOrderSum.findOne({_id: req.body._id
+    }).select().exec(function (err, data) {
+        if (err)
+        {
+            res.status(200).send("error!");
+            return console.error(err);
+        }
+        else {
+            if (!data) {
+                data._is_enabled = false;
+                data.save(function (err) {
+                    if (err)
+                        return console.error(err);
+                    else {
+                        res.status(200).send('success!');
+                        resetListPreOrderSum();
+                        console.log('success!');
+                    }
+                });
+            }
+            else {
+                res.status(200).send("error!");
+            }
+        }
+    });
 });
 
 router.post('/getbyidpresum', function (req, res) {
