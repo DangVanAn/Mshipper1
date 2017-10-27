@@ -34,7 +34,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private String idGroup;
     private ChatListRecyclerAdapter mAdapter;
     private EditText inputChat;
-    private ImageView btnSend;
     private RecyclerView recyclerView;
     private List<Chat> chatList = new ArrayList<>();
     private User user1;
@@ -77,8 +76,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         this.inputChat = (EditText) findViewById(R.id.inputChat);
-        this.btnSend = (ImageView) findViewById(R.id.btnSendChat);
-        this.btnSend.setOnClickListener(this);
+        ImageView btnSend = (ImageView) findViewById(R.id.btnSendChat);
+        btnSend.setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.rv_chat);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setStackFromEnd(true);
@@ -91,10 +90,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         mSocket.on("join", onJoin);
         mSocket.on("chat", onNewMessage);
         mSocket.connect();
-
-
-        inputChat.setText(idGroup);
-
     }
 
     @Override

@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.AssignDriverActivity;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.ChatActivity;
 import com.example.dangvanan14.mshiper1.activity.ContactActivity;
@@ -77,13 +78,18 @@ public class MoreRecyclerAdapter extends RecyclerView.Adapter<MoreRecyclerAdapte
 
         @Override
         public void onClick(View v) {
+            Intent i;
             switch (more.get_id()) {
+                case 0:
+                    Toast.makeText(v.getContext(), more.get_name(), Toast.LENGTH_SHORT).show();
+                    break;
                 case 1:
-                    Intent i = new Intent(v.getContext(), ContactActivity.class);
+                    i = new Intent(v.getContext(), ContactActivity.class);
                     v.getContext().startActivity(i);
                     break;
                 case 2:
-                    Toast.makeText(v.getContext(), more.get_name(), Toast.LENGTH_SHORT).show();
+                    i = new Intent(v.getContext(), AssignDriverActivity.class);
+                    v.getContext().startActivity(i);
             }
         }
     }

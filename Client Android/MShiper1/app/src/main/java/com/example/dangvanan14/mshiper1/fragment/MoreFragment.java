@@ -35,7 +35,8 @@ public class MoreFragment extends BaseFragment {
 
         more = new ArrayList<>();
         more.add(new More(1, "Liên hệ"));
-        more.add(new More(2, "Đăng xuất"));
+        more.add(new More(2, "Các chuyến hàng"));
+        more.add(new More(0, "Đăng xuất"));
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_more);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

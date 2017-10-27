@@ -120,10 +120,10 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
             public Call<RepPost> call() throws Exception {
                 return loadData.CreateRetrofit().postFindByPhone(new User(phone));
             }
-        }, new LoadData.CallbackDelegate<RepPost>(this, new CallBackImpl()));
+        }, new LoadData.CallbackDelegate<RepPost>(this, new CallBackSearchImpl()));
     }
 
-    private static class CallBackImpl extends ICallbackApi<RepPost> {
+    private static class CallBackSearchImpl extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(Activity activity, RepPost body, Logger LOG) {
             ContactActivity ac = (ContactActivity) activity;
@@ -137,17 +137,63 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                 List<User> user = gson.fromJson(body.getData(), listType);
 
                 Iterator itr = user.iterator();
-                while (itr.hasNext()) {
-                    User u = (User) itr.next();
-                    if (ac.user1.get_id().equals(u.get_id())) {
-                        itr.remove();
-                        break;
+                try{
+                    while (itr.hasNext()) {
+                        User u = (User) itr.next();
+                        if (ac.user1.get_id().equals(u.get_id())) {
+                            itr.remove();
+                            break;
+                        }
                     }
-                }
-                ac.resultSearch.addAll(user);
+                    ac.resultSearch.addAll(user);
 
-                ac.mAdapter.notifyDataSetChanged();
-                ac.recyclerView.scrollToPosition(0);
+                    ac.mAdapter.notifyDataSetChanged();
+                    ac.recyclerView.scrollToPosition(0);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(ac, "Lỗi id null", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+
+        @Override
+        public void onFailure(Throwable t, Logger LOG) {
+            Log.e("TAG", "onFailure: Sai rồi nè");
+        }
+    }
+
+    private static class CallBackContactImpl extends ICallbackApi<RepPost> {
+        @Override
+        public void onResponse(Activity activity, RepPost body, Logger LOG) {
+            ContactActivity ac = (ContactActivity) activity;
+            ac.dismissProgressDialog();
+            if (body.isSuccess()) {
+                Log.d(TAG, "onResponse: " + body.getMessage());
+                Log.d(TAG, "onResponse data: " + body.getData());
+                Gson gson = new Gson();
+                Type listType = new TypeToken<List<User>>() {
+                }.getType();
+                List<User> user = gson.fromJson(body.getData(), listType);
+
+                Iterator itr = user.iterator();
+                try{
+                    while (itr.hasNext()) {
+                        User u = (User) itr.next();
+                        if (ac.user1.get_id().equals(u.get_id())) {
+                            itr.remove();
+                            break;
+                        }
+                    }
+                    ac.resultSearch.addAll(user);
+
+                    ac.mAdapter.notifyDataSetChanged();
+                    ac.recyclerView.scrollToPosition(0);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    Toast.makeText(ac, "Lỗi id null", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
             }

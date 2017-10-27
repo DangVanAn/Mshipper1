@@ -52,7 +52,8 @@ public interface IWebservice {
     @POST("users/findbyphone")
     Call<RepPost> postFindByPhone(@Body User user);
 
-
+    @POST("assigndriver/getallinfo")
+    Call<RepPost> getAssign(@Body User user);
 
     //api server chat
     @POST("groupchatmembers/getgroupchat2member")
