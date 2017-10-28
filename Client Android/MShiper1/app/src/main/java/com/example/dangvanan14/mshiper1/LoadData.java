@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 
@@ -56,6 +57,7 @@ public class LoadData<E> {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .connectTimeout(15, TimeUnit.SECONDS)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)

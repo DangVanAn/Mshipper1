@@ -16,6 +16,7 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.AssignDriverRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.User;
@@ -53,8 +54,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
 
         mAdapter = new AssignDriverRecyclerAdapter(assignDrivers);
         recyclerView.setAdapter(mAdapter);
-
-        getAssignDriver(getApp().getUser().get_id());
+        getAssignDriver(App.getUser().get_id());
     }
 
     public void setupToolbar() {
@@ -63,28 +63,13 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Các chuyến hàng");
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-    }
-
-    String caseUnification(String inputString) {
-        String out = "";
-        int a = 0;
-        int b = 0;
-        for (int i = 0; i < inputString.length(); i++) {
-            if (inputString.charAt(i) == Character.toLowerCase(inputString.charAt(i))) {
-                a++;
-            } else {
-                b++;
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
             }
-        }
-        if (a > b){
-            out = inputString.toLowerCase();
-        }else{
-            out = inputString.toUpperCase();
-        }
-        return out;
+        });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -106,8 +91,8 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
 
     }
 
-    private void getAssignDriver(String _id) {
-        LoadData<RepPost> loadData = new LoadData<>();
+    private void getAssignDriver(final String _id) {
+        final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
@@ -147,7 +132,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    public static List<AssignDriver> addPercentInAssignDriver(List<AssignDriver> assignDrivers) {
+    public static void addPercentInAssignDriver(List<AssignDriver> assignDrivers) {
         for (AssignDriver ad :
                 assignDrivers) {
             float sum = 0;
@@ -199,7 +184,5 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
             Log.d(TAG, "addPercentInAssignDriver:3" + sum);
             ad.set_percent((int) ((complete / sum) * 100));
         }
-
-        return assignDrivers;
     }
 }

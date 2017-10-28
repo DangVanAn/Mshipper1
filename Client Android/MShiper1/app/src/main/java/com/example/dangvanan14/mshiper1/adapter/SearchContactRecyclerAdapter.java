@@ -86,16 +86,16 @@ public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchCon
             });
         }
 
-        private void postContact(User user) {
+        private void postContact(final User user) {
             context.user2 = user;
 
-            LoadData<RepPost> loadData = new LoadData<>(DefinedApp.API.CHAT);
+            final LoadData<RepPost> loadData = new LoadData<>(DefinedApp.API.CHAT);
             loadData.loadData(new Callable<Call<RepPost>>() {
                 @Override
                 public Call<RepPost> call() throws Exception {
                     User u1 = new User();
-                    u1.set_id(context.getApp().getUser().get_id());
-                    u1.set_name(context.getApp().getUser().get_name());
+                    u1.set_id(App.getUser().get_id());
+                    u1.set_name(App.getUser().get_name());
 
                     Log.d(TAG, "call: ");
 

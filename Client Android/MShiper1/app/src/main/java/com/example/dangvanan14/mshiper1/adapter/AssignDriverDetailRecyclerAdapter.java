@@ -1,7 +1,8 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,8 +10,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.AssignDriverDetailActivity;
 import com.example.dangvanan14.mshiper1.model.PreOrderSum;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
+import com.example.dangvanan14.mshiper1.model.Step;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -20,9 +23,10 @@ import java.util.List;
 
 public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<AssignDriverDetailRecyclerAdapter.SectionViewHolder, AssignDriverDetailRecyclerAdapter.RowViewHolder> {
     private static final String TAG = "AssignDriverRecyclerAdapter";
-
-    public AssignDriverDetailRecyclerAdapter(List<? extends ExpandableGroup> groups) {
+    private Context context;
+    public AssignDriverDetailRecyclerAdapter(Context context, List<? extends ExpandableGroup> groups) {
         super(groups);
+        this.context = context;
     }
 
     @Override
@@ -47,25 +51,32 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
     @Override
     public void onBindGroupViewHolder(SectionViewHolder holder, int flatPosition,
                                       ExpandableGroup group) {
-        holder.bind((Step) group);
+        holder.bind((StepExpandableGroup) group, context);
     }
 
     static class SectionViewHolder extends GroupViewHolder {
         private TextView txtName;
         private ImageView imageConfirm;
-
+        private View layout;
         SectionViewHolder(View itemView) {
             super(itemView);
             txtName = (TextView) itemView.findViewById(R.id.name_step);
             imageConfirm = (ImageView) itemView.findViewById(R.id.image_confirm);
+            layout = itemView.findViewById(R.id.layout_assign_driver_detail);
         }
 
-        void bind(Step step) {
-            txtName.setText(step.getTitle());
-            if (step.isCheck) {
+        void bind(StepExpandableGroup group, Context context) {
+            txtName.setText(group.step.get_name());
+            if (group.step.is_confirm()) {
                 imageConfirm.setImageResource(R.drawable.check_ok);
             } else {
                 imageConfirm.setImageResource(0);
+            }
+            AssignDriverDetailActivity ac = (AssignDriverDetailActivity) context;
+            if (group.step.get_id() == ac.selectedStep.get_id()) {
+                layout.setBackgroundColor(ContextCompat.getColor(layout.getContext(), R.color.yellow));
+            } else {
+                layout.setBackgroundColor(ContextCompat.getColor(layout.getContext(), R.color.white));
             }
         }
     }
@@ -101,12 +112,20 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
         }
     }
 
-    public static class Step extends ExpandableGroup<PreOrderSumAssign> {
-        boolean isCheck = false;
+    public static class StepExpandableGroup extends ExpandableGroup<PreOrderSumAssign> {
+        Step step;
 
-        public Step(String title, boolean isCheck, List<PreOrderSumAssign> items) {
-            super(title, items);
-            this.isCheck = isCheck;
+        public Step getStep() {
+            return step;
+        }
+
+        public void setStep(Step step) {
+            this.step = step;
+        }
+
+        public StepExpandableGroup(Step step, List<PreOrderSumAssign> items) {
+            super("", items);
+            this.step = step;
         }
     }
 }

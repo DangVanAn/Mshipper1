@@ -145,7 +145,7 @@ router.post('/setstatus', function (req, res) {
         if (err)
         {
             console.error(err);
-            res.status(200).send('error!');
+            res.status(200).send({ success: false, message: "error!"});
             return console.error(err);
         }
         else {
@@ -155,17 +155,17 @@ router.post('/setstatus', function (req, res) {
                 preordersumassign.save(function (err) {
                     if (err) {
                         console.error(err);
-                        res.status(200).send('error!');
+                        res.status(200).send({ success: false, message: "error!"});
                     }
                     else {
-                        res.status(200).send('updated!');
+                        res.status(200).send({ success: true, message: "updated!"});
                         resetListPreOrderSumAssign();
                     }
                 });
             }
             else {
                 console.log('null!');
-                res.status(200).send('null!');
+                res.status(200).send({ success: false, message: "null!"});
             }
         }
     });

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.ChatListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.Chat;
 import com.example.dangvanan14.mshiper1.model.User;
@@ -65,7 +66,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         Intent i = getIntent();
         idGroup = i.getStringExtra("idGroup");
 
-        user1 = getApp().getUser();
+        user1 = App.getUser();
         user2 = i.getParcelableExtra("user2");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
@@ -73,7 +74,12 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(user2.get_name());
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         this.inputChat = (EditText) findViewById(R.id.inputChat);
         ImageView btnSend = (ImageView) findViewById(R.id.btnSendChat);
@@ -166,7 +172,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             Chat chat = gson.fromJson(json, Chat.class);
 
             chatList.add(chat);
-            int id = chatList.size() - 1;
+            final int id = chatList.size() - 1;
 
             runOnUiThread(new Runnable() {
                 @Override

@@ -1,5 +1,6 @@
 package com.example.dangvanan14.mshiper1;
 
+import com.example.dangvanan14.mshiper1.activity.AssignDriverDetailActivity;
 import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.model.Order;
@@ -54,6 +55,9 @@ public interface IWebservice {
 
     @POST("assigndriver/getallinfo")
     Call<RepPost> getAssign(@Body User user);
+
+    @POST("preorderssumassign/setstatus")
+    Call<RepPost> postUpdateTimeStep(@Body AssignDriverDetailActivity.ParamUpdateStep pram);
 
     //api server chat
     @POST("groupchatmembers/getgroupchat2member")

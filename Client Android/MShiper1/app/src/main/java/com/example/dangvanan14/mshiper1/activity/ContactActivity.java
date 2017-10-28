@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
@@ -56,7 +57,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contact_search);
 
-        user1 = getApp().getUser();
+        user1 = App.getUser();
 
         setupToolbar();
 
@@ -72,7 +73,12 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.textContact);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 
     @Override
@@ -97,7 +103,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
     }
 
     @Override
-    public boolean onQueryTextChange(String newText) {
+    public boolean onQueryTextChange(final String newText) {
         Log.d(TAG, "onQueryTextChange: " + newText);
         if (!newText.equals("")) {
             resultSearch.clear();
@@ -113,8 +119,8 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         return true;
     }
 
-    private void postFind(String phone) {
-        LoadData<RepPost> loadData = new LoadData<>();
+    private void postFind(final String phone) {
+        final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
