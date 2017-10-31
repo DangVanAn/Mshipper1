@@ -17,11 +17,12 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.adapter.ContactRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.adapter.SearchContactRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
-import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
+import com.example.dangvanan14.mshiper1.model.GroupChat;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.google.gson.Gson;
@@ -40,9 +41,12 @@ import retrofit2.Call;
 public class ContactActivity extends BaseActivity implements SearchView.OnQueryTextListener {
     private static final String TAG = "ContactActivity";
     private List<User> resultSearch = new ArrayList<>();
+    private List<GroupChat> contactList = new ArrayList<>();
 
-    private SearchContactRecyclerAdapter mAdapter;
-    private RecyclerView recyclerView;
+    private SearchContactRecyclerAdapter mAdapterSearch;
+    private ContactRecyclerAdapter mAdapterContact;
+    private RecyclerView rvSearch;
+    private RecyclerView rvContact;
     private Handler mHandler = new Handler();
     public User user1;
     public User user2;
@@ -61,10 +65,19 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
 
         setupToolbar();
 
-        recyclerView = (RecyclerView) findViewById(R.id.rv_contact);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mAdapter = new SearchContactRecyclerAdapter(this, resultSearch);
-        recyclerView.setAdapter(mAdapter);
+        rvSearch = (RecyclerView) findViewById(R.id.rv_search);
+        rvSearch.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mAdapterSearch = new SearchContactRecyclerAdapter(this, resultSearch);
+        rvSearch.setAdapter(mAdapterSearch);
+
+        rvContact = (RecyclerView) findViewById(R.id.rv_contact);
+        rvContact.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        mAdapterContact = new ContactRecyclerAdapter(this, contactList);
+        rvContact.setAdapter(mAdapterContact);
+
+        rvSearch.setVisibility(View.GONE);
+
+        getContact(App.getUser().get_id());
     }
 
     public void setupToolbar() {
@@ -73,12 +86,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(R.string.textContact);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -94,6 +102,18 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         searchView.setIconified(true);
         searchView.clearFocus();
         searchView.setQueryHint(getString(R.string.searchContact));
+        searchView.setOnCloseListener(() -> {
+            rvContact.setVisibility(View.VISIBLE);
+            rvSearch.setVisibility(View.GONE);
+            return false;
+        });
+        searchView.setOnSearchClickListener(v -> {
+            if (resultSearch.size() != 0){
+                resultSearch.clear();
+            }
+            rvContact.setVisibility(View.GONE);
+            rvSearch.setVisibility(View.VISIBLE);
+        });
         return true;
     }
 
@@ -143,7 +163,7 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                 List<User> user = gson.fromJson(body.getData(), listType);
 
                 Iterator itr = user.iterator();
-                try{
+                try {
                     while (itr.hasNext()) {
                         User u = (User) itr.next();
                         if (ac.user1.get_id().equals(u.get_id())) {
@@ -153,9 +173,9 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                     }
                     ac.resultSearch.addAll(user);
 
-                    ac.mAdapter.notifyDataSetChanged();
-                    ac.recyclerView.scrollToPosition(0);
-                }catch (Exception e){
+                    ac.mAdapterSearch.notifyDataSetChanged();
+                    ac.rvSearch.scrollToPosition(0);
+                } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(ac, "Lỗi id null", Toast.LENGTH_SHORT).show();
                 }
@@ -170,6 +190,20 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
         }
     }
 
+    private void getContact(final String id) {
+        contactList.clear();
+        showProgressDialog();
+        final LoadData<RepPost> loadData = new LoadData<>(DefinedApp.API.CHAT);
+        loadData.loadData(new Callable<Call<RepPost>>() {
+            @Override
+            public Call<RepPost> call() throws Exception {
+                User u = new User();
+                u.set_id(id);
+                return loadData.CreateRetrofit().getContact(u);
+            }
+        }, new LoadData.CallbackDelegate<>(this, new CallBackContactImpl()));
+    }
+
     private static class CallBackContactImpl extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(Activity activity, RepPost body, Logger LOG) {
@@ -179,24 +213,15 @@ public class ContactActivity extends BaseActivity implements SearchView.OnQueryT
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
                 Gson gson = new Gson();
-                Type listType = new TypeToken<List<User>>() {
+                Type listType = new TypeToken<List<GroupChat>>() {
                 }.getType();
-                List<User> user = gson.fromJson(body.getData(), listType);
+                List<GroupChat> groupChats = gson.fromJson(body.getData(), listType);
 
-                Iterator itr = user.iterator();
-                try{
-                    while (itr.hasNext()) {
-                        User u = (User) itr.next();
-                        if (ac.user1.get_id().equals(u.get_id())) {
-                            itr.remove();
-                            break;
-                        }
-                    }
-                    ac.resultSearch.addAll(user);
-
-                    ac.mAdapter.notifyDataSetChanged();
-                    ac.recyclerView.scrollToPosition(0);
-                }catch (Exception e){
+                try {
+                    ac.contactList.addAll(groupChats);
+                    ac.mAdapterContact.notifyDataSetChanged();
+                    ac.rvContact.scrollToPosition(0);
+                } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(ac, "Lỗi id null", Toast.LENGTH_SHORT).show();
                 }

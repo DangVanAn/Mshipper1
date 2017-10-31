@@ -1,7 +1,6 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
-import android.content.Context;
-import android.graphics.Color;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.activity.AssignDriverDetailActivity;
+import com.example.dangvanan14.mshiper1.fragment.AssignDriverDetailStepFragment;
 import com.example.dangvanan14.mshiper1.model.PreOrderSum;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.Step;
@@ -23,10 +22,10 @@ import java.util.List;
 
 public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<AssignDriverDetailRecyclerAdapter.SectionViewHolder, AssignDriverDetailRecyclerAdapter.RowViewHolder> {
     private static final String TAG = "AssignDriverRecyclerAdapter";
-    private Context context;
-    public AssignDriverDetailRecyclerAdapter(Context context, List<? extends ExpandableGroup> groups) {
+    private Fragment fragment;
+    public AssignDriverDetailRecyclerAdapter(Fragment fragment, List<? extends ExpandableGroup> groups) {
         super(groups);
-        this.context = context;
+        this.fragment = fragment;
     }
 
     @Override
@@ -51,7 +50,7 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
     @Override
     public void onBindGroupViewHolder(SectionViewHolder holder, int flatPosition,
                                       ExpandableGroup group) {
-        holder.bind((StepExpandableGroup) group, context);
+        holder.bind((StepExpandableGroup) group, fragment);
     }
 
     static class SectionViewHolder extends GroupViewHolder {
@@ -65,14 +64,14 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
             layout = itemView.findViewById(R.id.layout_assign_driver_detail);
         }
 
-        void bind(StepExpandableGroup group, Context context) {
+        void bind(StepExpandableGroup group, Fragment fg) {
             txtName.setText(group.step.get_name());
             if (group.step.is_confirm()) {
                 imageConfirm.setImageResource(R.drawable.check_ok);
             } else {
                 imageConfirm.setImageResource(0);
             }
-            AssignDriverDetailActivity ac = (AssignDriverDetailActivity) context;
+            AssignDriverDetailStepFragment ac = (AssignDriverDetailStepFragment) fg;
             if (group.step.get_id() == ac.selectedStep.get_id()) {
                 layout.setBackgroundColor(ContextCompat.getColor(layout.getContext(), R.color.yellow));
             } else {

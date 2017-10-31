@@ -8,6 +8,7 @@
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <android.support.v7.widget.Toolbar
             android:id="@+id/my_toolbar"
             android:layout_width="match_parent"
@@ -19,10 +20,13 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_contact"
+        android:id="@+id/rv_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_order">
+        tools:listitem="@layout/item_order"/>
 
-    </android.support.v7.widget.RecyclerView>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_contact"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </LinearLayout>
