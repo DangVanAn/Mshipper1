@@ -19,6 +19,7 @@ import com.example.dangvanan14.mshiper1.activity.ContactActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
+import com.example.dangvanan14.mshiper1.model.GroupChat;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 
@@ -30,10 +31,10 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 
-public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchContactRecyclerAdapter.ViewHolder> {
-    private static final String TAG = "SearchContactRA";
+public class ContactRecyclerAdapter extends RecyclerView.Adapter<ContactRecyclerAdapter.ViewHolder> {
+    private static final String TAG = "ContactRecyclerAdapter";
     private final ContactActivity context;
-    private List<User> users;
+    private List<GroupChat> groupChats;
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,46 +44,40 @@ public class SearchContactRecyclerAdapter extends RecyclerView.Adapter<SearchCon
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        User user = users.get(position);
-        holder.bind(user);
+        GroupChat groupChat = groupChats.get(position);
+        holder.bind(groupChat);
     }
 
     @Override
     public int getItemCount() {
-        return users.size();
+        return groupChats.size();
     }
 
 
-    public SearchContactRecyclerAdapter(ContactActivity context, List<User> users) {
+    public ContactRecyclerAdapter(ContactActivity context, List<GroupChat> groupChats) {
         this.context = context;
-        this.users = users;
+        this.groupChats = groupChats;
     }
 
     class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
         private TextView txtIsActive;
         private ImageView imageView;
-        private TextView txtPhone;
         private CardView cardView;
 
         ViewHolder(View itemView) {
             super(itemView);
             txtName = (TextView) itemView.findViewById(R.id.user_name);
             txtIsActive = (TextView) itemView.findViewById(R.id.is_active);
-            txtPhone = (TextView) itemView.findViewById(R.id.phone);
             imageView = (ImageView) itemView.findViewById(R.id.ic_user);
             cardView = (CardView) itemView.findViewById(R.id.card_view);
         }
 
-        void bind(final User user) {
-            txtName.setText(user.get_name());
-            txtPhone.setText(user.get_phone());
-            cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    context.showProgressDialog();
-                    postContact(user);
-                }
+        void bind(final GroupChat groupChat) {
+            txtName.setText(groupChat.get_group_name());
+            cardView.setOnClickListener(v -> {
+                context.showProgressDialog();
+//                postContact(groupChat);
             });
         }
 

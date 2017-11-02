@@ -51,7 +51,6 @@ public class Activity_Splash extends BaseActivity {
 
         ButterKnife.bind(this);
 
-
         LoadingDataTask task = new LoadingDataTask(this);
         task.execute();
     }
@@ -59,20 +58,6 @@ public class Activity_Splash extends BaseActivity {
     @Override
     public void onPermissionsGranted(int requestCode) {
 
-    }
-
-    public boolean isUserLogin()
-    {
-        SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
-        String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
-        if(userStr.equals("")){
-            return false;
-        }
-        Gson gson = new Gson();
-        User user = gson.fromJson(userStr, User.class);
-        getApp().setUser(user);
-
-        return true;
     }
 
     private static class LoadingDataTask extends AsyncTask<Void, Void, Void> {
@@ -126,13 +111,12 @@ public class Activity_Splash extends BaseActivity {
 
         if (currentAccessToken != null) {
             new Handler().postDelayed(new Runnable() {
-
                 @Override
                 public void run() {
                     Intent i;
-                    if (!isUserLogin()) {
+                    if (App.getUser() == null) {
                         i = new Intent(Activity_Splash.this, Activity_login.class);
-                    }else{
+                    } else {
                         i = new Intent(Activity_Splash.this, MainActivity.class);
                     }
                     startActivity(i);

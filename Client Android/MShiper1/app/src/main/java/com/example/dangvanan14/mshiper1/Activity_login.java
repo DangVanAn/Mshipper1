@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.activity.MainActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
@@ -53,7 +54,7 @@ public class Activity_login extends BaseActivity {
         SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
         prefs.edit().putString(DefinedApp.UserShaPreKey, "").apply();
         String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
-        getApp().setUser(null);
+        App.setUser(null);
         Log.d(TAG, "onCreate: test " + userStr);
 
         tv_username.requestFocus();
@@ -68,15 +69,14 @@ public class Activity_login extends BaseActivity {
 
     @OnClick(R.id.btn_signin)
     public void submit() {
-        String token= FirebaseInstanceId.getInstance().getToken();
-        String username = tv_username.getText().toString();
-        String password = tv_password.getText().toString();
-
         showProgressDialog();
 
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
+                String token= FirebaseInstanceId.getInstance().getToken();
+                String username = tv_username.getText().toString();
+                String password = tv_password.getText().toString();
                 return loadData.CreateRetrofit().postLogin(new User(password, username, token));
             }
         }, new LoadData.CallbackDelegate<RepPost>(this, new CallBackImpl()));
@@ -92,7 +92,7 @@ public class Activity_login extends BaseActivity {
                 Log.d(TAG, "onResponse data: " + body.getData());
                 Gson gson = new Gson();
                 User user = gson.fromJson(body.getData(), User.class);
-                ac.getApp().setUser(user);
+                App.setUser(user);
 
                 SharedPreferences prefs = ac.getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
                 prefs.edit().putString(DefinedApp.UserShaPreKey, body.getData()).apply();

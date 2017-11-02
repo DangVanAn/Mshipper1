@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class ChatListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "ChatListRecyclerAdapter";
     private List<Chat> chatList;
     private User user1;
 
@@ -54,8 +56,15 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         Chat chat = chatList.get(position);
+        boolean isShowName = true;
+        if (position - 1 >= 0){
+            Chat previus = chatList.get(position - 1);
+            if (previus.get_sender().equals(chat.get_sender())){
+                isShowName = false;
+            }
+        }
         ViewHolder view1 = (ViewHolder) holder;
-        view1.bind(chat);
+        view1.bind(chat, isShowName);
     }
 
     @Override
@@ -69,22 +78,36 @@ public class ChatListRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.V
         this.user1 = user;
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    private class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
         private TextView txtMessage;
         private TextView txtTimeSend;
         private TextView txtTimeReceive;
-
+        private int heightName;
         ViewHolder(View itemView) {
             super(itemView);
             txtName = (TextView) itemView.findViewById(R.id.user_name);
+            if (txtName != null) {
+                heightName = txtName.getLineHeight();
+                Log.d(TAG, "ViewHolder: " + heightName);
+            }
             txtMessage = (TextView) itemView.findViewById(R.id.message);
             txtTimeSend = (TextView) itemView.findViewById(R.id.time_send);
             txtTimeReceive = (TextView) itemView.findViewById(R.id.time_receiver);
         }
 
-        void bind(Chat chat) {
-            txtName.setText(chat.get_sender_name());
+        void bind(Chat chat, boolean isShowName) {
+            if (txtName != null) {
+                if (isShowName) {
+                    txtName.setText(chat.get_sender_name());
+
+                    if (txtName.getHeight() == 0)
+                        txtName.setHeight(heightName);
+                } else {
+                    txtName.setHeight(0);
+                }
+            }
+
             txtMessage.setText(chat.get_message());
             SimpleDateFormat format = new SimpleDateFormat("hh:mm dd/MM/yyyy",Locale.US);
             String date = format.format(new Date(chat.get_timestamp_sender()));

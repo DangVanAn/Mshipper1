@@ -2,12 +2,14 @@ package com.example.dangvanan14.mshiper1.dialog;
 
 import android.app.Dialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 
 import com.example.dangvanan14.mshiper1.R;
 
@@ -23,6 +25,7 @@ public class ProgressDialogFragment extends AppCompatDialogFragment {
         return dialogFragment;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
@@ -34,6 +37,12 @@ public class ProgressDialogFragment extends AppCompatDialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.dialog_progress, container,false);
+        View v = inflater.inflate(R.layout.dialog_progress, container,false);
+
+        Button btnStop = (Button) v.findViewById(R.id.btn_stop);
+        btnStop.setOnClickListener(v1 -> {
+            dismiss();
+        });
+        return v;
     }
 }

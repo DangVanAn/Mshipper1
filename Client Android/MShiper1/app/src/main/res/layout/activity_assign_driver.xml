@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -20,13 +21,8 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_search"
+        android:id="@+id/rv_assign_driver"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_order"/>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_contact"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        tools:listitem="@layout/item_assign_driver" />
 </LinearLayout>

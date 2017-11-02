@@ -95,6 +95,14 @@
             android:theme="@style/MyNoActionBar" />
 
         <activity
+            android:name=".activity.AssignDriverActivity"
+            android:theme="@style/MyNoActionBar" />
+
+        <activity
+            android:name=".activity.AssignDriverDetailActivity"
+            android:theme="@style/MyNoActionBar" />
+
+        <activity
             android:name=".activity.ChatActivity"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="adjustResize" />

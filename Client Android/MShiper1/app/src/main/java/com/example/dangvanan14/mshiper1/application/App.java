@@ -2,10 +2,12 @@ package com.example.dangvanan14.mshiper1.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.multidex.MultiDex;
 
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.User;
+import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -42,21 +44,25 @@ public class App extends Application {
         this.lon = lon;
     }
 
-    private User user;
+    private static User user;
 
-    public User getUser() {
+    public static User getUser() {
         return user;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public static void setUser(User user) {
+        App.user = user;
     }
 
-    @Override public void onCreate() {
+    @Override
+    public void onCreate() {
         super.onCreate();
         Realm.init(this);
         RealmConfiguration config = new RealmConfiguration.Builder().name("myrealm.realm").build();
         Realm.setDefaultConfiguration(config);
+        if (user == null) {
+            getUserLocal();
+        }
     }
 
     @Override
@@ -67,5 +73,16 @@ public class App extends Application {
 
     public static Boolean isInDebugMode() {
         return false;
+    }
+
+    public void getUserLocal() {
+        SharedPreferences prefs = getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
+        String userStr = prefs.getString(DefinedApp.UserShaPreKey, "");
+        if (userStr.equals("")) {
+            user = null;
+        }
+        Gson gson = new Gson();
+        User user = gson.fromJson(userStr, User.class);
+        App.user = user;
     }
 }

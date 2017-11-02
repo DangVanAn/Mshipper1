@@ -29,6 +29,9 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
     }
 
     private void updateDeviceToken(String token) {
+        if (((App)getApplication()).getUser() == null)
+            return;
+
         LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override

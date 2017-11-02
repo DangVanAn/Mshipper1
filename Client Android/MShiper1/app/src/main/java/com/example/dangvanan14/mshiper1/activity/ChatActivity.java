@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.ChatListRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.Chat;
 import com.example.dangvanan14.mshiper1.model.User;
@@ -34,7 +35,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
     private String idGroup;
     private ChatListRecyclerAdapter mAdapter;
     private EditText inputChat;
-    private ImageView btnSend;
     private RecyclerView recyclerView;
     private List<Chat> chatList = new ArrayList<>();
     private User user1;
@@ -66,7 +66,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         Intent i = getIntent();
         idGroup = i.getStringExtra("idGroup");
 
-        user1 = getApp().getUser();
+        user1 = App.getUser();
         user2 = i.getParcelableExtra("user2");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_chat);
@@ -74,11 +74,16 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle(user2.get_name());
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
 
         this.inputChat = (EditText) findViewById(R.id.inputChat);
-        this.btnSend = (ImageView) findViewById(R.id.btnSendChat);
-        this.btnSend.setOnClickListener(this);
+        ImageView btnSend = (ImageView) findViewById(R.id.btnSendChat);
+        btnSend.setOnClickListener(this);
         recyclerView = (RecyclerView) findViewById(R.id.rv_chat);
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         mLayoutManager.setStackFromEnd(true);
@@ -91,10 +96,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
         mSocket.on("join", onJoin);
         mSocket.on("chat", onNewMessage);
         mSocket.connect();
-
-
-        inputChat.setText(idGroup);
-
     }
 
     @Override
@@ -171,7 +172,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener {
             Chat chat = gson.fromJson(json, Chat.class);
 
             chatList.add(chat);
-            int id = chatList.size() - 1;
+            final int id = chatList.size() - 1;
 
             runOnUiThread(new Runnable() {
                 @Override

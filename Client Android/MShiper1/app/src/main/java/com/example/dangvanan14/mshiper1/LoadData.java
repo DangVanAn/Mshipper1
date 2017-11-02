@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 
@@ -33,8 +34,9 @@ import static com.example.dangvanan14.mshiper1.activity.BaseActivity.newDefaultL
 
 // E : kiểu trả về từ server
 public class LoadData<E> {
+    private static final String TAG = "LoadData";
     //    public static String url = "https://mshipperserver.herokuapp.com/";
-    public static String url = DefinedApp.URL_SERVER;
+    public String url = DefinedApp.URL_SERVER;
 
     public LoadData() {
     }
@@ -56,6 +58,7 @@ public class LoadData<E> {
 
         OkHttpClient client = new OkHttpClient.Builder()
                 .addInterceptor(logging)
+                .connectTimeout(15, TimeUnit.SECONDS)
                 .build();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -68,6 +71,7 @@ public class LoadData<E> {
     // func : hàm tương ứng trong IWebService
     // callbackDelegate : callback khi server trả lời
     public void loadData(Callable<Call<E>> func, CallbackDelegate callbackDelegate) {
+        Log.d(TAG, "loadData: " + url);
         Call<E> call;
         try {
             call = func.call();

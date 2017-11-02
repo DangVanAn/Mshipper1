@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:weightSum="1">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -19,14 +20,15 @@
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_search"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tl_assign_driver_detail"
+        style="@style/CustomTabTexStyle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_order"/>
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/tabel_evation" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_contact"
+    <com.example.dangvanan14.mshiper1.customview.CustomViewPager
+        android:id="@+id/vp_assign_driver_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </LinearLayout>
