@@ -3,7 +3,6 @@ var HashMap = require('hashmap');
 const uuidv1 = require('uuid/v1');
 var router = express.Router();
 var AssignDriver = require('../models/AssignDriver');
-var PreOrder = require('../models/PreOrders');
 var PreOrderSum = require('../models/PreOrderSum');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 
@@ -83,7 +82,7 @@ router.post('/update', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            if(preordersumassign._start_pickup !== undefined){
+            if(preordersumassign._start_pickup !== 0){
                 res.status(200).send('vehicle is moving!');
                 console.log('vehicle is moving!');
             }
@@ -112,7 +111,7 @@ router.post('/cancel', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            if(preordersumassign._out_line_driver !== undefined && preordersumassign._out_line_manager_warehouse !== undefined){
+            if(preordersumassign._out_line_driver !== 0 && preordersumassign._out_line_manager_warehouse !== 0){
                 res.status(200).send('vehicle is moving!');
                 console.log('vehicle is moving!');
             }

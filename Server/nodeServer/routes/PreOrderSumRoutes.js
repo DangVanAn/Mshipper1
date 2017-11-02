@@ -5,30 +5,85 @@ var router = express.Router();
 // var assignDriverRoute = require('../routes/AssignDriverRoutes');
 const uuidv1 = require('uuid/v1');
 var AssignDriver = require('../models/AssignDriver');
-var PreOrder = require('../models/PreOrders');
 var preOrderRoute = require('../routes/PreOrderRoutes');
 var PreOrderSum = require('../models/PreOrderSum');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 var preOrderSumAssignRoutes = require('../routes/PreOrderSumAssignRoutes');
+var Warehouse = require('../models/Warehouse');
+var User = require('../models/User');
 
 var hashmap = new HashMap();
 
 var listPreOrderSum = [];
+var listWarehouse = [];
+var listDelivery = [];
 
 resetListPreOrderSum();
+getListWarehouse();
+getListDelivery();
 function resetListPreOrderSum() {
     PreOrderSum.find({}, function (err, preordersum) {
         if (err)
             return console.error(err);
         else {
             listPreOrderSum = [];
-            listPreOrderSum = preordersum;
+            listPreOrderSum = JSON.parse(JSON.stringify(preordersum));
+            for(var i = 0; i < listPreOrderSum.length; i++)
+            {
+                for(var j = 0; j < listWarehouse.length; j++)
+                {
+                    if(listPreOrderSum[i]._id_warehouse == listWarehouse[j]._id_warehouse)
+                    {
+                        listPreOrderSum[i]['_position_warehouse'] = listWarehouse[j]._latitude + "," + listWarehouse[j]._longitude;
+                        listPreOrderSum[i]['_polygon_warehouse'] = listWarehouse[j]._polygon;
+                        break;
+                    }
+                }
+
+                for(var j = 0; j < listDelivery.length; j++)
+                {
+                    if(listPreOrderSum[i]._id_delivery == listDelivery[j]._id_delivery)
+                    {
+                        console.log('47 47 47 47 47 47 47 47 47 47 47 47 47 47');
+                        listPreOrderSum[i]['_position_delivery'] = listDelivery[j]._latitude + "," + listDelivery[j]._longitude;
+                        listPreOrderSum[i]['_polygon_delivery'] = listDelivery[j]._polygon;
+                        break;
+                    }
+                }
+            }
+
+            console.log('POSR Find all success!!!');
+        }
+    });
+}
+
+function getListWarehouse() {
+    Warehouse.find({}, function (err, warehouses) {
+        if (err)
+            return console.error(err);
+        else {
+            listWarehouse = [];
+            listWarehouse = warehouses;
             console.log('Find all success!!!');
         }
     });
 }
 
-router.post('/getall', function (req, res) {
+function getListDelivery() {
+    User.find({}, function (err, users) {
+        if (err)
+            return console.error(err);
+        else {
+            listDelivery = [];
+            listDelivery = users;
+            console.log('Find all success!!!');
+        }
+    });
+}
+
+
+
+router.get('/getall', function (req, res) {
 // get all
      res.status(200).send(listPreOrderSum);
 });
@@ -37,7 +92,7 @@ router.post('/getrefuse', function (req, res) {
     var data  =[];
     for(var i = 0; i < listPreOrderSum.length; i++)
     {
-        if(listPreOrderSum[i]._time_refuse != undefined && listPreOrderSum[i]._is_enabled == true)
+        if(listPreOrderSum[i]._time_refuse != 0 && listPreOrderSum[i]._is_enabled == true)
         {
             data.push(listPreOrderSum[i]);
         }
@@ -146,7 +201,7 @@ router.post('/cancel', function (req, res) {
         else {
             if (preordersum) {
                 console.log('114', preordersum);
-                if (req.body._time_accept !== undefined) {
+                if (req.body._time_accept !== 0) {
                     //kiểm tra nếu đã được accept
                     //có 2 trường hợp
                     // + TH1: danh sách xe assign chưa chạy thì hủy toàn bộ
@@ -157,7 +212,7 @@ router.post('/cancel', function (req, res) {
                     for (var i = 0; i < preordersumassign.length; i++) {
                         console.log('going going going going going going');
                         console.log(preordersumassign[i]._out_line_driver, preordersumassign[i]._out_line_manager_warehouse);
-                        if (preordersumassign[i]._out_line_driver !== undefined && preordersumassign[i]._out_line_manager_warehouse !== undefined) {
+                        if (preordersumassign[i]._out_line_driver !== 0 && preordersumassign[i]._out_line_manager_warehouse !== 0) {
                             listSumAssignGoing.push(preordersumassign[i]);
                         }
                         else {

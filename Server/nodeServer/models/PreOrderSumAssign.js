@@ -28,15 +28,18 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     },
     _driver_accept :{
         type : Number,
+        default : 0
     },
     _time_create : {
         type: Number,
+        default : 0
     },
     _note_cancel : {
         type: String,
     },
     _time_cancel : {
         type: Number,
+        default : 0
     },
     _start_pickup :{
         type : Number,

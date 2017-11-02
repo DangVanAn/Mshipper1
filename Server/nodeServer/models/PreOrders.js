@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 
 //Schema
-var PreOrdersSchema = mongoose.Schema({
+var PreOrdersAssignSchema = mongoose.Schema({
     _id_order: {
         type: String,
     },
@@ -59,6 +59,6 @@ var PreOrdersSchema = mongoose.Schema({
 });
 
 
-var PreOrders = mongoose.model('PreOrders', PreOrdersSchema);
+var PreOrdersAssign = mongoose.model('PreOrders', PreOrdersAssignSchema);
 
-module.exports = PreOrders;
+module.exports = PreOrdersAssign;
