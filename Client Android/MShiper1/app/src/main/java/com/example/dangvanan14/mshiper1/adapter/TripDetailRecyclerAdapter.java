@@ -12,12 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.fragment.AssignDriverDetailStepFragment;
+import com.example.dangvanan14.mshiper1.fragment.TripDetailStepFragment;
 import com.example.dangvanan14.mshiper1.model.PreOrderSum;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.Step;
-import com.example.dangvanan14.mshiper1.service.TrackingService;
-import com.example.dangvanan14.mshiper1.tool.ServiceTool;
 import com.thoughtbot.expandablerecyclerview.ExpandableRecyclerViewAdapter;
 import com.thoughtbot.expandablerecyclerview.models.ExpandableGroup;
 import com.thoughtbot.expandablerecyclerview.viewholders.ChildViewHolder;
@@ -26,11 +24,11 @@ import com.thoughtbot.expandablerecyclerview.viewholders.GroupViewHolder;
 import java.util.Date;
 import java.util.List;
 
-public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<AssignDriverDetailRecyclerAdapter.SectionViewHolder, AssignDriverDetailRecyclerAdapter.RowViewHolder> {
+public class TripDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<TripDetailRecyclerAdapter.SectionViewHolder, TripDetailRecyclerAdapter.RowViewHolder> {
     private static final String TAG = "AssignDriverRA";
     private Fragment fragment;
 
-    public AssignDriverDetailRecyclerAdapter(Fragment fragment, List<? extends ExpandableGroup> groups) {
+    public TripDetailRecyclerAdapter(Fragment fragment, List<? extends ExpandableGroup> groups) {
         super(groups);
         this.fragment = fragment;
     }
@@ -79,7 +77,7 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
             } else {
                 imageConfirm.setImageResource(0);
             }
-            AssignDriverDetailStepFragment ac = (AssignDriverDetailStepFragment) fg;
+            TripDetailStepFragment ac = (TripDetailStepFragment) fg;
             if (ac.selectedStep != null && group.step.get_id() == ac.selectedStep.get_id()) {
                 layout.setBackgroundColor(ContextCompat.getColor(layout.getContext(), R.color.yellow));
             } else {
@@ -99,7 +97,7 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
         private Button btnComplete;
         private Button btnCancel;
         private PreOrderSumAssign preOrderSumAssign;
-        private AssignDriverDetailStepFragment fragment;
+        private TripDetailStepFragment fragment;
 
         RowViewHolder(View itemView) {
             super(itemView);
@@ -120,7 +118,7 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
 
         void onBind(PreOrderSumAssign preOrderSumAssign, Fragment fragment) {
             this.preOrderSumAssign = preOrderSumAssign;
-            this.fragment = (AssignDriverDetailStepFragment) fragment;
+            this.fragment = (TripDetailStepFragment) fragment;
             List<PreOrderSum> preOrderSum = preOrderSumAssign.get_pre_order_sum();
             if (preOrderSum != null && preOrderSum.size() != 0) {
                 address_warehouse.setText(preOrderSum.get(0).get_address_warehouse());
@@ -147,7 +145,7 @@ public class AssignDriverDetailRecyclerAdapter extends ExpandableRecyclerViewAda
                     try {
                         if (preOrderSumAssign != null) {
                             fragment.showProgressDialog();
-                            fragment.postUpdateTimeStep(preOrderSumAssign.get_id(), fragment.selectedStep.getElement(), (new Date()).getTime());
+                            fragment.postUpdateTimeStep(fragment.selectedStep.getIdAssign(), fragment.selectedStep.getElement(), (new Date()).getTime());
                         }
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -95,11 +95,11 @@
             android:theme="@style/MyNoActionBar" />
 
         <activity
-            android:name=".activity.AssignDriverActivity"
+            android:name=".activity.TripActivity"
             android:theme="@style/MyNoActionBar" />
 
         <activity
-            android:name=".activity.AssignDriverDetailActivity"
+            android:name=".activity.TripDetailActivity"
             android:theme="@style/MyNoActionBar" />
 
         <activity

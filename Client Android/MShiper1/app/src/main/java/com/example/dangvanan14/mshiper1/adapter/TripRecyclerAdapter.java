@@ -8,14 +8,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.activity.AssignDriverDetailActivity;
-import com.example.dangvanan14.mshiper1.model.AssignDriver;
+import com.example.dangvanan14.mshiper1.activity.TripDetailActivity;
+import com.example.dangvanan14.mshiper1.model.Trip;
 
 import java.util.List;
 
-public class AssignDriverRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-    private static final String TAG = "AssignDriverRecyclerAdapter";
-    private List<AssignDriver> assignDrivers;
+public class TripRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    private static final String TAG = "TripRecyclerAdapter";
+    private List<Trip> trips;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -25,25 +25,24 @@ public class AssignDriverRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        AssignDriver assignDriver = assignDrivers.get(position);
+        Trip trip = trips.get(position);
         ViewHolder view = (ViewHolder) holder;
-        view.bind(assignDriver, position);
+        view.bind(trip, position);
     }
 
     @Override
     public int getItemCount() {
-        return assignDrivers.size();
+        return trips.size();
     }
 
 
-    public AssignDriverRecyclerAdapter(List<AssignDriver> assignDrivers) {
-        this.assignDrivers = assignDrivers;
+    public TripRecyclerAdapter(List<Trip> trips) {
+        this.trips = trips;
     }
 
     private class ViewHolder extends RecyclerView.ViewHolder {
         private TextView txtName;
         private TextView txtComplete;
-        private TextView txtIsLeader;
         private View layout;
 
 
@@ -51,19 +50,17 @@ public class AssignDriverRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
             super(itemView);
             txtName = (TextView) itemView.findViewById(R.id.name_assign);
             txtComplete = (TextView) itemView.findViewById(R.id.percent_complete);
-            txtIsLeader = (TextView) itemView.findViewById(R.id.is_leader);
             layout = itemView.findViewById(R.id.layout_assign);
         }
 
-        void bind(AssignDriver assignDriver, int position) {
-            txtName.setText("Assign " + position);
-            txtComplete.setText(assignDriver.get_percent() != 100 ? String.valueOf(assignDriver.get_percent()) + "%" : "DONE");
-            txtIsLeader.setText(assignDriver.is_lead_driver() ? "Chính" : "Phụ");
+        void bind(Trip trip, int position) {
+            txtName.setText("Trip " + position);
+            txtComplete.setText(trip.getPercent() != 100 ? String.valueOf(trip.getPercent()) + "%" : "DONE");
             layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(v.getContext(), AssignDriverDetailActivity.class);
-                    i.putExtra("assignDetail", assignDriver);
+                    Intent i = new Intent(v.getContext(), TripDetailActivity.class);
+                    i.putExtra("tripDetail", trip);
                     v.getContext().startActivity(i);
                 }
             });

@@ -13,7 +13,7 @@ import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.activity.AssignDriverDetailActivity;
+import com.example.dangvanan14.mshiper1.activity.TripDetailActivity;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 
@@ -42,7 +42,7 @@ public class LocationReceiver extends WakefulBroadcastReceiver {
 
     public void showNotification(Context context, Intent intent, double lat, double lon, AssignDriver assignDriver) {
         String text = "Đã vào kho ..." + lat + " " + lon;
-        Intent intentMain = new Intent(context, AssignDriverDetailActivity.class);
+        Intent intentMain = new Intent(context, TripDetailActivity.class);
         intentMain.putExtra("assignDetail", assignDriver);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, LOCATION_REQUEST_CODE,
                 intentMain, PendingIntent.FLAG_UPDATE_CURRENT);

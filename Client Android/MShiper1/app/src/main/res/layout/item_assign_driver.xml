@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:gravity="center"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
         android:padding="8dp"
         android:weightSum="1">
@@ -20,17 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_weight="0.4"
-            android:text="adasdadadasdasdasdas12asd"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/is_leader"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="0.4"
+            android:layout_weight="0.8"
             android:text="adasdadadasdasdasdas12asd"
             android:textSize="18sp"
             android:textStyle="bold" />
