@@ -10,6 +10,7 @@ var hashmap = new HashMap();
 
 var listPreOrderSumAssign = [];
 resetListPreOrderSumAssign();
+
 function resetListPreOrderSumAssign() {
     PreOrderSumAssign.find({}, function (err, preordersumassign) {
         if (err)
@@ -30,11 +31,9 @@ router.post('/getall', function (req, res) {
 router.post('/getbyidpresumassign', function (req, res) {
     console.log(req.body);
     var listGet = [];
-    for(var i = 0; i < req.body.length; i++)
-    {
-        for(var j = 0; j < listPreOrderSumAssign.length; j++)
-        {
-            if(listPreOrderSumAssign[j]._id == req.body[i]._id){
+    for (var i = 0; i < req.body.length; i++) {
+        for (var j = 0; j < listPreOrderSumAssign.length; j++) {
+            if (listPreOrderSumAssign[j]._id == req.body[i]._id) {
                 listGet.push(listPreOrderSumAssign[j]);
             }
         }
@@ -46,11 +45,9 @@ router.post('/getbyidpresumassign', function (req, res) {
 router.post('/getbypresumtime', function (req, res) {
     // console.log(req.body);
     var listGet = [];
-    for(var i = 0; i < req.body.length; i++)
-    {
-        for(var j = 0; j < listPreOrderSumAssign.length; j++)
-        {
-            if(listPreOrderSumAssign[j]._pre_sum_time == req.body[i]._pre_sum_time){
+    for (var i = 0; i < req.body.length; i++) {
+        for (var j = 0; j < listPreOrderSumAssign.length; j++) {
+            if (listPreOrderSumAssign[j]._pre_sum_time == req.body[i]._pre_sum_time) {
                 listGet.push(listPreOrderSumAssign[j]);
             }
         }
@@ -78,11 +75,14 @@ router.post('/add', function (req, res) {
 });
 
 router.post('/update', function (req, res) {
-    PreOrderSumAssign.findOne({_pre_sum_assign_time : req.body._pre_sum_assign_time, _is_enabled : true}, function (err, preordersumassign) {
+    PreOrderSumAssign.findOne({
+        _pre_sum_assign_time: req.body._pre_sum_assign_time,
+        _is_enabled: true
+    }, function (err, preordersumassign) {
         if (err)
             return console.error(err);
         else {
-            if(preordersumassign._start_pickup !== 0){
+            if (preordersumassign._start_pickup !== 0) {
                 res.status(200).send('vehicle is moving!');
                 console.log('vehicle is moving!');
             }
@@ -107,11 +107,14 @@ router.post('/update', function (req, res) {
 });
 
 router.post('/cancel', function (req, res) {
-    PreOrderSumAssign.findOne({_pre_sum_assign_time : req.body._pre_sum_assign_time, _is_enabled : true}, function (err, preordersumassign) {
+    PreOrderSumAssign.findOne({
+        _pre_sum_assign_time: req.body._pre_sum_assign_time,
+        _is_enabled: true
+    }, function (err, preordersumassign) {
         if (err)
             return console.error(err);
         else {
-            if(preordersumassign._out_line_driver !== 0 && preordersumassign._out_line_manager_warehouse !== 0){
+            if (preordersumassign._out_line_driver !== 0 && preordersumassign._out_line_manager_warehouse !== 0) {
                 res.status(200).send('vehicle is moving!');
                 console.log('vehicle is moving!');
             }
@@ -137,37 +140,49 @@ router.post('/cancel', function (req, res) {
 });
 
 router.post('/setstatus', function (req, res) {
-    console.log(req.body);
-    console.log(req.body.time);
+    var countSave = 0;
 
-    PreOrderSumAssign.findOne({_id : req.body._pre_order_sum_assign, _is_enabled : true}, function (err, preordersumassign) {
-        if (err)
-        {
-            console.error(err);
-            res.status(200).send({ success: false, message: "error!"});
-            return console.error(err);
-        }
-        else {
-            if(preordersumassign !== null){
-                preordersumassign[req.body.element] = req.body.time;
-
-                preordersumassign.save(function (err) {
-                    if (err) {
-                        console.error(err);
-                        res.status(200).send({ success: false, message: "error!"});
-                    }
-                    else {
-                        res.status(200).send({ success: true, message: "updated!"});
-                        resetListPreOrderSumAssign();
-                    }
-                });
+    for(var i = 0; i < req.body._pre_order_sum_assign.length; i++)
+    {
+        PreOrderSumAssign.findOne({
+            _id: req.body._pre_order_sum_assign[i],
+            _is_enabled: true
+        }, function (err, preordersumassign) {
+            if (err) {
+                console.error(err);
+                res.status(200).send({success: false, message: "error!"});
+                return console.error(err);
             }
             else {
-                console.log('null!');
-                res.status(200).send({ success: false, message: "null!"});
+                if (preordersumassign !== null) {
+                    preordersumassign[req.body.element] = req.body.time;
+                    preordersumassign.save(function (err) {
+                        if (err) {
+                            console.error(err);
+                            res.status(200).send({success: false, message: "error!"});
+                        }
+                        else {
+                            countSave++;
+                            boolResetPreOrderSumAssign();
+                        }
+                    });
+                }
+                else {
+                    console.log('null!');
+                    res.status(200).send({success: false, message: "null!"});
+                }
             }
+        });
+    }
+
+    //funtion chỉ chạy khi nào số element đã save bằng số id
+    function boolResetPreOrderSumAssign() {
+        if(countSave === req.body._pre_order_sum_assign.length)
+        {
+            res.status(200).send({success: true, message: "updated!"});
+            resetListPreOrderSumAssign();
         }
-    });
+    };
 });
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
@@ -194,10 +209,10 @@ router.getListPreOrderSumAssign = function () {
     return listPreOrderSumAssign;
 };
 
-router.findPreOrderSumAssignByPreSumTime = function(_pre_sum_time){
+router.findPreOrderSumAssignByPreSumTime = function (_pre_sum_time) {
     var listData = [];
-    for(var i = 0; i < listPreOrderSumAssign.length; i++){
-        if(listPreOrderSumAssign[i]._pre_sum_time == _pre_sum_time){
+    for (var i = 0; i < listPreOrderSumAssign.length; i++) {
+        if (listPreOrderSumAssign[i]._pre_sum_time == _pre_sum_time) {
             listData.push(listPreOrderSumAssign[i]);
         }
     }
