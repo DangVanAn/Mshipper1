@@ -9,14 +9,16 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_assign_driver"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.9"
         tools:listitem="@layout/item_assign_driver_detail" />
 
     <LinearLayout
+        android:id="@+id/layout_button_assign_driver"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="0.1"
+        android:visibility="gone"
         android:orientation="horizontal"
         android:weightSum="1">
 

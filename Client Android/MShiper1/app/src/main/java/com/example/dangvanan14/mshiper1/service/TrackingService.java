@@ -35,9 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TrackingService extends Service implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
-    public static final int VEHICLE_IN_DELIVERY = 1;
-    public static final int VEHICLE_IN_WAREHOUSE = 2;
-
     private String lat, lon;
     private GoogleApiClient mGoogleApiClient;
 
@@ -48,7 +45,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
     private PreOrderSum preOrderSum;
     private AssignDriver assignDriver;
     private Intent intentBroadCast;
-    private int stateVehicle = 0;
+    private DefinedApp.StateLocation stateVehicle = DefinedApp.StateLocation.NOTHING;
 
     {
         try {
@@ -149,15 +146,15 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
             intentBroadCast.putExtra("assignDriver", assignDriver);
 
             if (boundaryDelivery.contains(gps)) {
-                if (stateVehicle != VEHICLE_IN_DELIVERY){
-                    intentBroadCast.putExtra("type", VEHICLE_IN_DELIVERY);
-                    stateVehicle = VEHICLE_IN_DELIVERY;
+                if (stateVehicle != DefinedApp.StateLocation.DELIVERY) {
+                    intentBroadCast.putExtra("type", DefinedApp.StateLocation.DELIVERY);
+                    stateVehicle = DefinedApp.StateLocation.DELIVERY;
                     sendBroadcast(intentBroadCast);
                 }
             } else if (boundaryWareHouse.contains(gps)) {
-                if (stateVehicle != VEHICLE_IN_WAREHOUSE){
-                    intentBroadCast.putExtra("type", VEHICLE_IN_WAREHOUSE);
-                    stateVehicle = VEHICLE_IN_WAREHOUSE;
+                if (stateVehicle != DefinedApp.StateLocation.WAREHOUSE) {
+                    intentBroadCast.putExtra("type", DefinedApp.StateLocation.WAREHOUSE);
+                    stateVehicle = DefinedApp.StateLocation.WAREHOUSE;
                     sendBroadcast(intentBroadCast);
                 }
             }

@@ -140,11 +140,6 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
 
             for (PreOrderSumAssign sumAssign : ad.get_pre_order_sum_assign()) {
                 sum++;
-                if (sumAssign.get_start_pickup() != 0) {
-                    complete++;
-                }
-
-                sum++;
                 if (sumAssign.get_in_warehouse_driver() != 0) {
                     complete++;
                 }
@@ -174,10 +169,6 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
                     complete++;
                 }
             }
-
-            Log.d(TAG, "addPercentInAssignDriver:1" + (complete / sum) * 100);
-            Log.d(TAG, "addPercentInAssignDriver:2" + complete);
-            Log.d(TAG, "addPercentInAssignDriver:3" + sum);
             ad.set_percent((int) ((complete / sum) * 100));
         }
     }

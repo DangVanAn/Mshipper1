@@ -45,6 +45,7 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
     private Button btnExtend;
     public Step selectedStep;
     private List<AssignDriverDetailRecyclerAdapter.StepExpandableGroup> steps;
+    private View layoutButton;
 
     public static AssignDriverDetailStepFragment newInstance(AssignDriver assignDriver) {
         AssignDriverDetailStepFragment fg = new AssignDriverDetailStepFragment();
@@ -61,6 +62,7 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
         Bundle args = getArguments();
         assignDriver = args.getParcelable("assignDetail");
 
+        layoutButton = v.findViewById(R.id.layout_button_assign_driver);
         btnConfirm = (Button) v.findViewById(R.id.btn_confirm);
         btnExtend = (Button) v.findViewById(R.id.btn_extend);
 
@@ -85,6 +87,9 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
                 btnExtend.setVisibility(View.VISIBLE);
             else
                 btnExtend.setVisibility(View.GONE);
+            if (selectedStep.getElement().equals("_in_delivery_driver")) {
+                layoutButton.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -96,16 +101,14 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
             List<Step> stepList = new ArrayList<>();
             PreOrderSumAssign preOrderSumAssign = preOrderSumAssigns.get(0);
 
-            stepList.add(new Step(++idStep, "Xác nhận đơn hàng", (assignDriver.get_driver_accept() != 0), "_driver_accept"));
             stepList.add(new Step(++idStep, "Xác nhận bắt đầu đi lấy hàng (trước 30p)", preOrderSumAssign.get_start_pickup() != 0, "_start_pickup"));
             stepList.add(new Step(++idStep, "Đã vào kho", preOrderSumAssign.get_in_warehouse_driver() != 0, "_in_warehouse_driver"));
             stepList.add(new Step(++idStep, "Đã vào line", preOrderSumAssign.get_in_line_driver() != 0, "_in_line_driver"));
             stepList.add(new Step(++idStep, "Đã rời line", preOrderSumAssign.get_out_line_driver() != 0, "_out_line_driver"));
             stepList.add(new Step(++idStep, "Đã rời kho", preOrderSumAssign.get_out_warehouse_driver() != 0, "_out_warehouse_driver"));
             for (int i = 0; i < assignDriver.get_pre_order_sum_assign().size(); i++) {
-                stepList.add(new Step(++idStep, "Điểm giao", preOrderSumAssign.get_in_delivery_driver() != 0, "_in_delivery_driver"));
+                stepList.add(new Step(++idStep, "Điểm giao " + (i + 1), preOrderSumAssign.get_time_done() != 0, "_in_delivery_driver"));
             }
-            stepList.add(new Step(++idStep, "Hoàn thành", preOrderSumAssign.get_time_done() != 0, "_time_done"));
             int numberDelivery = 0;
             for (int i = 0; i < stepList.size(); i++) {
                 List<PreOrderSumAssign> temp = null;
@@ -131,12 +134,12 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
             case R.id.btn_confirm:
                 try {
                     if (assignDriver.get_pre_order_sum_assign().get(0).get_id() != null) {
-                        if (ServiceTool.isServiceRunning(TrackingService.class, v.getContext()) && selectedStep.getElement().equals("_start_pickup") ) {
+                        if (ServiceTool.isServiceRunning(TrackingService.class, v.getContext()) && selectedStep.getElement().equals("_start_pickup")) {
                             Toast.makeText(v.getContext(), "Bạn đang thực hiện Tracking chuyến đi khác", Toast.LENGTH_SHORT).show();
                             return;
                         }
                         showProgressDialog();
-                        postUpdateTimeStep(selectedStep.getElement(), (new Date()).getTime());
+                        postUpdateTimeStep(assignDriver.get_pre_order_sum_assign().get(0).get_id(), selectedStep.getElement(), (new Date()).getTime());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -150,13 +153,14 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
         }
     }
 
-    private void postUpdateTimeStep(final String element, final long valueTime) {
+    public void postUpdateTimeStep(String id, final String element, final long valueTime) {
         final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
                 ParamUpdateStep pram = new ParamUpdateStep();
-                pram._pre_order_sum_assign = assignDriver.get_pre_order_sum_assign().get(0).get_id();
+//                pram._pre_order_sum_assign = assignDriver.get_pre_order_sum_assign().get(0).get_id();
+                pram._pre_order_sum_assign = id;
                 pram.element = element;
                 pram.time = valueTime;
                 return loadData.CreateRetrofit().postUpdateTimeStep(pram);
@@ -207,12 +211,6 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
         public long time;
 
         public ParamUpdateStep() {
-        }
-
-        public ParamUpdateStep(String _pre_order_sum_assign, String element, long time) {
-            this._pre_order_sum_assign = _pre_order_sum_assign;
-            this.element = element;
-            this.time = time;
         }
     }
 }
