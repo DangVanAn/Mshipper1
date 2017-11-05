@@ -20,6 +20,12 @@ var PreOrderSumAssignSchema = mongoose.Schema({
     _ton_for_vehicle : {
         type: Number,
     },
+    _ton_real : {
+        type : Number,
+    },
+    _trip : {
+        type : String,
+    },
     _weigh_for_vehicle : {
         type: Number,
     },
@@ -89,7 +95,7 @@ var PreOrderSumAssignSchema = mongoose.Schema({
         type : Number,
         default : 0
     },
-    _in_delivery_guard :{
+    _in_delivery_customer :{
         type : Number,
         default : 0
     },

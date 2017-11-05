@@ -53,6 +53,12 @@ var PreOrdersAssignSchema = mongoose.Schema({
     _id_delivery_manager  : {
         type: String,
     },
+    _trip : {
+        type : String,
+    },
+    _pre_sum_assign_time : {
+        type: String,
+    },
      _note : {  
         type: String,
     }
