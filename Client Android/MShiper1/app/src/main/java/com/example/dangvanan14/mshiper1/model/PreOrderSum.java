@@ -37,6 +37,135 @@ public class PreOrderSum implements Parcelable {
     private String _user_accept;
     private boolean _is_enabled;
 
+    private String _position_warehouse;
+    private String _polygon_warehouse;
+    private String _position_delivery;
+    private String _polygon_delivery;
+
+
+    protected PreOrderSum(Parcel in) {
+        _id = in.readString();
+        _id_warehouse = in.readString();
+        _address_warehouse = in.readString();
+        _id_delivery = in.readString();
+        _id_customer = in.readString();
+        _address_delivery = in.readString();
+        _type_product = in.readString();
+        _ton = in.readDouble();
+        _ton_action = in.readDouble();
+        _etd = in.readString();
+        _eta = in.readString();
+        _note = in.readString();
+        _id_delivery_manager = in.readString();
+        _time_send = in.readLong();
+        _pre_sum_time = in.readString();
+        _time_update = in.readLong();
+        _note_update = in.readString();
+        _time_accept = in.readLong();
+        _time_refuse = in.readLong();
+        _note_refuse = in.readString();
+        _note_accept = in.readString();
+        _time_cancel = in.readLong();
+        _note_cancel = in.readString();
+        _user_cancel = in.readString();
+        _time_cancel_delivery = in.readLong();
+        _note_cancel_delivery = in.readString();
+        _user_cancel_delivery = in.readString();
+        _user_refuse = in.readString();
+        _user_accept = in.readString();
+        _is_enabled = in.readByte() != 0;
+        _position_warehouse = in.readString();
+        _polygon_warehouse = in.readString();
+        _position_delivery = in.readString();
+        _polygon_delivery = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(_id);
+        dest.writeString(_id_warehouse);
+        dest.writeString(_address_warehouse);
+        dest.writeString(_id_delivery);
+        dest.writeString(_id_customer);
+        dest.writeString(_address_delivery);
+        dest.writeString(_type_product);
+        dest.writeDouble(_ton);
+        dest.writeDouble(_ton_action);
+        dest.writeString(_etd);
+        dest.writeString(_eta);
+        dest.writeString(_note);
+        dest.writeString(_id_delivery_manager);
+        dest.writeLong(_time_send);
+        dest.writeString(_pre_sum_time);
+        dest.writeLong(_time_update);
+        dest.writeString(_note_update);
+        dest.writeLong(_time_accept);
+        dest.writeLong(_time_refuse);
+        dest.writeString(_note_refuse);
+        dest.writeString(_note_accept);
+        dest.writeLong(_time_cancel);
+        dest.writeString(_note_cancel);
+        dest.writeString(_user_cancel);
+        dest.writeLong(_time_cancel_delivery);
+        dest.writeString(_note_cancel_delivery);
+        dest.writeString(_user_cancel_delivery);
+        dest.writeString(_user_refuse);
+        dest.writeString(_user_accept);
+        dest.writeByte((byte) (_is_enabled ? 1 : 0));
+        dest.writeString(_position_warehouse);
+        dest.writeString(_polygon_warehouse);
+        dest.writeString(_position_delivery);
+        dest.writeString(_polygon_delivery);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<PreOrderSum> CREATOR = new Creator<PreOrderSum>() {
+        @Override
+        public PreOrderSum createFromParcel(Parcel in) {
+            return new PreOrderSum(in);
+        }
+
+        @Override
+        public PreOrderSum[] newArray(int size) {
+            return new PreOrderSum[size];
+        }
+    };
+
+    public String get_position_warehouse() {
+        return _position_warehouse;
+    }
+
+    public void set_position_warehouse(String _position_warehouse) {
+        this._position_warehouse = _position_warehouse;
+    }
+
+    public String get_polygon_warehouse() {
+        return _polygon_warehouse;
+    }
+
+    public void set_polygon_warehouse(String _polygon_warehouse) {
+        this._polygon_warehouse = _polygon_warehouse;
+    }
+
+    public String get_position_delivery() {
+        return _position_delivery;
+    }
+
+    public void set_position_delivery(String _position_delivery) {
+        this._position_delivery = _position_delivery;
+    }
+
+    public String get_polygon_delivery() {
+        return _polygon_delivery;
+    }
+
+    public void set_polygon_delivery(String _polygon_delivery) {
+        this._polygon_delivery = _polygon_delivery;
+    }
 
     public String get_id() {
         return _id;
@@ -278,87 +407,5 @@ public class PreOrderSum implements Parcelable {
         this._is_enabled = _is_enabled;
     }
 
-    protected PreOrderSum(Parcel in) {
-        _id = in.readString();
-        _id_warehouse = in.readString();
-        _address_warehouse = in.readString();
-        _id_delivery = in.readString();
-        _id_customer = in.readString();
-        _address_delivery = in.readString();
-        _type_product = in.readString();
-        _ton = in.readDouble();
-        _ton_action = in.readDouble();
-        _etd = in.readString();
-        _eta = in.readString();
-        _note = in.readString();
-        _id_delivery_manager = in.readString();
-        _time_send = in.readLong();
-        _pre_sum_time = in.readString();
-        _time_update = in.readLong();
-        _note_update = in.readString();
-        _time_accept = in.readLong();
-        _time_refuse = in.readLong();
-        _note_refuse = in.readString();
-        _note_accept = in.readString();
-        _time_cancel = in.readLong();
-        _note_cancel = in.readString();
-        _user_cancel = in.readString();
-        _time_cancel_delivery = in.readLong();
-        _note_cancel_delivery = in.readString();
-        _user_cancel_delivery = in.readString();
-        _user_refuse = in.readString();
-        _user_accept = in.readString();
-        _is_enabled = in.readByte() != 0;
-    }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id);
-        dest.writeString(_id_warehouse);
-        dest.writeString(_address_warehouse);
-        dest.writeString(_id_delivery);
-        dest.writeString(_id_customer);
-        dest.writeString(_address_delivery);
-        dest.writeString(_type_product);
-        dest.writeDouble(_ton);
-        dest.writeDouble(_ton_action);
-        dest.writeString(_etd);
-        dest.writeString(_eta);
-        dest.writeString(_note);
-        dest.writeString(_id_delivery_manager);
-        dest.writeLong(_time_send);
-        dest.writeString(_pre_sum_time);
-        dest.writeLong(_time_update);
-        dest.writeString(_note_update);
-        dest.writeLong(_time_accept);
-        dest.writeLong(_time_refuse);
-        dest.writeString(_note_refuse);
-        dest.writeString(_note_accept);
-        dest.writeLong(_time_cancel);
-        dest.writeString(_note_cancel);
-        dest.writeString(_user_cancel);
-        dest.writeLong(_time_cancel_delivery);
-        dest.writeString(_note_cancel_delivery);
-        dest.writeString(_user_cancel_delivery);
-        dest.writeString(_user_refuse);
-        dest.writeString(_user_accept);
-        dest.writeByte((byte) (_is_enabled ? 1 : 0));
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<PreOrderSum> CREATOR = new Creator<PreOrderSum>() {
-        @Override
-        public PreOrderSum createFromParcel(Parcel in) {
-            return new PreOrderSum(in);
-        }
-
-        @Override
-        public PreOrderSum[] newArray(int size) {
-            return new PreOrderSum[size];
-        }
-    };
 }

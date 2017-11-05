@@ -301,7 +301,7 @@ public class AssignDriverDetailMapFragment extends BaseFragment implements Googl
     public void onLocationChanged(Location location) {
         lat = String.valueOf(location.getLatitude());
         lon = String.valueOf(location.getLongitude());
-
+        Log.d(TAG, "onLocationChanged: " + lat + "  " + lon);
         latitude = Double.parseDouble(String.valueOf(location.getLatitude()));
         longitude = Double.parseDouble(String.valueOf(location.getLongitude()));
 
@@ -400,7 +400,7 @@ public class AssignDriverDetailMapFragment extends BaseFragment implements Googl
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "getLocationFromAddress: "  + e.getMessage());
+            Log.e(TAG, "getLocationFromAddress: " + e.getMessage());
         }
     }
 

@@ -140,6 +140,17 @@
         <!--android:exported="false">-->
         <!--</service>-->
 
+        <receiver android:name=".receiver.LocationReceiver"
+            android:permission="SEND">
+            <intent-filter>
+                <action android:name="mshipper.SEND_GPS"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.TrackingService"
+            android:exported="false"/>
+
         <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

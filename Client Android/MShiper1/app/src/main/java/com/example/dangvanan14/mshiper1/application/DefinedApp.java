@@ -19,4 +19,10 @@ public class DefinedApp {
     public enum API{
         MAIN, CHAT, GPS
     }
+
+    public static final String BROADCAST_LOCATION = "mshipper.SEND_GPS";
+
+    public enum StateLocation{
+        NOTHING, WAREHOUSE, DELIVERY
+    }
 }

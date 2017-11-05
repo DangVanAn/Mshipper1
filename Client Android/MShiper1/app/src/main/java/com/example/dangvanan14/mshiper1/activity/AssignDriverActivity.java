@@ -21,6 +21,7 @@ import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.example.dangvanan14.mshiper1.tool.Boundary;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -63,12 +64,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Các chuyến hàng");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override

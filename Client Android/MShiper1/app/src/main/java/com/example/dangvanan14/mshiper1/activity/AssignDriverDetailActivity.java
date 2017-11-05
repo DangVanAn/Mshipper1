@@ -27,7 +27,6 @@ public class AssignDriverDetailActivity extends BaseActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_driver_detail);
         assignDriver = getIntent().getParcelableExtra("assignDetail");
-//        assignDriver = (getIntent()).getParcelableExtra("assignDetail");
         setupTabLayout();
         setupToolbar();
     }

@@ -1,6 +1,10 @@
 package com.example.dangvanan14.mshiper1.fragment;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +25,8 @@ import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.Step;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.example.dangvanan14.mshiper1.service.TrackingService;
+import com.example.dangvanan14.mshiper1.tool.ServiceTool;
 
 import org.slf4j.Logger;
 
@@ -72,9 +78,10 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
         checkVisibilityBtnExtend();
         return v;
     }
-    void checkVisibilityBtnExtend(){
+
+    void checkVisibilityBtnExtend() {
         if (selectedStep != null) {
-            if (selectedStep.getElement().equals("_start_pickup"))
+            if (selectedStep.getElement().equals("_in_warehouse_driver"))
                 btnExtend.setVisibility(View.VISIBLE);
             else
                 btnExtend.setVisibility(View.GONE);
@@ -89,7 +96,7 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
             List<Step> stepList = new ArrayList<>();
             PreOrderSumAssign preOrderSumAssign = preOrderSumAssigns.get(0);
 
-            stepList.add(new Step(++idStep, "Xác nhận nhận đơn hàng", (assignDriver.get_driver_accept() != 0), "_driver_accept"));
+            stepList.add(new Step(++idStep, "Xác nhận đơn hàng", (assignDriver.get_driver_accept() != 0), "_driver_accept"));
             stepList.add(new Step(++idStep, "Xác nhận bắt đầu đi lấy hàng (trước 30p)", preOrderSumAssign.get_start_pickup() != 0, "_start_pickup"));
             stepList.add(new Step(++idStep, "Đã vào kho", preOrderSumAssign.get_in_warehouse_driver() != 0, "_in_warehouse_driver"));
             stepList.add(new Step(++idStep, "Đã vào line", preOrderSumAssign.get_in_line_driver() != 0, "_in_line_driver"));
@@ -124,6 +131,10 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
             case R.id.btn_confirm:
                 try {
                     if (assignDriver.get_pre_order_sum_assign().get(0).get_id() != null) {
+                        if (ServiceTool.isServiceRunning(TrackingService.class, v.getContext()) && selectedStep.getElement().equals("_start_pickup") ) {
+                            Toast.makeText(v.getContext(), "Bạn đang thực hiện Tracking chuyến đi khác", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                         showProgressDialog();
                         postUpdateTimeStep(selectedStep.getElement(), (new Date()).getTime());
                     }
@@ -161,7 +172,15 @@ public class AssignDriverDetailStepFragment extends BaseFragment implements View
             if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+
+                if (fg.selectedStep.getElement().equals("_start_pickup")) {
+                    Intent intent = new Intent(fg.getContext(), TrackingService.class);
+                    intent.putExtra("assignDriver", fg.assignDriver);
+                    fg.getContext().startService(intent);
+                }
+
                 fg.selectedStep.set_is_confirm(true);
+
                 if (fg.selectedStep.get_id() < fg.steps.size() - 1) {
                     fg.selectedStep = fg.steps.get(fg.selectedStep.get_id() + 1).getStep();
                     fg.checkVisibilityBtnExtend();

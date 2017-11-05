@@ -82,12 +82,10 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         viewPager.setCurrentItem(0);
                         break;
                     case R.id.tab_order:
-                        Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
-                        startActivity(intentChat);
+//                        Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
+//                        startActivity(intentChat);
                         break;
                     case R.id.tab_more:
-//                        Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
-//                        startActivity(intent);
                         viewPager.setCurrentItem(1);
                         break;
                 }
