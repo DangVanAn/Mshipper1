@@ -95,7 +95,7 @@ var PreOrderSumAssignSchema = mongoose.Schema({
         type : Number,
         default : 0
     },
-    _in_delivery_guard :{
+    _in_delivery_customer :{
         type : Number,
         default : 0
     },
