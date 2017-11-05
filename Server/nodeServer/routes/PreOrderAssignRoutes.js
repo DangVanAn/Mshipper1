@@ -5,7 +5,10 @@ var router = express.Router();
 
 var PreOrderAssign = require('../models/PreOrdersAssign');
 var PreOrder = require('../models/PreOrders');
+var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 var preOrderSumRoute = require('../routes/PreOrderSumRoutes');
+var preOrderSumAssignRoute = require('../routes/PreOrderSumAssignRoutes');
+var PreOrderSum = require('../models/PreOrderSum');
 
 var hashmap = new HashMap();
 
@@ -13,14 +16,14 @@ router.post('/getall', function (req, res) {
     res.status(200).send(listPreOrdersAssign);
 });
 
-getLitsPreOrderSum();
+getLitsPreOrderSumAssign();
 getLitsPreOrder();
 getLitsPreOrderAssign();
 
 var listNewOrdersAssign = [];
 var listPreOrders = [];
 var listPreOrdersAssign = [];
-var listPreOrdersSum = [];
+var listPreOrdersSumAssign = [];
 
 function getLitsPreOrder() {
     PreOrder.find({}, function (err, preorders) {
@@ -52,9 +55,9 @@ function getLitsPreOrderAssign() {
     });
 }
 
-function getLitsPreOrderSum() {
-    listPreOrdersSum = preOrderSumRoute.getListPreOrderSum();
-    console.log('99', listPreOrdersSum.length);
+function getLitsPreOrderSumAssign() {
+    listPreOrdersSumAssign = preOrderSumAssignRoute.getListPreOrderSumAssign();
+    console.log('99', listPreOrdersSumAssign.length);
 }
 
 router.post('/posthandling', function (req, res) {
@@ -69,7 +72,7 @@ router.post('/posthandling', function (req, res) {
             if (!checkComparePreOrder(req.body[i], getOrderHashmap)) {
                 //có thay đổi
                 console.log(i, 'có thay đổi');
-                PreOrder.deleteOne({_id_order: req.body[i]._id_order}, function (err) {
+                PreOrderAssign.deleteOne({_id_order: req.body[i]._id_order}, function (err) {
                     if (err) {
                     }
                     else {
@@ -99,22 +102,11 @@ router.post('/posthandling', function (req, res) {
         }
     }
 
+    setPreOrderSumAssign(listNewOrdersAssign);
+
     res.status(200).send('Xử Lý Thành Công');
 
     console.log('sau khi xử lý!, còn chạy được không?');
-
-    PreOrder.insertMany(listNewOrdersAssign, function (err, docs) {
-        if (err) {
-            // res.status(200).send('Error!');
-            console.log('Error!');
-        }
-        else {
-            // res.status(200).send('PreOrders created!');
-            console.log('PreOrders created!');
-            // getLitsPreOrder();
-            createPreOrderReport();
-        }
-    });
 });
 
 function checkComparePreOrder(x, y) {
@@ -143,6 +135,106 @@ function findIdOrder(_id_order) {
             return i;
         }
     }
+}
+
+function setPreOrderSumAssign(listData) {
+    for (var i = 0; i < listData.length; i++) {
+        if (listData[i]._pre_sum_assign_time !== undefined) {
+            var listAssign = [];
+            var sumTon = 0;
+
+            //lấy danh sách đơn hàng có địa chỉ, số trip giống nhau, tổng tấn để gán vào trong sum
+            for (var j = 0; j < listData.length; j++) {
+                if (listData[j]._trip == listData[i]._trip
+                    && listData[j]._id_delivery === listData[i]._id_delivery
+                    && listData[j]._id_warehouse === listData[i]._id_warehouse
+                    && listData[j]._eta === listData[i]._eta
+                    && listData[j]._etd === listData[i]._etd)
+                {
+                    listAssign.push(j);
+                    sumTon += listData[j]._ton;
+                }
+            }
+
+            //Kiểm tra trong sum assign xem cái nào có cùng thông tin, lấy số ton
+            var listCheckSumTon = [];
+            for (var j = 0; j < listPreOrdersSumAssign.length; j++) {
+                if(listData[i]._id_delivery === listPreOrdersSumAssign[j]._id_delivery
+                    && listData[i]._id_warehouse === listPreOrdersSumAssign[j]._id_warehouse
+                    && listData[i]._eta === listPreOrdersSumAssign[j]._eta
+                    && listData[i]._etd === listPreOrdersSumAssign[j]._etd
+                    && listPreOrdersSumAssign[j]._is_enabled)
+                {
+                    listCheckSumTon.push({index : j, ton : Math.abs(listPreOrdersSumAssign[j]._ton_for_vehicle - sumTon)});
+                }
+            }
+
+            if(listCheckSumTon.length > 0)
+            {
+                //Nếu số ton có độ chênh lệch nhỏ nhất đối với sum, thì chọn cái đó, gán thông tin
+                var minTon = listCheckSumTon[0];
+                for(var j = 0; j < listCheckSumTon.length; j++)
+                {
+                    if(listCheckSumTon[j].ton < minTon.ton)
+                    {
+                        minTon = listCheckSumTon[j];
+                    }
+                }
+
+                //lấy được giá trị độ chênh lệch nhỏ nhất, set thông tin cho sum assign
+                listPreOrdersSumAssign[minTon.index]._ton_real = minTon.ton;
+                listPreOrdersSumAssign[minTon.index]._trip = listData[i]._trip;
+                savePreOrderSumAssign(listPreOrdersSumAssign[minTon.index]);
+
+                //listAssign được gán _pre_sum_assign_time cho PreOrderAssign
+                for(var j = 0; j < listAssign.length; j++)
+                {
+                    listData[listAssign[j]]._pre_sum_assign_time =  listPreOrdersSumAssign[minTon.index]._pre_sum_assign_time;
+                }
+            }
+            else
+            {
+                console.log('báo lỗi không có đơn hàng nào được phân công');
+            }
+        }
+    }
+
+    //chỉ các orderAssign nào có _pre_sum_assign_time mới được lưu trong dữ liệu
+    var listSaveData = [];
+    for(var i = 0; i < listData.length; i++)
+    {
+        if(listData[i]._pre_sum_assign_time != undefined)
+        {
+            listSaveData.push(listData);
+        }
+    }
+
+    PreOrderAssign.insertMany(listSaveData, function (err, docs) {
+        if (err) {
+            console.log('Error!');
+        }
+        else {
+            console.log('PreOrdersAssign created!');
+        }
+    });
+}
+
+function savePreOrderSumAssign(preOrderSumAssign) {
+    PreOrderSumAssign.findOne({_id : preOrderSumAssign._id, _is_enabled  : true}).select().exec(function (err, preordersumassign) {
+        if (err)
+            console.error(err);
+        else {
+            preordersumassign._ton_real = preOrderSumAssign._ton_real;
+            preordersumassign._trip = preOrderSumAssign._trip;
+            preordersumassign.save(function (err) {
+                if (err)
+                    return console.error(err);
+                else {
+                    console.log('success!');
+                }
+            });
+        }
+    });
 }
 
 

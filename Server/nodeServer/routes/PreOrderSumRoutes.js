@@ -44,7 +44,6 @@ function resetListPreOrderSum() {
                 {
                     if(listPreOrderSum[i]._id_delivery == listDelivery[j]._id_delivery)
                     {
-                        console.log('47 47 47 47 47 47 47 47 47 47 47 47 47 47');
                         listPreOrderSum[i]['_position_delivery'] = listDelivery[j]._latitude + "," + listDelivery[j]._longitude;
                         listPreOrderSum[i]['_polygon_delivery'] = listDelivery[j]._polygon;
                         break;
@@ -83,7 +82,7 @@ function getListDelivery() {
 
 
 
-router.get('/getall', function (req, res) {
+router.post('/getall', function (req, res) {
 // get all
      res.status(200).send(listPreOrderSum);
 });
