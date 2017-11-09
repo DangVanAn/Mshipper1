@@ -91,7 +91,7 @@ router.post('/getrefuse', function (req, res) {
     var data  =[];
     for(var i = 0; i < listPreOrderSum.length; i++)
     {
-        if(listPreOrderSum[i]._time_refuse != 0 && listPreOrderSum[i]._is_enabled == true)
+        if(listPreOrderSum[i]._time_refuse != undefined && listPreOrderSum[i]._is_enabled == true)
         {
             data.push(listPreOrderSum[i]);
         }
@@ -157,6 +157,18 @@ router.post('/getbyidpresum', function (req, res) {
         }
     }
     res.status(200).send({success: true, message: "OK", data: JSON.stringify(listGet)});
+});
+
+router.post('/getbyidpresumbefore', function (req, res) {
+    var listGet = [];
+    for (var i = 0; i < req.body.length; i++) {
+        for (var j = 0; j < listPreOrderSum.length; j++) {
+            if (listPreOrderSum[j]._id_pre_order_sum_before == req.body[i]._id) {
+                listGet.push(listPreOrderSum[j]);
+            }
+        }
+    }
+    res.status(200).send({success: true, message: "OK", data: listGet});
 });
 
 router.post('/accept', function (req, res) {

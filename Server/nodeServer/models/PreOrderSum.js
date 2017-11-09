@@ -86,9 +86,13 @@ var PreOrderSumSchema = mongoose.Schema({
     _user_accept : {
         type: String,
     },
+    //id của preordersum trước đó đã bị refuse
+    _id_pre_order_sum_before : {
+        type: String,
+    },
     _is_enabled : {
         type: Boolean,
-    },
+    }
 });
 
 
