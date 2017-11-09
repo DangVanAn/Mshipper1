@@ -15,7 +15,7 @@ import android.util.Log;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.TripDetailActivity;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
-import com.example.dangvanan14.mshiper1.model.AssignDriver;
+import com.example.dangvanan14.mshiper1.model.Trip;
 
 /**
  * Created by LAP10186-local on 11/4/2017.
@@ -31,19 +31,20 @@ public class LocationReceiver extends WakefulBroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         double lat = intent.getDoubleExtra("Latitude", 0);
         double lon = intent.getDoubleExtra("Longitude", 0);
-        AssignDriver assignDriver = intent.getParcelableExtra("assignDriver");
+        Trip trip = intent.getParcelableExtra("trip");
+        String idPlace = intent.getStringExtra("idPlace");
         DefinedApp.StateLocation type = (DefinedApp.StateLocation) intent.getSerializableExtra("type");
         Log.d(TAG, "onReceive: " + lat + " " + lon + " type" + type);
         if (type != null && type != DefinedApp.StateLocation.NOTHING && !isShowNotification) {
             isShowNotification = true;
-            showNotification(context, intent, lat, lon, assignDriver);
+            String text = (type == DefinedApp.StateLocation.DELIVERY ? "Đã vào kho " : "Đã tới điểm giao ") + idPlace;
+            showNotification(context, intent, text, trip);
         }
     }
 
-    public void showNotification(Context context, Intent intent, double lat, double lon, AssignDriver assignDriver) {
-        String text = "Đã vào kho ..." + lat + " " + lon;
+    public void showNotification(Context context, Intent intent, String text, Trip trip) {
         Intent intentMain = new Intent(context, TripDetailActivity.class);
-        intentMain.putExtra("assignDetail", assignDriver);
+        intentMain.putExtra("assignDetail", trip);
         PendingIntent pendingIntent = PendingIntent.getActivity(context, LOCATION_REQUEST_CODE,
                 intentMain, PendingIntent.FLAG_UPDATE_CURRENT);
         Uri sound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

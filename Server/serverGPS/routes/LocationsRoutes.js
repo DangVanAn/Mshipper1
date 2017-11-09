@@ -68,6 +68,8 @@ router.saveLocation = function (data) {
     console.log(tempData);
 
     var newLocation = new Locations(tempData);
+
+    Movies.insertMany(arr, function(error, docs) {});
     newLocation.save(function (err) {
         if (err) {
             console.log('Location error!');

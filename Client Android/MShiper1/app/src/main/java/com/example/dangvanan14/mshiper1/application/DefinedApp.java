@@ -21,6 +21,7 @@ public class DefinedApp {
     }
 
     public static final String BROADCAST_LOCATION = "mshipper.SEND_GPS";
+    public static final String BROADCAST_REMOVE_ID_PREORDERSUMASSIGN = "REMOVE_ID_PREORDERSUMASSIGN";
 
     public enum StateLocation{
         NOTHING, WAREHOUSE, DELIVERY

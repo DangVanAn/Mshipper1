@@ -92,7 +92,7 @@ public class MainActivity2 extends BaseActivity
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), Activity_login.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP| Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
                 finish();
             }
@@ -131,6 +131,7 @@ public class MainActivity2 extends BaseActivity
             }
         });
     }
+
     private void loadModelAssign() {
         if (!isNetworkConnected(getApplicationContext())) {
             Toast.makeText(getApplicationContext(), "Internet disconnect", Toast.LENGTH_SHORT).show();
@@ -281,8 +282,7 @@ public class MainActivity2 extends BaseActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (receiver != null)
-        {
+        if (receiver != null) {
             unregisterReceiver(receiver);
         }
     }

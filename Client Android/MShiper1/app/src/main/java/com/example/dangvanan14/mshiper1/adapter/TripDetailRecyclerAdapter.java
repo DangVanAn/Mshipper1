@@ -72,7 +72,12 @@ public class TripDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<Tri
 
         void bind(StepExpandableGroup group, Fragment fg) {
             txtName.setText(group.step.get_name());
-            if (group.step.is_confirm()) {
+            boolean isConfirm = group.step.is_confirm();
+            if (group.step.getElement().equals("_in_delivery_driver")) {
+                isConfirm = group.getItems().get(0).get_time_done() != 0;
+            }
+
+            if (isConfirm) {
                 imageConfirm.setImageResource(R.drawable.check_ok);
             } else {
                 imageConfirm.setImageResource(0);
@@ -127,12 +132,19 @@ public class TripDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<Tri
                 ton.setText(String.valueOf(preOrderSum.get(0).get_ton()));
                 etd.setText(preOrderSum.get(0).get_etd());
                 eta.setText(preOrderSum.get(0).get_eta());
-                if (preOrderSumAssign.get_out_warehouse_driver() != 0 && preOrderSumAssign.get_time_done() == 0) {
-                    btnArrived.setEnabled(true);
-                    btnCancel.setEnabled(true);
-                    if (preOrderSumAssign.get_in_delivery_driver() != 0) {
+                if (preOrderSumAssign.get_out_warehouse_driver() != 0) {
+                    if (preOrderSumAssign.get_in_delivery_driver() == 0) {
+                        btnArrived.setEnabled(true);
+                        btnComplete.setEnabled(false);
+                        btnCancel.setEnabled(true);
+                    } else if (preOrderSumAssign.get_time_done() == 0) {
                         btnComplete.setEnabled(true);
                         btnArrived.setEnabled(false);
+                        btnCancel.setEnabled(true);
+                    } else {
+                        btnComplete.setEnabled(false);
+                        btnArrived.setEnabled(false);
+                        btnCancel.setEnabled(false);
                     }
                 }
             }
@@ -140,23 +152,30 @@ public class TripDetailRecyclerAdapter extends ExpandableRecyclerViewAdapter<Tri
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.btn_arrived:
-                    try {
-                        if (preOrderSumAssign != null) {
+            try {
+                if (preOrderSumAssign != null) {
+                    long timeNow = (new Date()).getTime();
+                    switch (v.getId()) {
+                        case R.id.btn_arrived:
                             fragment.showProgressDialog();
                             fragment.postUpdateTimeStep(fragment.selectedStep.getIdAssign(), fragment.selectedStep.getElement(), (new Date()).getTime());
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        Log.d(TAG, "onClick: " + e.getMessage());
-                        Toast.makeText(fragment.getContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
+                            fragment.updateTimeTrip(fragment.selectedStep.getIdAssign(), fragment.selectedStep.getElement(), timeNow);
+                            break;
+                        case R.id.btn_cancel:
+                            break;
+                        case R.id.btn_complete:
+                            fragment.showProgressDialog();
+                            String element = "_time_done";
+                            fragment.postUpdateTimeStep(fragment.selectedStep.getIdAssign(), element, timeNow);
+                            fragment.updateTimeTrip(fragment.selectedStep.getIdAssign(), element, timeNow);
+
+                            break;
                     }
-                    break;
-                case R.id.btn_cancel:
-                    break;
-                case R.id.btn_complete:
-                    break;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, "onClick: " + e.getMessage());
+                Toast.makeText(fragment.getContext(), "Có lỗi xảy ra", Toast.LENGTH_SHORT).show();
             }
         }
     }

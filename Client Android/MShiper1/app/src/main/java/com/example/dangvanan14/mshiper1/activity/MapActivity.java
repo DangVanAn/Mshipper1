@@ -280,7 +280,7 @@ public class MapActivity extends FragmentActivity
         lon = String.valueOf(location.getLongitude());
         Log.d("TAG", "onLocationChanged: " + lat + "  +  " + lon);
 
-        LocationCustom data = new LocationCustom(location.getLatitude(), location.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone());
+        LocationCustom data = new LocationCustom(location.getLatitude(), location.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone(), null, "", "");
 
 //        mSocket.emit("messages", gson.toJson(data));
         if (mMap != null) updateUI();

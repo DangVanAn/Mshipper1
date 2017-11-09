@@ -18,6 +18,7 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.TripDetailRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
 import com.example.dangvanan14.mshiper1.model.Step;
@@ -44,6 +45,8 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
     public Step selectedStep;
     private List<TripDetailRecyclerAdapter.StepExpandableGroup> steps;
     private View layoutButton;
+    private List<String> idList = new ArrayList<>();
+    private String elementSelected;
 
     public static TripDetailStepFragment newInstance(Trip trip) {
         TripDetailStepFragment fg = new TripDetailStepFragment();
@@ -85,22 +88,25 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
                 btnExtend.setVisibility(View.VISIBLE);
             else
                 btnExtend.setVisibility(View.GONE);
+
             if (selectedStep.getElement().equals("_in_delivery_driver")) {
                 layoutButton.setVisibility(View.GONE);
+            } else {
+                layoutButton.setVisibility(View.VISIBLE);
             }
+        } else {
+            layoutButton.setVisibility(View.GONE);
         }
     }
 
     void createData() {
         steps = new ArrayList<>();
-        List<String> idList = new ArrayList<>();
 
         boolean startPickup = true;
         boolean inWarehouseDriver = true;
         boolean inLineDriver = true;
         boolean outLineDriver = true;
         boolean outWarehouseDriver = true;
-        boolean timeDone = true;
         long[] timeDoneArr;
 
         if (trip != null && trip.getData() != null && trip.getData().size() > 0) {
@@ -112,7 +118,7 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
                     return;
                 PreOrderSumAssign preOrderSumAssign = preOrderSumAssigns.get(0);
 
-                idList.add(assignDriver.get_id());
+                idList.add(preOrderSumAssign.get_id());
                 if (preOrderSumAssign.get_start_pickup() == 0)
                     startPickup = false;
                 if (preOrderSumAssign.get_in_warehouse_driver() == 0)
@@ -170,7 +176,9 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
                             return;
                         }
                         showProgressDialog();
-                        postUpdateTimeStep(selectedStep.getIdAssign(), selectedStep.getElement(), (new Date()).getTime());
+                        long timeNow = (new Date()).getTime();
+                        postUpdateTimeStep(selectedStep.getIdAssign(), selectedStep.getElement(), timeNow);
+                        updateTimeTrip(selectedStep.getIdAssign(), selectedStep.getElement(), timeNow);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -185,6 +193,7 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
     }
 
     public void postUpdateTimeStep(List<String> id, final String element, final long valueTime) {
+        elementSelected = element;
         final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
@@ -206,14 +215,23 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
             if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+                if (fg.elementSelected == null)
+                    return;
 
-                if (fg.selectedStep.getElement().equals("_start_pickup")) {
+                if (fg.elementSelected.equals("_start_pickup")) {
                     Intent intent = new Intent(fg.getContext(), TrackingService.class);
                     intent.putExtra("trip", fg.trip);
+                    intent.putStringArrayListExtra("ids", (ArrayList<String>) fg.idList);
                     fg.getContext().startService(intent);
                 }
-
-                fg.selectedStep.set_is_confirm(true);
+                if (!fg.elementSelected.equals("_in_delivery_driver")) {
+                    fg.selectedStep.set_is_confirm(true);
+                }
+                if (fg.elementSelected.equals("_time_done")) {
+                    Intent intent = new Intent(DefinedApp.BROADCAST_REMOVE_ID_PREORDERSUMASSIGN);
+                    intent.putExtra("id_pre_order_sum_assign", fg.selectedStep.getIdAssign().get(0));
+                    fg.getContext().sendBroadcast(intent);
+                }
 
                 if (fg.selectedStep.get_id() < fg.steps.size() - 1) {
                     fg.selectedStep = fg.steps.get(fg.selectedStep.get_id() + 1).getStep();
@@ -232,6 +250,41 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
         public void onFailure(Activity activity, Throwable t, Logger LOG) {
             Log.e("TAG", "onFailure: " + t.getMessage());
             Toast.makeText(activity, "Có lỗi xảy ra!", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void updateTimeTrip(List<String> ids, String element, long time) {
+        List<AssignDriver> assignDrivers = trip.getData();
+
+        for (int i = 0; i < assignDrivers.size(); i++) {
+            PreOrderSumAssign temp = assignDrivers.get(i).get_pre_order_sum_assign().get(0);
+            for (int j = 0; j < ids.size(); j++) {
+                if (temp.get_id().equals(ids.get(j))) {
+                    switch (element) {
+                        case "_start_pickup":
+                            temp.set_start_pickup(time);
+                            break;
+                        case "_in_warehouse_driver":
+                            temp.set_in_warehouse_driver(time);
+                            break;
+                        case "_in_line_driver":
+                            temp.set_in_line_driver(time);
+                            break;
+                        case "_out_line_driver":
+                            temp.set_out_line_driver(time);
+                            break;
+                        case "_out_warehouse_driver":
+                            temp.set_out_warehouse_driver(time);
+                            break;
+                        case "_in_delivery_driver":
+                            temp.set_in_delivery_driver(time);
+                            break;
+                        case "_time_done":
+                            temp.set_time_done(time);
+                            break;
+                    }
+                }
+            }
         }
     }
 

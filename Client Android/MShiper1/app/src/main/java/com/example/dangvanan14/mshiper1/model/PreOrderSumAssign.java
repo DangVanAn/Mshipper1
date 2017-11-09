@@ -30,10 +30,13 @@ public class PreOrderSumAssign implements Parcelable {
     private long _out_warehouse_guard;
     private long _out_warehouse_driver;
     private long _in_delivery_auto;
-    private long _in_delivery_guard;
+    private long _in_delivery_customer;
     private long _in_delivery_driver;
     private long _time_done;
     private boolean _is_enabled;
+    private double _ton_real;
+    private String _trip;
+    private long _driver_accept;
     private List<PreOrderSum> _pre_order_sum;
 
     protected PreOrderSumAssign(Parcel in) {
@@ -61,10 +64,13 @@ public class PreOrderSumAssign implements Parcelable {
         _out_warehouse_guard = in.readLong();
         _out_warehouse_driver = in.readLong();
         _in_delivery_auto = in.readLong();
-        _in_delivery_guard = in.readLong();
+        _in_delivery_customer = in.readLong();
         _in_delivery_driver = in.readLong();
         _time_done = in.readLong();
         _is_enabled = in.readByte() != 0;
+        _ton_real = in.readDouble();
+        _trip = in.readString();
+        _driver_accept = in.readLong();
         _pre_order_sum = in.createTypedArrayList(PreOrderSum.CREATOR);
     }
 
@@ -94,10 +100,13 @@ public class PreOrderSumAssign implements Parcelable {
         dest.writeLong(_out_warehouse_guard);
         dest.writeLong(_out_warehouse_driver);
         dest.writeLong(_in_delivery_auto);
-        dest.writeLong(_in_delivery_guard);
+        dest.writeLong(_in_delivery_customer);
         dest.writeLong(_in_delivery_driver);
         dest.writeLong(_time_done);
         dest.writeByte((byte) (_is_enabled ? 1 : 0));
+        dest.writeDouble(_ton_real);
+        dest.writeString(_trip);
+        dest.writeLong(_driver_accept);
         dest.writeTypedList(_pre_order_sum);
     }
 
@@ -117,6 +126,38 @@ public class PreOrderSumAssign implements Parcelable {
             return new PreOrderSumAssign[size];
         }
     };
+
+    public long get_in_delivery_customer() {
+        return _in_delivery_customer;
+    }
+
+    public void set_in_delivery_customer(long _in_delivery_customer) {
+        this._in_delivery_customer = _in_delivery_customer;
+    }
+
+    public double get_ton_real() {
+        return _ton_real;
+    }
+
+    public void set_ton_real(double _ton_real) {
+        this._ton_real = _ton_real;
+    }
+
+    public String get_trip() {
+        return _trip;
+    }
+
+    public void set_trip(String _trip) {
+        this._trip = _trip;
+    }
+
+    public long get_driver_accept() {
+        return _driver_accept;
+    }
+
+    public void set_driver_accept(long _driver_accept) {
+        this._driver_accept = _driver_accept;
+    }
 
     public long get_time_done() {
         return _time_done;
@@ -316,14 +357,6 @@ public class PreOrderSumAssign implements Parcelable {
 
     public void set_in_delivery_auto(long _in_delivery_auto) {
         this._in_delivery_auto = _in_delivery_auto;
-    }
-
-    public long get_in_delivery_guard() {
-        return _in_delivery_guard;
-    }
-
-    public void set_in_delivery_guard(long _in_delivery_guard) {
-        this._in_delivery_guard = _in_delivery_guard;
     }
 
     public long get_in_delivery_driver() {

@@ -141,7 +141,6 @@ router.post('/cancel', function (req, res) {
 
 router.post('/setstatus', function (req, res) {
     var countSave = 0;
-
     for(var i = 0; i < req.body._pre_order_sum_assign.length; i++)
     {
         PreOrderSumAssign.findOne({

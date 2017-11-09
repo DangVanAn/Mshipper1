@@ -40,6 +40,7 @@ public class VehicleListFragment extends BaseFragment implements View.OnClickLis
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
+
         View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
         txtNgay = (TextView) v.findViewById(R.id.btnDate);
 
