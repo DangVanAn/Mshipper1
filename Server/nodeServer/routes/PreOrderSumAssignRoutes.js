@@ -8,6 +8,7 @@ var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 
 var hashmap = new HashMap();
 
+var listPreOrderSum = [];
 var listPreOrderSumAssign = [];
 resetListPreOrderSumAssign();
 
@@ -16,12 +17,31 @@ function resetListPreOrderSumAssign() {
         if (err)
             return console.error(err);
         else {
-            listPreOrderSumAssign = [];
-            listPreOrderSumAssign = preordersumassign;
+            listPreOrderSumAssign = JSON.parse(JSON.stringify(preordersumassign));
+            resetListPreOrderSum();
             console.log('Find all success!!!');
         }
     });
 }
+
+function resetListPreOrderSum() {
+    PreOrderSum.find({_is_enabled: true}, function (err, preordersum) {
+        if (err)
+            return console.error(err);
+        else {
+            listPreOrderSum = preordersum;
+
+            for (var i = 0; i < listPreOrderSumAssign.length; i++) {
+                for (var j = 0; j < listPreOrderSum.length; j++) {
+                    if (listPreOrderSumAssign[i]._pre_sum_time == listPreOrderSum[j]._pre_sum_time) {
+                        listPreOrderSumAssign[i]._id_warehouse = listPreOrderSum[j]._id_warehouse
+                    }
+                }
+            }
+        }
+    })
+}
+
 
 router.post('/getall', function (req, res) {
 // get all
@@ -142,8 +162,7 @@ router.post('/cancel', function (req, res) {
 router.post('/setstatus', function (req, res) {
     var countSave = 0;
 
-    for(var i = 0; i < req.body._pre_order_sum_assign.length; i++)
-    {
+    for (var i = 0; i < req.body._pre_order_sum_assign.length; i++) {
         PreOrderSumAssign.findOne({
             _id: req.body._pre_order_sum_assign[i],
             _is_enabled: true
@@ -177,12 +196,51 @@ router.post('/setstatus', function (req, res) {
 
     //funtion chỉ chạy khi nào số element đã save bằng số id
     function boolResetPreOrderSumAssign() {
-        if(countSave === req.body._pre_order_sum_assign.length)
-        {
+        if (countSave === req.body._pre_order_sum_assign.length) {
             res.status(200).send({success: true, message: "updated!"});
             resetListPreOrderSumAssign();
         }
     };
+});
+
+router.post('/getbyelementzero', function (req, res) {
+    //{_id_warehouse : 'NOO', element : '_in_warehouse_guard'}
+    //chuẩn bị : 1: vao kho, 2: vao line, 3: ra line, 4: ra kho, 5: den diem giao
+
+    var elementTrue = '';
+    var elementFalse = '';
+
+    switch(req.body.status) {
+        case 1:
+            elementTrue = '_start_pickup';
+            elementFalse = '_in_warehouse_guard';
+            break;
+        case 2:
+            elementTrue = '_in_warehouse_guard';
+            elementFalse = '_in_line_manager_warehouse';
+            break;
+        case 3:
+            elementTrue = '_in_line_manager_warehouse';
+            elementFalse = '_out_line_manager_warehouse';
+            break;
+        case 4:
+            elementTrue = '_out_line_manager_warehouse';
+            elementFalse = '_out_warehouse_guard';
+            break;
+        case 5:
+            elementTrue = '_out_warehouse_guard';
+            elementFalse = '_in_delivery_driver';
+            break;
+    }
+
+    var listData = [];
+    for (var i = 0; i < listPreOrderSumAssign.length; i++) {
+        //hiện tại đang set mặc định là chưa có vào trạng thái đó.
+        if (listPreOrderSumAssign[i][elementTrue] !== 0 && listPreOrderSumAssign[i][elementFalse] === 0 && listPreOrderSumAssign[i]._id_warehouse == req.body._id_warehouse) {
+            listData.push(listPreOrderSumAssign[i]);
+        }
+    }
+    res.status(200).send({success: true, message: listData.length, data: JSON.stringify(listData)});
 });
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
