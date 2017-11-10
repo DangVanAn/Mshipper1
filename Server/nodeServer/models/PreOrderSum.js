@@ -40,21 +40,26 @@ var PreOrderSumSchema = mongoose.Schema({
     },
     _time_send : {
         type: Number,
+        default : 0
     },
     _pre_sum_time : {
         type: String,
     },
     _time_update : {
         type: Number,
+        default : 0
     },
     _note_update : {
         type: String,
+        default : 0
     },
     _time_accept : {
         type: Number,
+        default : 0
     },
     _time_refuse : {
         type: Number,
+        default : 0
     },
     _note_refuse : {
         type: String,
@@ -64,6 +69,7 @@ var PreOrderSumSchema = mongoose.Schema({
     },
     _time_cancel : {
         type: Number,
+        default : 0
     },
     _note_cancel : {
         type: String,
@@ -73,6 +79,7 @@ var PreOrderSumSchema = mongoose.Schema({
     },
     _time_cancel_delivery : {
         type: Number,
+        default : 0
     },
     _note_cancel_delivery : {
         type: String,

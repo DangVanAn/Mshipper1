@@ -26,7 +26,6 @@ function resetListPreOrderSum() {
         if (err)
             return console.error(err);
         else {
-            listPreOrderSum = [];
             listPreOrderSum = JSON.parse(JSON.stringify(preordersum));
             for(var i = 0; i < listPreOrderSum.length; i++)
             {
@@ -91,7 +90,7 @@ router.post('/getrefuse', function (req, res) {
     var data  =[];
     for(var i = 0; i < listPreOrderSum.length; i++)
     {
-        if(listPreOrderSum[i]._time_refuse != undefined && listPreOrderSum[i]._is_enabled == true)
+        if(listPreOrderSum[i]._time_refuse != 0 && listPreOrderSum[i]._is_enabled == true)
         {
             data.push(listPreOrderSum[i]);
         }
@@ -100,18 +99,16 @@ router.post('/getrefuse', function (req, res) {
 });
 
 router.post('/add', function (req, res) {
-
     req.body._pre_sum_time = uuidv1();
-    console.log(req.body);
     var newPreOrderSum = new PreOrderSum(req.body);
 
     newPreOrderSum.save(function (err) {
         if (err) {
             console.log('Error!');
-            res.status(200).send('error!');
+            res.status(200).send({success: false, message: 'error!'});
         }
         else {
-            res.status(200).send('success!');
+            res.status(200).send({success: true, message: 'success!', data: req.body._pre_sum_time});
             resetListPreOrderSum();
         }
     });
@@ -119,7 +116,9 @@ router.post('/add', function (req, res) {
 
 router.post('/setfalse', function (req, res) {
 
-    PreOrderSum.findOne({_id: req.body._id
+    console.log('121',req.body._id);
+
+    PreOrderSum.findOne({_pre_sum_time: req.body._pre_sum_time
     }).select().exec(function (err, data) {
         if (err)
         {
@@ -127,7 +126,7 @@ router.post('/setfalse', function (req, res) {
             return console.error(err);
         }
         else {
-            if (!data) {
+            if (data) {
                 data._is_enabled = false;
                 data.save(function (err) {
                     if (err)
@@ -163,7 +162,7 @@ router.post('/getbyidpresumbefore', function (req, res) {
     var listGet = [];
     for (var i = 0; i < req.body.length; i++) {
         for (var j = 0; j < listPreOrderSum.length; j++) {
-            if (listPreOrderSum[j]._id_pre_order_sum_before == req.body[i]._id) {
+            if (listPreOrderSum[j]._id_pre_order_sum_before == req.body[i]._id && listPreOrderSum[j]._is_enabled === true) {
                 listGet.push(listPreOrderSum[j]);
             }
         }

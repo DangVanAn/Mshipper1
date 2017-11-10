@@ -240,7 +240,29 @@ router.post('/getbyelementzero', function (req, res) {
             listData.push(listPreOrderSumAssign[i]);
         }
     }
-    res.status(200).send({success: true, message: listData.length, data: JSON.stringify(listData)});
+
+    //trong listData kiểm tra xem thằng nào có cùng số trip sẽ gộp lại thành 1 line;
+    var listData_Sub = [];
+    var listTrip = [];
+    for(var i = 0; i < listData.length; i++)
+    {
+        if(listTrip.indexOf(listData[i]._trip) === -1)
+        {
+            listTrip.push(listData[i]._trip);
+            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]]});
+        }
+        else {
+            for(var j = 0; j < listData_Sub.length; j++)
+            {
+                if(listData_Sub[j]._trip === listData[i]._trip)
+                {
+                    listData_Sub[j].data.push(listData[i]);
+                    break;
+                }
+            }
+        }
+    }
+    res.status(200).send({success: true, message: listData_Sub.length, data: JSON.stringify(listData_Sub)});
 });
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
