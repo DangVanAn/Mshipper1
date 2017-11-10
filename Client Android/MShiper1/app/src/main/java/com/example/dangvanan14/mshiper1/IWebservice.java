@@ -1,6 +1,7 @@
 package com.example.dangvanan14.mshiper1;
 
 import com.example.dangvanan14.mshiper1.fragment.TripDetailStepFragment;
+import com.example.dangvanan14.mshiper1.fragment.VehicleStateFragment;
 import com.example.dangvanan14.mshiper1.model.Detail;
 import com.example.dangvanan14.mshiper1.model.LocationCustom;
 import com.example.dangvanan14.mshiper1.model.Order;
@@ -61,6 +62,9 @@ public interface IWebservice {
 
     @POST("groupchatmembers/getgroupchatbyid")
     Call<RepPost> getContact(@Body User user);
+
+    @POST("preorderssumassign/getbyelementzero")
+    Call<RepPost> getVehicleState(@Body VehicleStateFragment.ParamGetVehicleState user);
 
     //api server chat
     @POST("groupchatmembers/getgroupchat2member")

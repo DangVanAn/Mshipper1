@@ -12,7 +12,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
+import com.example.dangvanan14.mshiper1.adapter.VehicleListPagerAdapter;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
 
@@ -55,7 +55,7 @@ public class StepOrderFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void setupTabLayout(View v) {
-        OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), orders);
+        VehicleListPagerAdapter mAdapter = new VehicleListPagerAdapter(getFragmentManager());
         CustomViewPager viewPager = (CustomViewPager) v.findViewById(R.id.orderViewPager);
         viewPager.setPagingEnabled(false);
         viewPager.setAdapter(mAdapter);

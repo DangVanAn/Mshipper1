@@ -7,16 +7,16 @@
     android:weightSum="1">
 
     <android.support.design.widget.TabLayout
-        android:id="@+id/orderTabLayout"
+        android:id="@+id/vehicleListLayout"
         style="@style/CustomTabTexStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="@dimen/tabel_evation" />
 
-    <com.example.dangvanan14.mshiper1.customview.CustomViewPager
-        android:id="@+id/orderViewPager"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vehicleListViewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </com.example.dangvanan14.mshiper1.customview.CustomViewPager>
 
+    </android.support.v4.view.ViewPager>
 </LinearLayout>

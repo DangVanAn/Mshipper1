@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +34,7 @@ public class TripDetailActivity extends BaseActivity{
 
     public void setupTabLayout() {
         TripDetailPagerAdapter mAdapter = new TripDetailPagerAdapter(getSupportFragmentManager(), trip);
-        CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.vp_assign_driver_detail);
-        viewPager.setPagingEnabled(true);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_assign_driver_detail);
         viewPager.setAdapter(mAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_assign_driver_detail);

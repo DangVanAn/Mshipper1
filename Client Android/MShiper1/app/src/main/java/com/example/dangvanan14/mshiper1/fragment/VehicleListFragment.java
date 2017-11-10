@@ -1,39 +1,23 @@
 package com.example.dangvanan14.mshiper1.fragment;
 
-import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.DatePicker;
-import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
-import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
-import com.example.dangvanan14.mshiper1.model.Order;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import com.example.dangvanan14.mshiper1.adapter.VehicleListPagerAdapter;
 
 public class VehicleListFragment extends BaseFragment implements View.OnClickListener {
-    private TextView txtNgay;
-    Calendar cal;
-    Date dateFinish;
 
-    public static VehicleListFragment newInstance(List<Order> orders) {
-        VehicleListFragment order = new VehicleListFragment();
+    public static VehicleListFragment newInstance() {
+        VehicleListFragment vehicleListFragment = new VehicleListFragment();
         Bundle args = new Bundle();
-        args.putParcelableArrayList("data", (ArrayList<? extends Parcelable>) orders);
-        order.setArguments(args);
-        return order;
+        vehicleListFragment.setArguments(args);
+        return vehicleListFragment;
     }
 
     @Nullable
@@ -41,61 +25,25 @@ public class VehicleListFragment extends BaseFragment implements View.OnClickLis
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
 
-        View v = inflater.inflate(R.layout.fragment_orderlist, container, false);
-        txtNgay = (TextView) v.findViewById(R.id.btnDate);
+        View v = inflater.inflate(R.layout.fragment_vehicle_list, container, false);
 
-        cal = Calendar.getInstance();
-        SimpleDateFormat dft = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        String strDate = dft.format(cal.getTime());
-        txtNgay.setText(strDate);
-        txtNgay.setOnClickListener(this);
         setupTabLayout(v);
         return v;
     }
 
     public void setupTabLayout(View v) {
-        OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), null);
-        CustomViewPager viewPager = (CustomViewPager) v.findViewById(R.id.orderViewPager);
-        viewPager.setPagingEnabled(false);
+        VehicleListPagerAdapter mAdapter = new VehicleListPagerAdapter(getFragmentManager());
+        ViewPager viewPager = (ViewPager) v.findViewById(R.id.vehicleListViewPager);
         viewPager.setAdapter(mAdapter);
 
-        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.orderTabLayout);
+        TabLayout tabLayout = (TabLayout) v.findViewById(R.id.vehicleListLayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setText("Đang đến");
-        tabLayout.getTabAt(1).setText("Đang chờ");
-        tabLayout.getTabAt(2).setText("Đã vào");
+        tabLayout.getTabAt(0).setText("Vào Kho");
+        tabLayout.getTabAt(1).setText("Ra Kho");
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnDate:
-                showDatePickerDialog();
-                break;
-        }
-    }
-
-    public void showDatePickerDialog() {
-        DatePickerDialog.OnDateSetListener callback = new DatePickerDialog.OnDateSetListener() {
-            public void onDateSet(DatePicker view, int year,
-                                  int monthOfYear,
-                                  int dayOfMonth) {
-                txtNgay.setText(
-                        (dayOfMonth) + "/" + (monthOfYear + 1) + "/" + year);
-                cal.set(year, monthOfYear, dayOfMonth);
-                dateFinish = cal.getTime();
-            }
-        };
-        String s = txtNgay.getText() + "";
-        String strArrtmp[] = s.split("/");
-        int ngay = Integer.parseInt(strArrtmp[0]);
-        int thang = Integer.parseInt(strArrtmp[1]) - 1;
-        int nam = Integer.parseInt(strArrtmp[2]);
-        DatePickerDialog pic = new DatePickerDialog(
-                getContext(),
-                callback, nam, thang, ngay);
-        pic.setTitle("Chọn ngày");
-        pic.show();
     }
 }

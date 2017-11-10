@@ -96,7 +96,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         trip = intent.getParcelableExtra("trip");
         ids = intent.getStringArrayListExtra("ids");
         if (trip == null || ids == null)
-            return START_STICKY;
+            return START_NOT_STICKY;
 
         List<AssignDriver> assignDrivers = trip.getData();
         for (int i = 0; i < assignDrivers.size(); i++) {
@@ -143,7 +143,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
             }
         };
         registerReceiver(receiver, filter);
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

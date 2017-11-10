@@ -18,7 +18,7 @@
     <string name="textContact">Liên hệ</string>
     <string name="statusCancelDetail">Hủy</string>
     <string name="repUpdateFailed">Cập nhật không thành công</string>
-    <string name="repUpdateSuccess">Cập nhật thành công</string>
+    <string name="repUpdateSuccess">Xác nhận thành công</string>
     <string name="denomination">VNĐ</string>
     <string name="searchContact">Tìm bạn bè…</string>
 

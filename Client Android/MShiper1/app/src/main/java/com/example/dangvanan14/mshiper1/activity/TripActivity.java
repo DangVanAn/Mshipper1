@@ -108,13 +108,14 @@ public class TripActivity extends BaseActivity implements View.OnClickListener {
             if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+
                 Gson gson = new Gson();
                 Type listType = new TypeToken<List<Trip>>() {
                 }.getType();
                 List<Trip> trips = gson.fromJson(body.getData(), listType);
 
                 addPercentInAssignDriver(trips);
-
+                ac.trips.clear();
                 ac.trips.addAll(trips);
 
                 ac.mAdapter.notifyDataSetChanged();

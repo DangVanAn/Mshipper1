@@ -5,10 +5,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
-import android.support.v4.view.ViewPager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +12,7 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.OrderListRecyclerAdapter;
-import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
-import com.example.dangvanan14.mshiper1.adapter.OrderPagerAdapter;
+import com.example.dangvanan14.mshiper1.adapter.VehicleListPagerAdapter;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
 import com.example.dangvanan14.mshiper1.model.Order;
 
@@ -61,7 +55,7 @@ public class OrderListFragment extends BaseFragment implements View.OnClickListe
     }
 
     public void setupTabLayout(View v) {
-        OrderPagerAdapter mAdapter = new OrderPagerAdapter(getFragmentManager(), orders);
+        VehicleListPagerAdapter mAdapter = new VehicleListPagerAdapter(getFragmentManager());
         CustomViewPager viewPager = (CustomViewPager) v.findViewById(R.id.orderViewPager);
         viewPager.setPagingEnabled(false);
         viewPager.setAdapter(mAdapter);

@@ -30,7 +30,7 @@ public class MainPagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return VehicleListFragment.newInstance(orders);
+                return VehicleListFragment.newInstance();
             case 1:
                 return MoreFragment.newInstance();
             default:
