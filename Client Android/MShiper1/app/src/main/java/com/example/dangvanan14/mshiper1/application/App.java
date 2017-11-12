@@ -44,6 +44,16 @@ public class App extends Application {
         this.lon = lon;
     }
 
+    private static DefinedApp.ROLE roleUser;
+
+    public static DefinedApp.ROLE getRoleUser() {
+        return roleUser;
+    }
+
+    public static void setRoleUser(DefinedApp.ROLE roleUser) {
+        App.roleUser = roleUser;
+    }
+
     private static User user;
 
     public static User getUser() {
@@ -83,6 +93,6 @@ public class App extends Application {
         }
         Gson gson = new Gson();
         User user = gson.fromJson(userStr, User.class);
-        App.user = user;
+        App.setUser(user);
     }
 }

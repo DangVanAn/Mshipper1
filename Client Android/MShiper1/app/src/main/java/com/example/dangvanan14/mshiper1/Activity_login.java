@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -19,6 +17,7 @@ import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
+import com.example.dangvanan14.mshiper1.tool.CheckTool;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 
@@ -60,11 +59,9 @@ public class Activity_login extends BaseActivity {
         tv_username.requestFocus();
     }
 
-
-
     @Override
     public void onPermissionsGranted(int requestCode) {
-        //sử lý permission tại đây
+        //xử lý permission tại đây
     }
 
     @OnClick(R.id.btn_signin)
@@ -74,7 +71,7 @@ public class Activity_login extends BaseActivity {
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
-                String token= FirebaseInstanceId.getInstance().getToken();
+                String token = FirebaseInstanceId.getInstance().getToken();
                 String username = tv_username.getText().toString();
                 String password = tv_password.getText().toString();
                 return loadData.CreateRetrofit().postLogin(new User(password, username, token));
@@ -96,10 +93,12 @@ public class Activity_login extends BaseActivity {
 
                 SharedPreferences prefs = ac.getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
                 prefs.edit().putString(DefinedApp.UserShaPreKey, body.getData()).apply();
-
-                Intent i = new Intent(ac, MainActivity.class);
-                activity.startActivity(i);
-                Toast.makeText(ac, "Xin chào mừng đến Mshipper", Toast.LENGTH_SHORT).show();
+                if (CheckTool.getActivityMainWith(user.get_permission_id()) != null){
+                    App.setRoleUser(CheckTool.checkRole(App.getUser().get_permission_id()));
+                    Intent i = new Intent(ac, CheckTool.getActivityMainWith(user.get_permission_id()));
+                    activity.startActivity(i);
+                    Toast.makeText(ac, "Xin chào mừng đến Mshipper", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(ac, body.getMessage(), Toast.LENGTH_SHORT).show();
             }

@@ -1,6 +1,9 @@
 package com.example.dangvanan14.mshiper1.adapter;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.dangvanan14.mshiper1.Activity_login;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.TripActivity;
 import com.example.dangvanan14.mshiper1.activity.ContactActivity;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.More;
 
 import java.util.List;
@@ -68,6 +74,13 @@ public class MoreRecyclerAdapter extends RecyclerView.Adapter<MoreRecyclerAdapte
             switch (more.get_id()) {
                 case 0:
                     Toast.makeText(v.getContext(), more.get_name(), Toast.LENGTH_SHORT).show();
+                    SharedPreferences preferences = v.getContext().getSharedPreferences(DefinedApp.SharedPreferencesKey, Context.MODE_PRIVATE);
+                    preferences.edit().remove(DefinedApp.UserShaPreKey).apply();
+                    App.setUser(null);
+                    i = new Intent(v.getContext(), Activity_login.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    v.getContext().startActivity(i);
+                    ((Activity) v.getContext()).finish();
                     break;
                 case 1:
                     i = new Intent(v.getContext(), ContactActivity.class);

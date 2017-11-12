@@ -2,9 +2,6 @@ package com.example.dangvanan14.mshiper1.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,32 +13,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
-import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.fragment.TripDetailStepFragment;
-import com.example.dangvanan14.mshiper1.model.Detail;
-import com.example.dangvanan14.mshiper1.model.PreOrderSum;
-import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
+import com.example.dangvanan14.mshiper1.model.TripVehicle;
 import com.example.dangvanan14.mshiper1.response.RepPost;
-import com.example.dangvanan14.mshiper1.service.TrackingService;
-import com.example.dangvanan14.mshiper1.tool.ServiceTool;
-import com.google.gson.Gson;
 
 import org.slf4j.Logger;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -50,14 +36,19 @@ import retrofit2.Call;
 
 public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implements View.OnClickListener {
     private static final String TAG = "ConfirmVehicleStateDF";
-    private PreOrderSumAssign preOrderSumAssign;
+    private TripVehicle tripVehicle;
     private int status;
+    private List<String> ids = new ArrayList<>();
 
-    public static ConfirmVehicleStateDialogFragment newInstance(PreOrderSumAssign preOrderSumAssign, int status) {
+    public interface ConfirmDialogListener {
+        void onConfirm(String inputText);
+    }
+
+    public static ConfirmVehicleStateDialogFragment newInstance(TripVehicle tripVehicle, int status) {
         ConfirmVehicleStateDialogFragment dialogFragment = new ConfirmVehicleStateDialogFragment();
         dialogFragment.setCancelable(false);
         Bundle args = new Bundle();
-        args.putParcelable("data", preOrderSumAssign);
+        args.putParcelable("data", tripVehicle);
         args.putInt("status", status);
         dialogFragment.setArguments(args);
         return dialogFragment;
@@ -76,8 +67,12 @@ public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implem
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
-        preOrderSumAssign = args.getParcelable("data");
+        tripVehicle = args.getParcelable("data");
         status = args.getInt("status");
+
+        for (int i = 0; i < tripVehicle.getData().size(); i++) {
+            ids.add(tripVehicle.getData().get(i).get_id());
+        }
         super.onCreate(savedInstanceState);
     }
 
@@ -87,7 +82,9 @@ public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implem
         View v = inflater.inflate(R.layout.dialog_confirm_vehicle, container, false);
 
         TextView txtNumberPlate = (TextView) v.findViewById(R.id.txtNumberPlate);
-        txtNumberPlate.setText("Biển số: " + preOrderSumAssign.get_number_plate());
+        if (tripVehicle.getData() != null && tripVehicle.getData().size() > 0)
+            txtNumberPlate.setText("Biển số: " + tripVehicle.getData().get(0).get_number_plate());
+
         Button btnCancel = (Button) v.findViewById(R.id.btnCancel);
         Button btnSubmit = (Button) v.findViewById(R.id.btnSubmit);
 
@@ -126,11 +123,9 @@ public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implem
                 break;
             case R.id.btnSubmit:
                 try {
-                    if (preOrderSumAssign != null) {
+                    if (tripVehicle != null) {
                         showProgressDialog();
                         long timeNow = (new Date()).getTime();
-                        List<String> ids = new ArrayList<>();
-                        ids.add(preOrderSumAssign.get_id());
 
                         String element = "";
                         switch (status) {
@@ -172,6 +167,7 @@ public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implem
                 pram._pre_order_sum_assign = id;
                 pram.element = element;
                 pram.time = valueTime;
+                pram.userAction = App.getUser().get_id();
                 return loadData.CreateRetrofit().postUpdateTimeStep(pram);
             }
         }, new LoadData.CallbackDelegate<>(this, new CallbackPostUpdateTimeStep()));
@@ -185,6 +181,10 @@ public class ConfirmVehicleStateDialogFragment extends BaseDialogFragment implem
             if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+
+                ConfirmDialogListener listener = (ConfirmDialogListener) fg.getTargetFragment();
+                String idTrip = fg.tripVehicle.get_trip();
+                listener.onConfirm(idTrip != null ? idTrip : "");
 
                 Toast.makeText(fg.getContext(), R.string.repUpdateSuccess, Toast.LENGTH_SHORT).show();
                 fg.dismiss();

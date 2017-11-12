@@ -18,6 +18,7 @@ import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.TripDetailRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
+import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
@@ -202,6 +203,7 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
                 pram._pre_order_sum_assign = id;
                 pram.element = element;
                 pram.time = valueTime;
+                pram.userAction = App.getUser().get_id();
                 return loadData.CreateRetrofit().postUpdateTimeStep(pram);
             }
         }, new LoadData.CallbackDelegate<>(this, new CallbackPostUpdateTimeStep()));
@@ -292,6 +294,7 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
         public List<String> _pre_order_sum_assign;
         public String element;
         public long time;
+        public String userAction;
 
         public ParamUpdateStep() {
         }

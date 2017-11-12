@@ -150,7 +150,7 @@ router.post('/getallinfo', function (req, res) {
         if(listData[i]._pre_order_sum_assign[0]._trip !== undefined && listIdTrip.indexOf(listData[i]._pre_order_sum_assign[0]._trip) === -1)
         {
             listIdTrip.push(listData[i]._pre_order_sum_assign[0]._trip);
-            listTrip.push({trip : listData[i]._pre_order_sum_assign[0]._trip, data : []})
+            listTrip.push({_trip : listData[i]._pre_order_sum_assign[0]._trip, data : []})
             for(var j = 0; j < listData.length; j++)
             {
                 if(listData[j]._pre_order_sum_assign[0]._trip === listData[i]._pre_order_sum_assign[0]._trip)

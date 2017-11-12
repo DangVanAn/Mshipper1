@@ -5,6 +5,7 @@ var router = express.Router();
 var AssignDriver = require('../models/AssignDriver');
 var PreOrderSum = require('../models/PreOrderSum');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
+var admin = require("firebase-admin");
 
 var hashmap = new HashMap();
 
@@ -25,7 +26,7 @@ function resetListPreOrderSumAssign() {
 }
 
 function resetListPreOrderSum() {
-    PreOrderSum.find({_is_enabled: true}, function (err, preordersum) {
+    PreOrderSum.find({ _is_enabled: true }, function (err, preordersum) {
         if (err)
             return console.error(err);
         else {
@@ -44,7 +45,7 @@ function resetListPreOrderSum() {
 
 
 router.post('/getall', function (req, res) {
-// get all
+    // get all
     res.status(200).send(listPreOrderSumAssign);
 });
 
@@ -59,7 +60,7 @@ router.post('/getbyidpresumassign', function (req, res) {
         }
     }
 
-    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listGet)});
+    res.status(200).send({ success: true, message: "OK", data: JSON.stringify(listGet) });
 });
 
 router.post('/getbypresumtime', function (req, res) {
@@ -169,7 +170,7 @@ router.post('/setstatus', function (req, res) {
         }, function (err, preordersumassign) {
             if (err) {
                 console.error(err);
-                res.status(200).send({success: false, message: "error!"});
+                res.status(200).send({ success: false, message: "error!" });
                 return console.error(err);
             }
             else {
@@ -178,30 +179,69 @@ router.post('/setstatus', function (req, res) {
                     preordersumassign.save(function (err) {
                         if (err) {
                             console.error(err);
-                            res.status(200).send({success: false, message: "error!"});
+                            res.status(200).send({ success: false, message: "error!" });
                         }
                         else {
                             countSave++;
-                            boolResetPreOrderSumAssign();
+                            boolResetPreOrderSumAssign(req.body.element, preordersumassign);
                         }
                     });
                 }
                 else {
                     console.log('null!');
-                    res.status(200).send({success: false, message: "null!"});
+                    res.status(200).send({ success: false, message: "null!" });
                 }
             }
         });
     }
 
     //funtion chỉ chạy khi nào số element đã save bằng số id
-    function boolResetPreOrderSumAssign() {
+    function boolResetPreOrderSumAssign(element, preordersumassign) {
         if (countSave === req.body._pre_order_sum_assign.length) {
-            res.status(200).send({success: true, message: "updated!"});
+            setTimeout(function() {
+                noti(element, preordersumassign);
+            }, 15000);
+            res.status(200).send({ success: true, message: "updated!" });
             resetListPreOrderSumAssign();
         }
     };
 });
+
+function noti(element, preordersumassign){
+    //lấy id kho làm topic gửi FCM
+    var topic = "VNF";
+    var toTypeUser = "";
+    var content = "@@";
+    if (element === "_in_warehouse_guard") {
+        toTypeUser = "A003";
+        content = "Xe " + preordersumassign._number_plate + "chuẩn bị vào kho."
+    } else if (element === "_in_line_manager_warehouse"){
+        toTypeUser = "A003";
+        content = "Xe " + preordersumassign._number_plate + "chuẩn bị vào line."
+    } else if (element === "_out_line_manager_warehouse"){
+        toTypeUser = "A004";
+        content = "Xe " + preordersumassign._number_plate + "chuẩn bị rời kho."
+    }
+
+    var payload = {
+        data: {
+            toTypeUser: toTypeUser,// loại user cần gửi
+            content: content,// content của notification
+            title: "MShipper",//title của notification
+            NOTIFICATION_ID: "10",// tùy theo loại notify sẽ có id và code khác nhau
+            NOTIFICATION_CODE: "11",
+            TYPE_BROADCAST: "BROADCAST_REFRESH_STATE_VEHICLE"//loại broadcast của client
+        }
+    };
+
+    admin.messaging().sendToTopic(topic, payload)
+        .then(function (response) {
+            console.log("Successfully sent message:", response);
+        })
+        .catch(function (error) {
+            console.log("Error sending message:", error);
+        });
+}
 
 router.post('/getbyelementzero', function (req, res) {
     //{_id_warehouse : 'NOO', element : '_in_warehouse_guard'}
@@ -210,7 +250,7 @@ router.post('/getbyelementzero', function (req, res) {
     var elementTrue = '';
     var elementFalse = '';
 
-    switch(req.body.status) {
+    switch (req.body.status) {
         case 1:
             elementTrue = '_start_pickup';
             elementFalse = '_in_warehouse_guard';
@@ -244,29 +284,25 @@ router.post('/getbyelementzero', function (req, res) {
     //trong listData kiểm tra xem thằng nào có cùng số trip sẽ gộp lại thành 1 line;
     var listData_Sub = [];
     var listTrip = [];
-    for(var i = 0; i < listData.length; i++)
-    {
-        if(listTrip.indexOf(listData[i]._trip) === -1)
-        {
+    for (var i = 0; i < listData.length; i++) {
+        if (listTrip.indexOf(listData[i]._trip) === -1) {
             listTrip.push(listData[i]._trip);
-            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]]});
+            listData_Sub.push({ _trip: listData[i]._trip, data: [listData[i]] });
         }
         else {
-            for(var j = 0; j < listData_Sub.length; j++)
-            {
-                if(listData_Sub[j]._trip === listData[i]._trip)
-                {
+            for (var j = 0; j < listData_Sub.length; j++) {
+                if (listData_Sub[j]._trip === listData[i]._trip) {
                     listData_Sub[j].data.push(listData[i]);
                     break;
                 }
             }
         }
     }
-    res.status(200).send({success: true, message: listData_Sub.length, data: JSON.stringify(listData_Sub)});
+    res.status(200).send({ success: true, message: listData_Sub.length, data: JSON.stringify(listData_Sub) });
 });
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
-    AssignDriver.find({_pre_sum_assign_time: _pre_sum_assign_time}).select().exec(function (err, preordersumassigndriver) {
+    AssignDriver.find({ _pre_sum_assign_time: _pre_sum_assign_time }).select().exec(function (err, preordersumassigndriver) {
         if (err)
             return console.error(err);
         else {

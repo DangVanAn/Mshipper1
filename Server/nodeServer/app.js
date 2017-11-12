@@ -160,21 +160,25 @@ app.listen(9999, function () {
     //     });
 
 
-    // Gửi theo topic
-    // var notificationKey = "some-notification-key";
+    // // Gửi theo topic
+    // var notificationKey = "VNF";
     
     // // See the "Defining the message payload" section below for details
     // // on how to define a message payload.
     // var payload = {
     //   data: {
-    //     score: "850",
-    //     time: "2:45"
+    //     toTypeUser: "A004",
+    //     content: "2:45",
+    //     title: "title",
+    //     NOTIFICATION_ID: "10",
+    //     NOTIFICATION_CODE: "11",
+    //     TYPE_BROADCAST: "BROADCAST_REFRESH_STATE_VEHICLE"
     //   }
     // };
     
     // // Send a message to the device group corresponding to the provided
     // // notification key.
-    // admin.messaging().sendToDeviceGroup(notificationKey, payload)
+    // admin.messaging().sendToTopic(notificationKey, payload)
     //   .then(function(response) {
     //     // See the MessagingDeviceGroupResponse reference documentation for
     //     // the contents of response.

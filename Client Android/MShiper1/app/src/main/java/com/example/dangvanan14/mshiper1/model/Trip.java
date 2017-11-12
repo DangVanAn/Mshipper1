@@ -6,12 +6,12 @@ import android.os.Parcelable;
 import java.util.List;
 
 public class Trip implements Parcelable {
-    private String trip;
+    private String _trip;
     private List<AssignDriver> data;
     private int percent;
 
     public Trip(String trip, List<AssignDriver> data) {
-        this.trip = trip;
+        this._trip = trip;
         this.data = data;
     }
 
@@ -24,14 +24,14 @@ public class Trip implements Parcelable {
     }
 
     protected Trip(Parcel in) {
-        trip = in.readString();
+        _trip = in.readString();
         data = in.createTypedArrayList(AssignDriver.CREATOR);
         percent = in.readInt();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(trip);
+        dest.writeString(_trip);
         dest.writeTypedList(data);
         dest.writeInt(percent);
     }
@@ -53,12 +53,12 @@ public class Trip implements Parcelable {
         }
     };
 
-    public String getTrip() {
-        return trip;
+    public String get_trip() {
+        return _trip;
     }
 
-    public void setTrip(String trip) {
-        this.trip = trip;
+    public void set_trip(String _trip) {
+        this._trip = _trip;
     }
 
     public List<AssignDriver> getData() {

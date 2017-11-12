@@ -34,7 +34,6 @@ import retrofit2.Call;
 
 public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private CustomViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +42,8 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        getSupportActionBar().setTitle("Tài xế");
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         MainActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.INTERNET,
@@ -62,7 +59,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         loadModelAssign();
 //        loadStepOrder();
         ////////////////////////////
-        FirebaseMessaging.getInstance().subscribeToTopic("fcm");
+        FirebaseMessaging.getInstance().subscribeToTopic("VNF");
 
         setupTabLayout();
         setupBottomBar();
@@ -179,7 +176,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         loadModelAssign();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -198,7 +194,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -206,7 +201,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             Log.e(TAG, "onFailure: Load data failed");
             MainActivity ac = (MainActivity) activity;
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
         }
     }
@@ -219,7 +213,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -227,7 +220,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             Log.e(TAG, "onFailure: Load data failed");
             MainActivity ac = (MainActivity) activity;
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
         }
     }

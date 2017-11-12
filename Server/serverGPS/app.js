@@ -71,7 +71,7 @@ io.on('connection', function (client) {
         locations.saveLocation(data);
     });
 });
-
+var Test = require('./models/Test');
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6969, function() {
     console.log("------------server gps on-------------");

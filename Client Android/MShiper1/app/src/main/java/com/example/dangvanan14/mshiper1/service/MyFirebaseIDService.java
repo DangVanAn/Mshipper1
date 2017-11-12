@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1.service;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
@@ -29,14 +30,14 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
     }
 
     private void updateDeviceToken(String token) {
-        if (((App)getApplication()).getUser() == null)
+        if (App.getUser() == null)
             return;
 
         LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
-                String phone = ((App)getApplication()).getUser().get_phone();
+                String phone = App.getUser().get_phone();
                 return loadData.CreateRetrofit().postDeviceToken(new User(phone, token));
             }
         }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
@@ -56,7 +57,7 @@ public class MyFirebaseIDService  extends FirebaseInstanceIdService {
 
         @Override
         public void onFailure(Throwable t, Logger LOG) {
-            Log.e("TAG", "onFailure: Sai rồi nè");
+            Log.e("TAG", "onFailure: Không thể gửi nè");
         }
     }
 }

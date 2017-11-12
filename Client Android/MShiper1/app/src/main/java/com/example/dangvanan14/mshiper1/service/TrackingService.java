@@ -230,7 +230,6 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         Log.d(TAG, "onDestroy: Tao đã hủy");
         mGoogleApiClient.disconnect();
 
@@ -239,6 +238,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
         if (receiver != null) {
             unregisterReceiver(receiver);
         }
+        super.onDestroy();
     }
 
     @Nullable
@@ -261,6 +261,7 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
                 pram._pre_order_sum_assign = id;
                 pram.element = element;
                 pram.time = valueTime;
+                pram.userAction = App.getUser().get_id();
                 return loadData.CreateRetrofit().postUpdateTimeStep(pram);
             }
         }, new LoadData.CallbackDelegate<>(new CallbackPostUpdateTimeStep()));

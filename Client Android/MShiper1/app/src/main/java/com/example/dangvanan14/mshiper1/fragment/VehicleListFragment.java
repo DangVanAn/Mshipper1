@@ -10,8 +10,10 @@ import android.view.ViewGroup;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.VehicleListPagerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 
-public class VehicleListFragment extends BaseFragment implements View.OnClickListener {
+public class VehicleListFragment extends BaseFragment{
 
     public static VehicleListFragment newInstance() {
         VehicleListFragment vehicleListFragment = new VehicleListFragment();
@@ -39,11 +41,7 @@ public class VehicleListFragment extends BaseFragment implements View.OnClickLis
         TabLayout tabLayout = (TabLayout) v.findViewById(R.id.vehicleListLayout);
         tabLayout.setupWithViewPager(viewPager);
 
-        tabLayout.getTabAt(0).setText("Vào Kho");
-        tabLayout.getTabAt(1).setText("Ra Kho");
-    }
-
-    @Override
-    public void onClick(View v) {
+        tabLayout.getTabAt(0).setText(App.getRoleUser() == DefinedApp.ROLE.GUARD ? "Vào Kho" : "Vào Line");
+        tabLayout.getTabAt(1).setText(App.getRoleUser() == DefinedApp.ROLE.GUARD ? "Ra Kho" : "Rời Line");
     }
 }

@@ -67,7 +67,14 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.MainGuardActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.MainWarehouseManagerActivity"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
