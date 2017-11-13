@@ -5,6 +5,7 @@ var router = express.Router();
 var AssignDriver = require('../models/AssignDriver');
 var PreOrderSum = require('../models/PreOrderSum');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
+var PreOrderAssign = require('../models/PreOrdersAssign');
 
 var hashmap = new HashMap();
 
@@ -34,7 +35,11 @@ function resetListPreOrderSum() {
             for (var i = 0; i < listPreOrderSumAssign.length; i++) {
                 for (var j = 0; j < listPreOrderSum.length; j++) {
                     if (listPreOrderSumAssign[i]._pre_sum_time == listPreOrderSum[j]._pre_sum_time) {
-                        listPreOrderSumAssign[i]._id_warehouse = listPreOrderSum[j]._id_warehouse
+                        listPreOrderSumAssign[i]._id_warehouse = listPreOrderSum[j]._id_warehouse;
+                        listPreOrderSumAssign[i]._id_delivery = listPreOrderSum[j]._id_delivery;
+                        listPreOrderSumAssign[i]._etd = listPreOrderSum[j]._etd;
+                        listPreOrderSumAssign[i]._eta = listPreOrderSum[j]._eta;
+                        listPreOrderSumAssign[i]._type_product = listPreOrderSum[j]._type_product;
                     }
                 }
             }
@@ -249,7 +254,7 @@ router.post('/getbyelementzero', function (req, res) {
         if(listTrip.indexOf(listData[i]._trip) === -1)
         {
             listTrip.push(listData[i]._trip);
-            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]]});
+            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]], order : []});
         }
         else {
             for(var j = 0; j < listData_Sub.length; j++)
@@ -262,8 +267,32 @@ router.post('/getbyelementzero', function (req, res) {
             }
         }
     }
+
+    var listOrder =  getPreOrderAssignByTrip(listTrip);
+
+    console.log('269', listOrder.length);
+
+    for(var i = 0; i < listData_Sub.length; i++)
+    {
+        ///////////////////////////................................../////////////////////////////////////
+    }
+
     res.status(200).send({success: true, message: listData_Sub.length, data: JSON.stringify(listData_Sub)});
 });
+
+function getPreOrderAssignByTrip(trip) {
+    PreOrderAssign.find({
+        _trip: trip,
+        _is_enabled: true
+    }).select().exec(function (err, preorderassign) {
+        if (err)
+            console.error(err);
+        else {
+            console.log('287', preorderassign.length);
+            return preorderassign;
+        }
+    });
+};
 
 function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
     AssignDriver.find({_pre_sum_assign_time: _pre_sum_assign_time}).select().exec(function (err, preordersumassigndriver) {
@@ -304,7 +333,6 @@ router.savePreOrderSumAssign = function (data) {
         if (err)
             console.error(err);
         else {
-            console.log('set sum assign _is_enabled = false success');
             resetListPreOrderSumAssign();
         }
     });

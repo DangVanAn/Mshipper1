@@ -355,6 +355,18 @@ router.getListPreOrderSum = function () {
     return listPreOrderSum;
 };
 
+router.getListPreOrderSumByCodeFile = function (code_file) {
+    var data = [];
+    for(var i = 0; i < listPreOrderSum.length; i++)
+    {
+        if(listPreOrderSum[i]._code_file === code_file)
+        {
+            data.push(listPreOrderSum[i]);
+        }
+    }
+    return data;
+};
+
 router.insertPreOrderSum = function (listData) {
     PreOrderSum.insertMany(listData, function (err, docs) {
         if (err) {
