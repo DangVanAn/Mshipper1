@@ -3,11 +3,48 @@ package com.example.dangvanan14.mshiper1.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 public class Step implements Parcelable {
     private int _id;
     private String _name;
     private boolean _is_confirm;
     private String element;
+    private List<String> idAssign;
+
+    protected Step(Parcel in) {
+        _id = in.readInt();
+        _name = in.readString();
+        _is_confirm = in.readByte() != 0;
+        element = in.readString();
+        idAssign = in.createStringArrayList();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeString(_name);
+        dest.writeByte((byte) (_is_confirm ? 1 : 0));
+        dest.writeString(element);
+        dest.writeStringList(idAssign);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public static final Creator<Step> CREATOR = new Creator<Step>() {
+        @Override
+        public Step createFromParcel(Parcel in) {
+            return new Step(in);
+        }
+
+        @Override
+        public Step[] newArray(int size) {
+            return new Step[size];
+        }
+    };
 
     public int get_id() {
         return _id;
@@ -41,42 +78,19 @@ public class Step implements Parcelable {
         this.element = element;
     }
 
-    public Step(int _id, String _name, boolean _is_confirm, String element) {
+    public Step(int _id, String _name, boolean _is_confirm, String element, List<String> idAssign) {
         this._id = _id;
         this._name = _name;
         this._is_confirm = _is_confirm;
         this.element = element;
+        this.idAssign = idAssign;
     }
 
-    protected Step(Parcel in) {
-        _id = in.readInt();
-        _name = in.readString();
-        _is_confirm = in.readByte() != 0;
-        element = in.readString();
+    public List<String> getIdAssign() {
+        return idAssign;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
-        dest.writeString(_name);
-        dest.writeByte((byte) (_is_confirm ? 1 : 0));
-        dest.writeString(element);
+    public void setIdAssign(List<String> idAssign) {
+        this.idAssign = idAssign;
     }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<Step> CREATOR = new Creator<Step>() {
-        @Override
-        public Step createFromParcel(Parcel in) {
-            return new Step(in);
-        }
-
-        @Override
-        public Step[] newArray(int size) {
-            return new Step[size];
-        }
-    };
 }

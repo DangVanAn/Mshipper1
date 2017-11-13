@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
@@ -31,6 +32,7 @@ import com.example.dangvanan14.mshiper1.activity.MainActivity;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.User;
+import com.example.dangvanan14.mshiper1.tool.CheckTool;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -117,7 +119,12 @@ public class Activity_Splash extends BaseActivity {
                     if (App.getUser() == null) {
                         i = new Intent(Activity_Splash.this, Activity_login.class);
                     } else {
-                        i = new Intent(Activity_Splash.this, MainActivity.class);
+                        if (CheckTool.getActivityMainWith(App.getUser().get_permission_id()) != null) {
+                            App.setRoleUser(CheckTool.checkRole(App.getUser().get_permission_id()));
+                            i = new Intent(Activity_Splash.this, CheckTool.getActivityMainWith(App.getUser().get_permission_id()));
+                        } else {
+                            i = new Intent(Activity_Splash.this, Activity_login.class);
+                        }
                     }
                     startActivity(i);
                     finish();

@@ -6,9 +6,6 @@ import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -20,7 +17,6 @@ import com.example.dangvanan14.mshiper1.adapter.MainPagerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
-import com.example.dangvanan14.mshiper1.fragment.VehicleListFragment;
 import com.example.dangvanan14.mshiper1.model.Order;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssignDrivers;
 import com.example.dangvanan14.mshiper1.response.RepPost;
@@ -38,7 +34,6 @@ import retrofit2.Call;
 
 public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnRefreshListener {
     BroadcastReceiver receiver = null;
-    private SwipeRefreshLayout swipeRefreshLayout;
     private CustomViewPager viewPager;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,10 +42,8 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this);
+        getSupportActionBar().setTitle("Tài xế");
+//        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         MainActivity.super.requestAppPermissions(new
                         String[]{Manifest.permission.INTERNET,
@@ -66,7 +59,7 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
         loadModelAssign();
 //        loadStepOrder();
         ////////////////////////////
-        FirebaseMessaging.getInstance().subscribeToTopic("fcm");
+        FirebaseMessaging.getInstance().subscribeToTopic("VNF");
 
         setupTabLayout();
         setupBottomBar();
@@ -82,12 +75,10 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
                         viewPager.setCurrentItem(0);
                         break;
                     case R.id.tab_order:
-                        Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
-                        startActivity(intentChat);
+//                        Intent intentChat = new Intent(getBaseContext(), ChatActivity.class);
+//                        startActivity(intentChat);
                         break;
                     case R.id.tab_more:
-//                        Intent intent = new Intent(swipeRefreshLayout.getContext(), MapActivity.class);
-//                        startActivity(intent);
                         viewPager.setCurrentItem(1);
                         break;
                 }
@@ -185,7 +176,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         loadModelAssign();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
@@ -204,7 +194,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -212,7 +201,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             Log.e(TAG, "onFailure: Load data failed");
             MainActivity ac = (MainActivity) activity;
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
         }
     }
@@ -225,7 +213,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             ((App) ac.getApplication()).setOrders(body);
             Log.d(TAG, "onResponse: có rồi nè" + body.size());
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
         }
 
         @Override
@@ -233,7 +220,6 @@ public class MainActivity extends BaseActivity implements SwipeRefreshLayout.OnR
             Log.e(TAG, "onFailure: Load data failed");
             MainActivity ac = (MainActivity) activity;
             ac.dismissProgressDialog();
-            ac.swipeRefreshLayout.setRefreshing(false);
             // show trống dữ liệu
         }
     }

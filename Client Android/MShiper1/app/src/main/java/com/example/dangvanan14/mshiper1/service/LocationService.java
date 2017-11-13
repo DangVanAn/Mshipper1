@@ -40,6 +40,7 @@ import java.net.URISyntaxException;
 
 public class LocationService extends Service {
     public static final String BROADCAST_ACTION = "SEND_GPS";
+
     private static final int TWO_MINUTES = 1000 * 60 * 2;
     private static final long MIN_TIME_BW_UPDATES = 2000;
     private static final float MIN_DISTANCE_CHANGE_FOR_UPDATES = 0;
@@ -283,7 +284,7 @@ public class LocationService extends Service {
 //                        return loadData.CreateRetrofit().postLocation(new com.example.dangvanan14.mshiper1.model.LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), App.user.get_email()));
 //                    }
 //                }, new LoadData.CallbackDelegate<RepPost>(new CallBackImpl()));
-                LocationCustom data = new LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone());
+                LocationCustom data = new LocationCustom(loc.getLatitude(), loc.getLongitude(), System.currentTimeMillis(), ((App) getApplication()).getUser().get_phone(), null,"","");
 
                 mSocket.emit("messages", gson.toJson(data));
                 ((App) getApplication()).setLat(loc.getLatitude());

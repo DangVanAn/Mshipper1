@@ -3,6 +3,7 @@ package com.example.dangvanan14.mshiper1.activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -10,13 +11,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.AssignDriverDetailPagerAdapter;
+import com.example.dangvanan14.mshiper1.adapter.TripDetailPagerAdapter;
 import com.example.dangvanan14.mshiper1.customview.CustomViewPager;
-import com.example.dangvanan14.mshiper1.model.AssignDriver;
+import com.example.dangvanan14.mshiper1.model.Trip;
 
-public class AssignDriverDetailActivity extends BaseActivity{
-    private static final String TAG = "AssignDriverActivity";
-    private AssignDriver assignDriver;
+public class TripDetailActivity extends BaseActivity{
+    private static final String TAG = "TripActivity";
+    private Trip trip;
     @Override
     public void onPermissionsGranted(int requestCode) {
         Toast.makeText(this, "Permissions Received.", Toast.LENGTH_LONG).show();
@@ -26,16 +27,14 @@ public class AssignDriverDetailActivity extends BaseActivity{
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_driver_detail);
-        assignDriver = getIntent().getParcelableExtra("assignDetail");
-//        assignDriver = (getIntent()).getParcelableExtra("assignDetail");
+        trip = getIntent().getParcelableExtra("tripDetail");
         setupTabLayout();
         setupToolbar();
     }
 
     public void setupTabLayout() {
-        AssignDriverDetailPagerAdapter mAdapter = new AssignDriverDetailPagerAdapter(getSupportFragmentManager(), assignDriver);
-        CustomViewPager viewPager = (CustomViewPager) findViewById(R.id.vp_assign_driver_detail);
-        viewPager.setPagingEnabled(true);
+        TripDetailPagerAdapter mAdapter = new TripDetailPagerAdapter(getSupportFragmentManager(), trip);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.vp_assign_driver_detail);
         viewPager.setAdapter(mAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tl_assign_driver_detail);

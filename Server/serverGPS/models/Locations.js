@@ -24,6 +24,10 @@ var locationsSchema = mongoose.Schema({
     _pre_order_sum_assign: {
         type: String,
         required: true
+    },
+    _trip: {
+        type: String,
+        required: true
     }
 });
 

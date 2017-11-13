@@ -23,6 +23,7 @@ import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.activity.BaseActivity;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.Order;
+import com.example.dangvanan14.mshiper1.model.Trip;
 import com.example.dangvanan14.mshiper1.module.maps.DirectionFinder;
 import com.example.dangvanan14.mshiper1.module.maps.DirectionFinderListener;
 import com.example.dangvanan14.mshiper1.module.maps.Route;
@@ -53,7 +54,7 @@ import java.util.List;
  * Created by Sherman on 3/6/2017.
  */
 
-public class AssignDriverDetailMapFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, DirectionFinderListener {
+public class TripDetailMapFragment extends BaseFragment implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, DirectionFinderListener {
     private static final String TAG = "ADDMapFragment";
     private GoogleMap mMap;
     String lat, lon;
@@ -301,7 +302,7 @@ public class AssignDriverDetailMapFragment extends BaseFragment implements Googl
     public void onLocationChanged(Location location) {
         lat = String.valueOf(location.getLatitude());
         lon = String.valueOf(location.getLongitude());
-
+        Log.d(TAG, "onLocationChanged: " + lat + "  " + lon);
         latitude = Double.parseDouble(String.valueOf(location.getLatitude()));
         longitude = Double.parseDouble(String.valueOf(location.getLongitude()));
 
@@ -400,14 +401,14 @@ public class AssignDriverDetailMapFragment extends BaseFragment implements Googl
 
         } catch (IOException e) {
             e.printStackTrace();
-            Log.e(TAG, "getLocationFromAddress: "  + e.getMessage());
+            Log.e(TAG, "getLocationFromAddress: " + e.getMessage());
         }
     }
 
-    public static AssignDriverDetailMapFragment newInstance(AssignDriver assignDriver) {
-        AssignDriverDetailMapFragment map = new AssignDriverDetailMapFragment();
+    public static TripDetailMapFragment newInstance(Trip trip) {
+        TripDetailMapFragment map = new TripDetailMapFragment();
         Bundle args = new Bundle();
-        args.putParcelable("data", assignDriver);
+        args.putParcelable("data", trip);
         map.setArguments(args);
         return map;
     }

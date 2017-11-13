@@ -81,6 +81,9 @@ var userSchema = mongoose.Schema({
     _polygon: {
         type: String,
     },
+    _id_warehouse: {
+        type: String,
+    },
     _device_token: {// token để firebase biết thiết bị nào để gửi notify
         type: String,
     },

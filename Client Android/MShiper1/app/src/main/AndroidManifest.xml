@@ -67,7 +67,14 @@
             android:theme="@style/MyNoActionBar" />
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="portrait"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.MainGuardActivity"
+            android:theme="@style/MyNoActionBar"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.MainWarehouseManagerActivity"
             android:theme="@style/MyNoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
@@ -95,11 +102,11 @@
             android:theme="@style/MyNoActionBar" />
 
         <activity
-            android:name=".activity.AssignDriverActivity"
+            android:name=".activity.TripActivity"
             android:theme="@style/MyNoActionBar" />
 
         <activity
-            android:name=".activity.AssignDriverDetailActivity"
+            android:name=".activity.TripDetailActivity"
             android:theme="@style/MyNoActionBar" />
 
         <activity
@@ -139,6 +146,17 @@
         <!--android:name="com.example.dangvanan14.mshiper1.notification.RegistrationIntentService"-->
         <!--android:exported="false">-->
         <!--</service>-->
+
+        <receiver android:name=".receiver.LocationReceiver"
+            android:permission="SEND">
+            <intent-filter>
+                <action android:name="mshipper.SEND_GPS"/>
+            </intent-filter>
+        </receiver>
+
+        <service
+            android:name=".service.TrackingService"
+            android:exported="false"/>
 
         <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>

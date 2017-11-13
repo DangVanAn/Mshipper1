@@ -19,4 +19,16 @@ public class DefinedApp {
     public enum API{
         MAIN, CHAT, GPS
     }
+
+    public enum ROLE{
+        GUARD, MANAGER_WAREHOUSE, DRIVER, NOTHING
+    }
+
+    public static final String BROADCAST_LOCATION = "mshipper.SEND_GPS";
+    public static final String BROADCAST_REMOVE_ID_PREORDERSUMASSIGN = "REMOVE_ID_PREORDERSUMASSIGN";
+    public static final String BROADCAST_REFRESH_STATE_VEHICLE = "BROADCAST_REFRESH_STATE_VEHICLE";
+
+    public enum StateLocation{
+        NOTHING, WAREHOUSE, DELIVERY
+    }
 }

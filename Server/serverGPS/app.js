@@ -67,21 +67,11 @@ io.on('connection', function (client) {
     console.log('Client connected...');
     client.emit('messages', "Connected");
 
-    client.on('join', function (data) {
-
-        client.join('room1');
-        console.log(data);
-    });
-
     client.on('messages', function (data) {
         locations.saveLocation(data);
-        //Dòng này có tác dụng trả thông tin về những client trong room1
-        // Nếu mất comment đi, thì client chỉ có gửi, chứ không có nhận, như vậy sẽ nhanh hơn.
-        // client.broadcast.to('room1').emit('broad', data);
     });
 });
-
-//port socket
+var Test = require('./models/Test');
 // server.listen(process.env.PORT || 6969);
 server.listen(process.env.PORT || 6969, function() {
     console.log("------------server gps on-------------");

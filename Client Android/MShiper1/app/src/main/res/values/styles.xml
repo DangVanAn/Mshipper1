@@ -19,6 +19,7 @@
 
     <style name="MyNoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:screenOrientation">portrait</item>
     </style>
 
     <style name="CustomTabTexStyle" parent="TextAppearance.Design.Tab">
@@ -33,5 +34,4 @@
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_background</item>
     </style>
-
 </resources>

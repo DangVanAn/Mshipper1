@@ -14,11 +14,12 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.LoadData;
 import com.example.dangvanan14.mshiper1.R;
-import com.example.dangvanan14.mshiper1.adapter.AssignDriverRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.adapter.TripRecyclerAdapter;
 import com.example.dangvanan14.mshiper1.api.ICallbackApi;
 import com.example.dangvanan14.mshiper1.application.App;
 import com.example.dangvanan14.mshiper1.model.AssignDriver;
 import com.example.dangvanan14.mshiper1.model.PreOrderSumAssign;
+import com.example.dangvanan14.mshiper1.model.Trip;
 import com.example.dangvanan14.mshiper1.model.User;
 import com.example.dangvanan14.mshiper1.response.RepPost;
 import com.google.gson.Gson;
@@ -33,10 +34,10 @@ import java.util.concurrent.Callable;
 
 import retrofit2.Call;
 
-public class AssignDriverActivity extends BaseActivity implements View.OnClickListener {
-    private static final String TAG = "AssignDriverActivity";
-    private AssignDriverRecyclerAdapter mAdapter;
-    private List<AssignDriver> assignDrivers = new ArrayList<>();
+public class TripActivity extends BaseActivity implements View.OnClickListener {
+    private static final String TAG = "TripActivity";
+    private TripRecyclerAdapter mAdapter;
+    private List<Trip> trips = new ArrayList<>();
 
     @Override
     public void onPermissionsGranted(int requestCode) {
@@ -52,7 +53,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         LinearLayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new AssignDriverRecyclerAdapter(assignDrivers);
+        mAdapter = new TripRecyclerAdapter(trips);
         recyclerView.setAdapter(mAdapter);
         getAssignDriver(App.getUser().get_id());
     }
@@ -63,12 +64,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("Các chuyến hàng");
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
     }
 
     @Override
@@ -92,6 +88,7 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void getAssignDriver(final String _id) {
+        showProgressDialog();
         final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
@@ -106,19 +103,20 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
     private static class CallbackgetAssignDriver extends ICallbackApi<RepPost> {
         @Override
         public void onResponse(Activity activity, RepPost body, Logger LOG) {
-            AssignDriverActivity ac = (AssignDriverActivity) activity;
+            TripActivity ac = (TripActivity) activity;
             ac.dismissProgressDialog();
             if (body.isSuccess()) {
                 Log.d(TAG, "onResponse: " + body.getMessage());
                 Log.d(TAG, "onResponse data: " + body.getData());
+
                 Gson gson = new Gson();
-                Type listType = new TypeToken<List<AssignDriver>>() {
+                Type listType = new TypeToken<List<Trip>>() {
                 }.getType();
-                List<AssignDriver> assignDrivers = gson.fromJson(body.getData(), listType);
+                List<Trip> trips = gson.fromJson(body.getData(), listType);
 
-                addPercentInAssignDriver(assignDrivers);
-
-                ac.assignDrivers.addAll(assignDrivers);
+                addPercentInAssignDriver(trips);
+                ac.trips.clear();
+                ac.trips.addAll(trips);
 
                 ac.mAdapter.notifyDataSetChanged();
             } else {
@@ -132,57 +130,51 @@ public class AssignDriverActivity extends BaseActivity implements View.OnClickLi
         }
     }
 
-    public static void addPercentInAssignDriver(List<AssignDriver> assignDrivers) {
-        for (AssignDriver ad :
-                assignDrivers) {
+    public static void addPercentInAssignDriver(List<Trip> trips) {
+        for (Trip trip :
+                trips) {
             float sum = 0;
             float complete = 0;
-            sum++;
-            if (ad.get_driver_accept() != 0) {
-                complete++;
-            }
+            for (AssignDriver assignDriver :
+                    trip.getData()) {
+                for (PreOrderSumAssign sumAssign : assignDriver.get_pre_order_sum_assign()) {
+                    sum++;
+                    if (sumAssign.get_start_pickup() != 0) {
+                        complete++;
+                    }
 
-            for (PreOrderSumAssign sumAssign : ad.get_pre_order_sum_assign()) {
-                sum++;
-                if (sumAssign.get_start_pickup() != 0) {
-                    complete++;
-                }
+                    sum++;
+                    if (sumAssign.get_in_warehouse_driver() != 0) {
+                        complete++;
+                    }
 
-                sum++;
-                if (sumAssign.get_in_warehouse_driver() != 0) {
-                    complete++;
-                }
+                    sum++;
+                    if (sumAssign.get_in_line_driver() != 0) {
+                        complete++;
+                    }
 
-                sum++;
-                if (sumAssign.get_in_line_driver() != 0) {
-                    complete++;
-                }
+                    sum++;
+                    if (sumAssign.get_out_line_driver() != 0) {
+                        complete++;
+                    }
 
-                sum++;
-                if (sumAssign.get_out_line_driver() != 0) {
-                    complete++;
-                }
+                    sum++;
+                    if (sumAssign.get_out_warehouse_driver() != 0) {
+                        complete++;
+                    }
 
-                sum++;
-                if (sumAssign.get_out_warehouse_driver() != 0) {
-                    complete++;
-                }
+                    sum++;
+                    if (sumAssign.get_in_delivery_driver() != 0) {
+                        complete++;
+                    }
 
-                sum++;
-                if (sumAssign.get_in_delivery_driver() != 0) {
-                    complete++;
-                }
-
-                sum++;
-                if (sumAssign.get_time_done() != 0) {
-                    complete++;
+                    sum++;
+                    if (sumAssign.get_time_done() != 0) {
+                        complete++;
+                    }
                 }
             }
-
-            Log.d(TAG, "addPercentInAssignDriver:1" + (complete / sum) * 100);
-            Log.d(TAG, "addPercentInAssignDriver:2" + complete);
-            Log.d(TAG, "addPercentInAssignDriver:3" + sum);
-            ad.set_percent((int) ((complete / sum) * 100));
+            trip.setPercent((int) ((complete / sum) * 100));
         }
     }
 }

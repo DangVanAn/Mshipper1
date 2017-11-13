@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 
 import com.example.dangvanan14.mshiper1.R;
 import com.example.dangvanan14.mshiper1.adapter.MoreRecyclerAdapter;
+import com.example.dangvanan14.mshiper1.application.App;
+import com.example.dangvanan14.mshiper1.application.DefinedApp;
 import com.example.dangvanan14.mshiper1.model.More;
 
 import java.util.ArrayList;
@@ -34,8 +36,10 @@ public class MoreFragment extends BaseFragment {
         View v = inflater.inflate(R.layout.fragment_more, container, false);
 
         more = new ArrayList<>();
-        more.add(new More(1, "Liên hệ"));
-        more.add(new More(2, "Các chuyến hàng"));
+        if (App.getRoleUser() != DefinedApp.ROLE.GUARD && App.getRoleUser() != DefinedApp.ROLE.MANAGER_WAREHOUSE) {
+            more.add(new More(1, "Liên hệ"));
+            more.add(new More(2, "Các chuyến hàng"));
+        }
         more.add(new More(0, "Đăng xuất"));
 
         RecyclerView recyclerView = (RecyclerView) v.findViewById(R.id.rv_more);

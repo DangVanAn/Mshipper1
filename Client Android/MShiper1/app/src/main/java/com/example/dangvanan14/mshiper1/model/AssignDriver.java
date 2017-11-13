@@ -16,7 +16,6 @@ public class AssignDriver implements Parcelable {
     private String _time_cancel;
     private String _note_cancel;
     private boolean _is_enabled;
-    private int _percent;
     private List<AssignDriver> _other_driver;
     private List<PreOrderSumAssign> _pre_order_sum_assign;
 
@@ -46,7 +45,6 @@ public class AssignDriver implements Parcelable {
         _time_cancel = in.readString();
         _note_cancel = in.readString();
         _is_enabled = in.readByte() != 0;
-        _percent = in.readInt();
         _other_driver = in.createTypedArrayList(AssignDriver.CREATOR);
         _pre_order_sum_assign = in.createTypedArrayList(PreOrderSumAssign.CREATOR);
     }
@@ -63,7 +61,6 @@ public class AssignDriver implements Parcelable {
         dest.writeString(_time_cancel);
         dest.writeString(_note_cancel);
         dest.writeByte((byte) (_is_enabled ? 1 : 0));
-        dest.writeInt(_percent);
         dest.writeTypedList(_other_driver);
         dest.writeTypedList(_pre_order_sum_assign);
     }
@@ -179,13 +176,5 @@ public class AssignDriver implements Parcelable {
 
     public void set_pre_order_sum_assign(List<PreOrderSumAssign> _pre_order_sum_assign) {
         this._pre_order_sum_assign = _pre_order_sum_assign;
-    }
-
-    public int get_percent() {
-        return _percent;
-    }
-
-    public void set_percent(int _percent) {
-        this._percent = _percent;
     }
 }
