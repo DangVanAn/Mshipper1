@@ -1,85 +1,24 @@
 var express = require('express');
-var HashMap = require('hashmap');
 const uuidv1 = require('uuid/v1');
 var router = express.Router();
-var AssignDriver = require('../models/AssignDriver');
-var PreOrderSum = require('../models/PreOrderSum');
+var AssignDriverRoutes = require('../routes/AssignDriverRoutes');
 var PreOrderSumAssign = require('../models/PreOrderSumAssign');
-var PreOrderAssign = require('../models/PreOrdersAssign');
+var mainFuntion = require('../routes/MainFuntions');
 var admin = require("firebase-admin");
 
-var hashmap = new HashMap();
-
-var listPreOrderSum = [];
-var listPreOrderSumAssign = [];
-resetListPreOrderSumAssign();
-
-function resetListPreOrderSumAssign() {
-    PreOrderSumAssign.find({}, function (err, preordersumassign) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrderSumAssign = JSON.parse(JSON.stringify(preordersumassign));
-            resetListPreOrderSum();
-            console.log('Find all success!!!');
-        }
-    });
-}
-
-function resetListPreOrderSum() {
-    PreOrderSum.find({ _is_enabled: true }, function (err, preordersum) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrderSum = preordersum;
-
-            for (var i = 0; i < listPreOrderSumAssign.length; i++) {
-                for (var j = 0; j < listPreOrderSum.length; j++) {
-                    if (listPreOrderSumAssign[i]._pre_sum_time == listPreOrderSum[j]._pre_sum_time) {
-                        listPreOrderSumAssign[i]._id_warehouse = listPreOrderSum[j]._id_warehouse;
-                        listPreOrderSumAssign[i]._id_delivery = listPreOrderSum[j]._id_delivery;
-                        listPreOrderSumAssign[i]._etd = listPreOrderSum[j]._etd;
-                        listPreOrderSumAssign[i]._eta = listPreOrderSum[j]._eta;
-                        listPreOrderSumAssign[i]._type_product = listPreOrderSum[j]._type_product;
-                    }
-                }
-            }
-        }
-    })
-}
-
-
 router.post('/getall', function (req, res) {
-    // get all
-    res.status(200).send(listPreOrderSumAssign);
+    var data = mainFuntion.preOrderSumAssign_GetAll();
+    res.status(200).send(data);
 });
 
 router.post('/getbyidpresumassign', function (req, res) {
-    console.log(req.body);
-    var listGet = [];
-    for (var i = 0; i < req.body.length; i++) {
-        for (var j = 0; j < listPreOrderSumAssign.length; j++) {
-            if (listPreOrderSumAssign[j]._id == req.body[i]._id) {
-                listGet.push(listPreOrderSumAssign[j]);
-            }
-        }
-    }
-
-    res.status(200).send({ success: true, message: "OK", data: JSON.stringify(listGet) });
+    var data = mainFuntion.preOrderSumAssign_GetByIdPreSumAssign(req.body);
+    res.status(200).send({ success: true, message: "OK", data: JSON.stringify(data)});
 });
 
 router.post('/getbypresumtime', function (req, res) {
-    // console.log(req.body);
-    var listGet = [];
-    for (var i = 0; i < req.body.length; i++) {
-        for (var j = 0; j < listPreOrderSumAssign.length; j++) {
-            if (listPreOrderSumAssign[j]._pre_sum_time == req.body[i]._pre_sum_time) {
-                listGet.push(listPreOrderSumAssign[j]);
-            }
-        }
-    }
-
-    res.status(200).send(listGet);
+    var data = mainFuntion.preOrderSumAssign_GetByPreSumTime(req.body);
+    res.status(200).send(data);
 });
 
 router.post('/add', function (req, res) {
@@ -95,7 +34,7 @@ router.post('/add', function (req, res) {
         else {
             res.status(200).send(timeId);
             console.log('created!');
-            resetListPreOrderSumAssign();
+            mainFuntion.preOrderSumAssign_Add(req.body);
         }
     });
 });
@@ -123,7 +62,7 @@ router.post('/update', function (req, res) {
                     else {
                         res.status(200).send('updated!');
                         console.log('96 - updated!');
-                        resetListPreOrderSumAssign();
+                        mainFuntion.preOrderSumAssign_Update(preordersumassign);
                     }
                 });
             }
@@ -155,8 +94,8 @@ router.post('/cancel', function (req, res) {
                     else {
                         res.status(200).send('updated!');
                         console.log('96 - updated!');
-                        resetListPreOrderSumAssign();
-                        setAssignDriverEnabledFalse(req.body._pre_sum_assign_time);
+                        mainFuntion.preOrderSumAssign_Update(preordersumassign);
+                        AssignDriverRoutes.setAssignDriverEnabledFalse(req.body._pre_sum_assign_time);
                     }
                 });
             }
@@ -181,6 +120,7 @@ router.post('/setstatus', function (req, res) {
             else {
                 if (preordersumassign !== null) {
                     preordersumassign[req.body.element] = req.body.time;
+                    mainFuntion.preOrderSumAssign_Update(preordersumassign);
                     preordersumassign.save(function (err) {
                         if (err) {
                             console.error(err);
@@ -203,11 +143,8 @@ router.post('/setstatus', function (req, res) {
     //funtion chỉ chạy khi nào số element đã save bằng số id
     function boolResetPreOrderSumAssign(element, preordersumassign) {
         if (countSave === req.body._pre_order_sum_assign.length) {
-            setTimeout(function() {
-                noti(element, preordersumassign);
-            }, 15000);
+            noti(element, preordersumassign);
             res.status(200).send({ success: true, message: "updated!" });
-            resetListPreOrderSumAssign();
         }
     };
 });
@@ -278,98 +215,48 @@ router.post('/getbyelementzero', function (req, res) {
             break;
     }
 
-    var listData = [];
-    for (var i = 0; i < listPreOrderSumAssign.length; i++) {
-        //hiện tại đang set mặc định là chưa có vào trạng thái đó.
-        if (listPreOrderSumAssign[i][elementTrue] !== 0 && listPreOrderSumAssign[i][elementFalse] === 0 && listPreOrderSumAssign[i]._id_warehouse == req.body._id_warehouse) {
-            listData.push(listPreOrderSumAssign[i]);
-        }
-    }
+    var data = mainFuntion.preOrderSumAssign_GetByElementZero(elementTrue, elementTrue, req.body._id_warehouse);
 
-    //trong listData kiểm tra xem thằng nào có cùng số trip sẽ gộp lại thành 1 line;
-    var listData_Sub = [];
-    var listTrip = [];
-    for (var i = 0; i < listData.length; i++) {
-        if (listTrip.indexOf(listData[i]._trip) === -1) {
-            listTrip.push(listData[i]._trip);
-            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]], order : []});
-        }
-        else {
-            for (var j = 0; j < listData_Sub.length; j++) {
-                if (listData_Sub[j]._trip === listData[i]._trip) {
-                    listData_Sub[j].data.push(listData[i]);
-                    break;
-                }
-            }
-        }
-    }
-
-    var listOrder =  getPreOrderAssignByTrip(listTrip);
-
-    console.log('269', listOrder.length);
-
-    for(var i = 0; i < listData_Sub.length; i++)
-    {
-        //đang làm gán thêm thông tin order cho khách hàng
-    }
-
-    res.status(200).send({success: true, message: listData_Sub.length, data: JSON.stringify(listData_Sub)});
+    res.status(200).send({success: true, message: data.length, data: JSON.stringify(data)});
 });
 
-function getPreOrderAssignByTrip(trip) {
-    PreOrderAssign.find({
-        _trip: trip,
+router.setIsEnableFalse = function (body) {
+    PreOrderSumAssign.findOne({_pre_sum_assign_time: body._pre_sum_assign_time, _is_enabled: true
+    }).select().exec(function (err, preordersumassign) {
+        if (err)
+            console.error(err);
+        else {
+            preordersumassign._is_enabled = false;
+            preordersumassign.save(function (err) {
+                if (err)
+                    return console.error(err);
+                else {
+                    mainFuntion.preOrderSumAssign_Update(preordersumassign);
+                    console.log('success!');
+                }
+            });
+        }
+    });
+};
+
+router.updateTonTrip = function (body) {
+    PreOrderSumAssign.findOne({
+        _id: body._id,
         _is_enabled: true
-    }).select().exec(function (err, preorderassign) {
+    }).select().exec(function (err, preordersumassign) {
         if (err)
             console.error(err);
         else {
-            console.log('287', preorderassign.length);
-            return preorderassign;
-        }
-    });
-};
-
-function setAssignDriverEnabledFalse(_pre_sum_assign_time) {
-    AssignDriver.find({ _pre_sum_assign_time: _pre_sum_assign_time }).select().exec(function (err, preordersumassigndriver) {
-        if (err)
-            return console.error(err);
-        else {
-            for (var i = 0; i < preordersumassigndriver.length; i++) {
-                console.log('driver driver driver driver driver driver ');
-                preordersumassigndriver[i]._is_enabled = false;
-                preordersumassigndriver[i].save(function (err) {
-                    if (err)
-                        console.error(err);
-                    else {
-                        console.log('set sum assign driver _is_enabled = false success');
-                    }
-                });
-            }
-        }
-    });
-}
-
-router.getListPreOrderSumAssign = function () {
-    return listPreOrderSumAssign;
-};
-
-router.findPreOrderSumAssignByPreSumTime = function (_pre_sum_time) {
-    var listData = [];
-    for (var i = 0; i < listPreOrderSumAssign.length; i++) {
-        if (listPreOrderSumAssign[i]._pre_sum_time == _pre_sum_time) {
-            listData.push(listPreOrderSumAssign[i]);
-        }
-    }
-    return listData;
-};
-
-router.savePreOrderSumAssign = function (data) {
-    data.save(function (err) {
-        if (err)
-            console.error(err);
-        else {
-            resetListPreOrderSumAssign();
+            preordersumassign._ton_real = body._ton_real;
+            preordersumassign._trip = body._trip;
+            preordersumassign.save(function (err) {
+                if (err)
+                    return console.error(err);
+                else {
+                    mainFuntion.preOrderSumAssign_Update(preordersumassign);
+                    console.log('success!');
+                }
+            });
         }
     });
 };

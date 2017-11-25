@@ -1,50 +1,22 @@
 var express = require('express');
-var HashMap = require('hashmap');
 var router = express.Router();
 
 var AssignDriver = require('../models/AssignDriver');
-var preOrderSumAssignRoutes = require('../routes/PreOrderSumAssignRoutes');
-var preOrderSumRoute = require('../routes/PreOrderSumRoutes');
-
-var hashmap = new HashMap();
-
-var listPreOrderSumAssignDriver = [];
-resetListPreOrderSumAssignDriver();
-function resetListPreOrderSumAssignDriver() {
-    listPreOrderSumAssignDriver = [];
-    AssignDriver.find({}, function (err, preordersumassigndriver) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrderSumAssignDriver = preordersumassigndriver;
-            console.log('Find all success!!!');
-        }
-    });
-}
+var mainFuntion = require('../routes/MainFuntions');
 
 router.post('/getall', function (req, res) {
-// get all
-    res.status(200).send(listPreOrderSumAssignDriver);
+    var data = mainFuntion.assignDriver_GetAll();
+    res.status(200).send(data);
 });
 
 router.post('/getbydriver', function (req, res) {
-    var listData = [];
-    for(var i = 0; i < listPreOrderSumAssignDriver.length; i++){
-        if(listPreOrderSumAssignDriver[i]._driver == req.body._driver){
-            listData.push(listPreOrderSumAssignDriver[i]);
-        }
-    }
-    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listData)});
+    var data = mainFuntion.assignDriver_GetByDriver(req.body._driver);
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(data)});
 });
 
 router.post('/getbypresumassigntime', function (req, res) {
-    var listData = [];
-    for(var i = 0; i < listPreOrderSumAssignDriver.length; i++){
-        if(listPreOrderSumAssignDriver[i]._pre_sum_assign_time == req.body._pre_sum_assign_time){
-            listData.push(listPreOrderSumAssignDriver[i]);
-        }
-    }
-    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listData)});
+    var data = mainFuntion.assignDriver_GetByPreSumAssignTime(req.body._pre_sum_assign_time);
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(data)});
 });
 
 router.post('/add', function (req, res) {
@@ -56,133 +28,93 @@ router.post('/add', function (req, res) {
         else {
             res.status(200).send('created!');
             console.log('created!');
-            resetListPreOrderSumAssignDriver();
+            mainFuntion.assignDriver_Add(req.body);
         }
     });
 });
 
 router.post('/updatebysumassign', function (req, res) {
-    console.log('-----------------------------------------');
-    console.log(req.body._pre_sum_assign_time);
-    AssignDriver.find({_pre_sum_assign_time : req.body._pre_sum_assign_time, _is_enabled : true}, function (err, preordersumassigndriver) {
+    var timeNow = new Date().getTime();
+    var note = 'change driver';
+    var count = 0;
+    var number = 0;
+    AssignDriver.find({
+        _pre_sum_assign_time: req.body._pre_sum_assign_time,
+        _is_enabled: true
+    }, function (err, assigndriver) {
         if (err)
             return console.error(err);
         else {
-            for(var i = 0; i < preordersumassigndriver.length; i++)
-            {
-                preordersumassigndriver[i]._is_enabled = false;
-                preordersumassigndriver[i]._time_cancel = new Date().getTime();
-                preordersumassigndriver[i]._note_cancel = 'change driver';
-                preordersumassigndriver[i].save(function (err) {
-                    if (err)
-                        console.error(err);
-                    else {
-                        console.log('delete driver done!');
-                    }
-                });
+            number = assigndriver.length;
+            if (number > 0) {
+                for (var i = 0; i < number; i++) {
+                    assigndriver[i]._is_enabled = false;
+                    assigndriver[i]._time_cancel = timeNow;
+                    assigndriver[i]._note_cancel = note;
+                    assigndriver[i].save(function (err) {
+                        if (err)
+                            console.error(err);
+                        else {
+                            count++;
+                            insert();
+                            console.log('delete driver done!');
+                        }
+                    });
+                }
             }
+            else {
+                insert()
+            }
+
         }
     });
 
-    AssignDriver.insertMany(req.body.data, function (err, docs) {
-        if (err) {
-            res.status(200).send('error!');
-            console.log('error!');
+    function insert() {
+        if (count === number) {
+            mainFuntion.assignDriver_Cancel(req.body._pre_sum_assign_time, false, timeNow, note);
+
+            AssignDriver.insertMany(req.body.data, function (err, docs) {
+                if (err) {
+                    res.status(200).send('error!');
+                    console.log('error!');
+                }
+                else {
+                    res.status(200).send('updated!');
+                    console.log('90 - updated!');
+                    mainFuntion.assignDriver_Adds(req.body.data);
+                }
+            });
         }
-        else {
-            res.status(200).send('updated!');
-            console.log('90 - updated!');
-            resetListPreOrderSumAssignDriver();
-        }
-    });
+    }
 });
 
-
-var listPreOrderSum = [];
-var listPreOrderSumAssign = [];
-
 router.post('/getallinfo', function (req, res) {
-    var listData = [];
-    listPreOrderSum = preOrderSumRoute.getListPreOrderSum();
-    listPreOrderSumAssign = preOrderSumAssignRoutes.getListPreOrderSumAssign();
-    for(var i = 0; i < listPreOrderSumAssignDriver.length; i++){
-        if(listPreOrderSumAssignDriver[i]._driver == req.body._id && listPreOrderSumAssignDriver[i]._is_enabled == true){
-            console.log('-------74');
-            listData.push(JSON.parse(JSON.stringify(listPreOrderSumAssignDriver[i])));
-        }
-    }
-
-    for(var i = 0; i < listData.length; i++){
-        listData[i]._other_driver = [];
-        for(var j = 0; j < listPreOrderSumAssignDriver.length; j++){
-            if(listPreOrderSumAssignDriver[j]._pre_sum_assign_time == listData[i]._pre_sum_assign_time && listData[i]._id != listPreOrderSumAssignDriver[j]._id){
-                console.log('-------82');
-                listData[i]._other_driver.push(JSON.parse(JSON.stringify(listPreOrderSumAssignDriver[j])));
-            }
-        }
-    }
-
-    for(var i = 0; i < listData.length; i++){
-        listData[i]._pre_order_sum_assign = [];
-        for(var j = 0; j < listPreOrderSumAssign.length; j++){
-            if(listPreOrderSumAssign[j]._pre_sum_assign_time == listData[i]._pre_sum_assign_time){
-                listData[i]._pre_order_sum_assign.push(JSON.parse(JSON.stringify(listPreOrderSumAssign[j])));
-            }
-        }
-    }
-
-    for(var i = 0; i < listData.length; i++){
-        for(var ii = 0; ii < listData[i]._pre_order_sum_assign.length; ii++){
-            listData[i]._pre_order_sum_assign[ii]._pre_order_sum = [];
-            for(var j = 0; j < listPreOrderSum.length; j++){
-                if(listPreOrderSum[j]._pre_sum_time == listData[i]._pre_order_sum_assign[ii]._pre_sum_time){
-                    listData[i]._pre_order_sum_assign[ii]._pre_order_sum.push(JSON.parse(JSON.stringify(listPreOrderSum[j])));
-                }
-            }
-        }
-    }
-
-    //tạo data theo số trip
-    var listTrip = [];
-    var listIdTrip = [];
-    for(var i = 0; i < listData.length; i++)
-    {
-        if(listData[i]._pre_order_sum_assign[0]._trip !== undefined && listIdTrip.indexOf(listData[i]._pre_order_sum_assign[0]._trip) === -1)
-        {
-            listIdTrip.push(listData[i]._pre_order_sum_assign[0]._trip);
-            listTrip.push({_trip : listData[i]._pre_order_sum_assign[0]._trip, data : []})
-            for(var j = 0; j < listData.length; j++)
-            {
-                if(listData[j]._pre_order_sum_assign[0]._trip === listData[i]._pre_order_sum_assign[0]._trip)
-                {
-                    listTrip[listTrip.length - 1].data.push(listData[j]);
-                }
-            }
-        }
-    }
+    var listTrip = mainFuntion.assignDriver_GetAllInfo(req.body.id);
 
     res.status(200).send({success: true, message: "OK", data: JSON.stringify(listTrip)});
 });
 
+router.setAssignDriverEnabledFalse = function (_pre_sum_assign_time) {
+    AssignDriver.find({_pre_sum_assign_time: _pre_sum_assign_time}).select().exec(function (err, assigndriver) {
+        if (err)
+            return console.error(err);
+        else {
+            if (assigndriver.length > 0) {
+                mainFuntion.assignDriver_SetIsEnable(_pre_sum_assign_time, false);
+                for (var i = 0; i < assigndriver.length; i++) {
+                    assigndriver[i]._is_enabled = false;
+                    assigndriver[i].save(function (err) {
+                        if (err)
+                            console.error(err);
+                        else {
 
-// router.setAssignDriverEnabledFalse = function (_pre_sum_assign_time) {
-//     AssignDriver.find({_pre_sum_assign_time: _pre_sum_assign_time}).select().exec(function (err, preordersumassigndriver) {
-//         if (err)
-//             return console.error(err);
-//         else {
-//             for (var i = 0; i < preordersumassigndriver.length; i++) {
-//                 console.log('driver driver driver driver driver driver ');
-//                 preordersumassigndriver[i]._is_enabled = false;
-//                 preordersumassigndriver[i].save(function (err) {
-//                     if (err)
-//                         console.error(err);
-//                     else {
-//                         console.log('set sum assign driver _is_enabled = false success');
-//                     }
-//                 });
-//             }
-//         }
-//     });
-// };
+                            console.log('set sum assign driver _is_enabled = false success');
+                        }
+                    });
+                }
+            }
+        }
+    });
+};
 
 module.exports = router;

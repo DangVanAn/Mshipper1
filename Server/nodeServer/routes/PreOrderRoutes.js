@@ -7,30 +7,23 @@ var PreOrder = require('../models/PreOrders');
 var Warehouse = require('../models/Warehouse');
 var ProductGroup = require('../models/ProductGroup');
 var Product = require('../models/Product');
-var PreOrderSum = require('../models/PreOrderSum');
-var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 var preOrderSumRoute = require('../routes/PreOrderSumRoutes');
+var mainFuntion = require('./MainFuntions');
 
 var hashmap = new HashMap();
 
 router.post('/getall', function (req, res) {
-    res.status(200).send(listPreOrders);
+    var data = mainFuntion.preOrder_GetAll();
+    res.status(200).send(data);
 });
 
 router.post('/getbycodefile', function (req, res) {
-    PreOrder.find({_code_file : req.body._code_file}, function (err, preorders) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(preorders);
-        }
-    });
+    var data = mainFuntion.preOrder_GetByCodeFile(req.body._code_file);
+    res.status(200).send(data);
 });
 
 getLitsProductGroup();
 getLitsProduct();
-getLitsWarehouse();
-getLitsPreOrder();
 
 function getLitsProductGroup() {
     ProductGroup.find({_is_enabled: true}, function (err, productgroups) {
@@ -55,35 +48,6 @@ function getLitsProduct() {
             }
 
             console.log('LitsProduct', products.length);
-        }
-    });
-}
-
-function getLitsWarehouse() {
-    Warehouse.find({_is_enabled: true}, function (err, warehouses) {
-        if (err)
-            return console.error(err);
-        else {
-            for (var i = 0; i < warehouses.length; i++) {
-                hashmap.set(warehouses[i]._id_warehouse, warehouses[i]);
-            }
-
-            console.log('LitsWarehouse', warehouses.length);
-        }
-    });
-}
-
-function getLitsPreOrder() {
-    PreOrder.find({}, function (err, preorders) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrders = [];
-            for (var i = 0; i < preorders.length; i++) {
-                hashmap.set(preorders[i]._id_order, preorders[i]);
-                listPreOrders.push(preorders[i]);
-            }
-            console.log('LitsPreorders', preorders.length);
         }
     });
 }
