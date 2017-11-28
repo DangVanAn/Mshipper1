@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.dangvanan14.mshiper1.Activity_login;
 import com.example.dangvanan14.mshiper1.R;
+import com.example.dangvanan14.mshiper1.activity.ConfirmTripActivity;
 import com.example.dangvanan14.mshiper1.activity.TripActivity;
 import com.example.dangvanan14.mshiper1.activity.ContactActivity;
 import com.example.dangvanan14.mshiper1.application.App;
@@ -88,6 +89,9 @@ public class MoreRecyclerAdapter extends RecyclerView.Adapter<MoreRecyclerAdapte
                     break;
                 case 2:
                     i = new Intent(v.getContext(), TripActivity.class);
+                    v.getContext().startActivity(i);
+                case 3:
+                    i = new Intent(v.getContext(), ConfirmTripActivity.class);
                     v.getContext().startActivity(i);
             }
         }

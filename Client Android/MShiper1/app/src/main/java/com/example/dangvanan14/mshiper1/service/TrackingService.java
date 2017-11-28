@@ -114,16 +114,20 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
 
                 List<Boundary.Point> polygonWarehouseTemp = new ArrayList<>();
                 List<Boundary.Point> polygonDeliveryTemp = new ArrayList<>();
-
-                for (double[] j : arrWarehouse) {
-                    polygonWarehouseTemp.add(new Boundary.Point(j[0], j[1]));
+                if (arrWarehouse != null) {
+                    for (double[] j : arrWarehouse) {
+                        polygonWarehouseTemp.add(new Boundary.Point(j[0], j[1]));
+                    }
+                    polygonDelivery.add(polygonDeliveryTemp);
                 }
-                for (double[] j : arrDelivery) {
-                    polygonDeliveryTemp.add(new Boundary.Point(j[0], j[1]));
-                }
 
-                polygonDelivery.add(polygonDeliveryTemp);
-                polygonWarehouse.add(polygonWarehouseTemp);
+                if (arrDelivery != null) {
+                    for (double[] j : arrDelivery) {
+                        polygonDeliveryTemp.add(new Boundary.Point(j[0], j[1]));
+                    }
+
+                    polygonWarehouse.add(polygonWarehouseTemp);
+                }
             }
         }
         mSocket.connect();
@@ -199,7 +203,9 @@ public class TrackingService extends Service implements GoogleApiClient.Connecti
                 && (polygonWarehouse != null && polygonWarehouse.size() > 0)) {
             for (int i = 0; i < preOrderSumAssignList.size(); i++) {
                 PreOrderSumAssign preOrderSumAssign = preOrderSumAssignList.get(i);
-
+                if(polygonDelivery.size() >= i || polygonWarehouse.size() >= i){
+                    return;
+                }
                 Boundary boundaryDelivery = new Boundary(polygonDelivery.get(i));
                 Boundary boundaryWareHouse = new Boundary(polygonWarehouse.get(i));
                 intentBroadCast.putExtra("Latitude", location.getLatitude());

@@ -70,6 +70,10 @@ io.on('connection', function (client) {
     client.on('messages', function (data) {
         locations.saveLocation(data);
     });
+
+    client.on('disconnect', function () {
+        console.log("có thằng mất connect");
+    });
 });
 var Test = require('./models/Test');
 // server.listen(process.env.PORT || 6969);

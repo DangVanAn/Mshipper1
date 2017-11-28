@@ -57,6 +57,9 @@ public interface IWebservice {
     @POST("assigndriver/getallinfo")
     Call<RepPost> getAssign(@Body User user);
 
+    @POST("assigndriver/gettrip")
+    Call<RepPost> getTrip(@Body User user);
+
     @POST("preorderssumassign/setstatus")
     Call<RepPost> postUpdateTimeStep(@Body TripDetailStepFragment.ParamUpdateStep pram);
 
