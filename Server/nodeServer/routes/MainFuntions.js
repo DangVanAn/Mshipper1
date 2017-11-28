@@ -620,7 +620,7 @@ router.assignDriver_GetAllInfo = function (id_driver) {
     var listData = [];
 
     for (var i = 0; i < listAssignDriver.length; i++) {
-        if (listAssignDriver[i]._driver === id_driver && listAssignDriver[i]._is_enabled === true) {
+        if (listAssignDriver[i]._driver === id_driver && listAssignDriver[i]._is_enabled === true && listAssignDriver[i]._lead_driver === true) {
             listData.push(JSON.parse(JSON.stringify(listAssignDriver[i])));
         }
     }
@@ -628,7 +628,7 @@ router.assignDriver_GetAllInfo = function (id_driver) {
     for (var i = 0; i < listData.length; i++) {
         listData[i]._other_driver = [];
         for (var j = 0; j < listAssignDriver.length; j++) {
-            if (listAssignDriver[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listData[i]._id !== listAssignDriver[j]._id) {
+            if (listAssignDriver[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listData[i]._id !== listAssignDriver[j]._id && listAssignDriver[j]._lead_driver === false) {
                 listData[i]._other_driver.push(JSON.parse(JSON.stringify(listAssignDriver[j])));
             }
         }
@@ -683,7 +683,7 @@ router.assignDriver_GetTrip = function (id_driver) {
     var listData = [];
 
     for (var i = 0; i < listAssignDriver.length; i++) {
-        if (listAssignDriver[i]._driver === id_driver && listAssignDriver[i]._is_enabled === true) {
+        if (listAssignDriver[i]._driver === id_driver && listAssignDriver[i]._is_enabled === true && listAssignDriver[i]._lead_driver === true) {
             listData.push(JSON.parse(JSON.stringify(listAssignDriver[i])));
         }
     }
@@ -691,7 +691,7 @@ router.assignDriver_GetTrip = function (id_driver) {
     for (var i = 0; i < listData.length; i++) {
         listData[i]._other_driver = [];
         for (var j = 0; j < listAssignDriver.length; j++) {
-            if (listAssignDriver[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listData[i]._id !== listAssignDriver[j]._id) {
+            if (listAssignDriver[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listData[i]._id !== listAssignDriver[j]._id && listAssignDriver[j]._lead_driver === false) {
                 listData[i]._other_driver.push(JSON.parse(JSON.stringify(listAssignDriver[j])));
             }
         }
