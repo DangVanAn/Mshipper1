@@ -29,10 +29,12 @@ var teamleads = require('./routes/TeamLeadRoutes');
 var teamlists = require('./routes/TeamListRoutes');
 var userteamlists = require('./routes/UserTeamListRoutes');
 var preorders = require('./routes/PreOrderRoutes');
+var preorderslist = require('./routes/PreOrderListRoutes');
 var assigndriver = require('./routes/AssignDriverRoutes');
 var preorderssum = require('./routes/PreOrderSumRoutes');
 var preorderssumassign = require('./routes/PreOrderSumAssignRoutes');
 var preordersassign = require('./routes/PreOrderAssignRoutes');
+var mainfuntion = require('./routes/MainFuntions');
 
 var app = express()
     , http = require('http')
@@ -94,6 +96,7 @@ app.use('/teamleads', teamleads);
 app.use('/teamlists', teamlists);
 app.use('/userteamlists', userteamlists);
 app.use('/preorders', preorders);
+app.use('/preorderslist', preorderslist);
 app.use('/preorderssum', preorderssum);
 app.use('/assigndriver', assigndriver);
 app.use('/preorderssumassign', preorderssumassign);

@@ -7,20 +7,23 @@ var PreOrder = require('../models/PreOrders');
 var Warehouse = require('../models/Warehouse');
 var ProductGroup = require('../models/ProductGroup');
 var Product = require('../models/Product');
-var PreOrderSum = require('../models/PreOrderSum');
-var PreOrderSumAssign = require('../models/PreOrderSumAssign');
 var preOrderSumRoute = require('../routes/PreOrderSumRoutes');
+var mainFuntion = require('./MainFuntions');
 
 var hashmap = new HashMap();
 
 router.post('/getall', function (req, res) {
-    res.status(200).send(listPreOrders);
+    var data = mainFuntion.preOrder_GetAll();
+    res.status(200).send(data);
+});
+
+router.post('/getbycodefile', function (req, res) {
+    var data = mainFuntion.preOrder_GetByCodeFile(req.body._code_file);
+    res.status(200).send(data);
 });
 
 getLitsProductGroup();
 getLitsProduct();
-getLitsWarehouse();
-getLitsPreOrder();
 
 function getLitsProductGroup() {
     ProductGroup.find({_is_enabled: true}, function (err, productgroups) {
@@ -49,61 +52,34 @@ function getLitsProduct() {
     });
 }
 
-function getLitsWarehouse() {
-    Warehouse.find({_is_enabled: true}, function (err, warehouses) {
-        if (err)
-            return console.error(err);
-        else {
-            for (var i = 0; i < warehouses.length; i++) {
-                hashmap.set(warehouses[i]._id_warehouse, warehouses[i]);
-            }
-
-            console.log('LitsWarehouse', warehouses.length);
-        }
-    });
-}
-
-function getLitsPreOrder() {
-    PreOrder.find({}, function (err, preorders) {
-        if (err)
-            return console.error(err);
-        else {
-            listPreOrders = [];
-            for (var i = 0; i < preorders.length; i++) {
-                hashmap.set(preorders[i]._id_order, preorders[i]);
-                listPreOrders.push(preorders[i]);
-            }
-            console.log('LitsPreorders', preorders.length);
-        }
-    });
-}
-
 var listPreOrdersSum = [];
-function getLitsPreOrderSum() {
-    listPreOrdersSum = preOrderSumRoute.getListPreOrderSum();
+function getLitsPreOrderSumByCodeFile(code_file) {
+    listPreOrdersSum = preOrderSumRoute.getListPreOrderSumByCodeFile(code_file);
     console.log('99', listPreOrdersSum.length);
 }
 
 var preOrderReport = [];
-function createPreOrderReport() {
-    getLitsPreOrderSum();
+function createPreOrderReport(listOrders) {
+    var code_file = listOrders[0]._code_file;
+    getLitsPreOrderSumByCodeFile(code_file);
     preOrderReport = [];
     var preOrderSumNew = [];
-    console.log('95', listPreOrders.length);
-    for (var i = 0; i < listPreOrders.length; i++) {
+    console.log('95', listOrders.length);
+    for (var i = 0; i < listOrders.length; i++) {
         var data = {
-            _id_warehouse: listPreOrders[i]._id_warehouse,
-            _address_warehouse: addressWarehouse(listPreOrders[i]._id_warehouse),
-            _id_delivery: listPreOrders[i]._id_delivery,
-            _address_delivery: listPreOrders[i]._address,
-            _id_customer: listPreOrders[i]._id_customer,
-            _type_product: listPreOrders[i]._type_product,
-            _ton: listPreOrders[i]._ton,
-            _etd: listPreOrders[i]._etd,
-            _eta: listPreOrders[i]._eta,
-            _id_delivery_manager: listPreOrders[i]._id_delivery_manager,
+            _id_warehouse: listOrders[i]._id_warehouse,
+            _address_warehouse: addressWarehouse(listOrders[i]._id_warehouse),
+            _id_delivery: listOrders[i]._id_delivery,
+            _address_delivery: listOrders[i]._address,
+            _id_customer: listOrders[i]._id_customer,
+            _type_product: listOrders[i]._type_product,
+            _ton: listOrders[i]._ton,
+            _etd: listOrders[i]._etd,
+            _eta: listOrders[i]._eta,
+            _id_delivery_manager: listOrders[i]._id_delivery_manager,
             _time_send : new Date().getTime(),
             _pre_sum_time : uuidv1(),
+            _code_file : code_file,
             _is_enabled : true
         };
 
@@ -269,7 +245,7 @@ var listProductGroupNotInData = [];
 var listWarehouseNotInData = [];
 var listNewOrders = [];
 var listPreOrders = [];
-router.post('/posthandling', function (req, res) {
+router.post('/adds', function (req, res) {
 
     listProductNotInData = [];
     listProductGroupNotInData = [];
@@ -341,6 +317,36 @@ router.post('/posthandling', function (req, res) {
             console.log('PreOrders created!');
             // getLitsPreOrder();
             createPreOrderReport();
+        }
+    });
+});
+
+router.post('/addsnew', function (req, res) {
+    listWarehouseNotInData = [];
+    listNewOrders = [];
+
+    console.log(req.body.length);
+    for (var i = 0; i < req.body.length; i++) {
+        if (hashmap.get(req.body[i]._id_warehouse) == undefined) {
+            if (listWarehouseNotInData.indexOf(req.body[i]._id_warehouse) === -1) {
+                listWarehouseNotInData.push(req.body[i]._id_warehouse);
+            }
+        }
+        listNewOrders.push(req.body[i]);
+    }
+
+    res.status(200).send('success!');
+
+    PreOrder.insertMany(listNewOrders, function (err, docs) {
+        if (err) {
+            res.status(200).send('Error!');
+            console.log('Error!');
+        }
+        else {
+            // res.status(200).send('PreOrders created!');
+            console.log('PreOrders created!');
+            // getLitsPreOrder();
+            createPreOrderReport(req.body);
         }
     });
 });

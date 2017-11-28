@@ -99,6 +99,9 @@ var PreOrderSumSchema = mongoose.Schema({
     },
     _is_enabled : {
         type: Boolean,
+    },
+    _code_file : {
+        type : String,
     }
 });
 

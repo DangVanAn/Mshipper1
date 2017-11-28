@@ -1,28 +1,17 @@
 var express = require('express');
 var router = express.Router();
 var Vehicle = require('../models/Vehicle');
+var mainFuntion = require('./MainFuntions');
 
 router.get('/getall', function (req, res) {
-// get all
-    Vehicle.find({_is_enabled: true}, function (err, vehicles) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(vehicles);
-            console.log('Find all success!!!');
-        }
-    });
+    var data = mainFuntion.vehicle_GetAll();
+    res.status(200).send(data);
 });
 
 router.post('/getbyowner', function (req, res) {
-    Vehicle.find({_owner: req.body._owner, _is_enabled: true}, function (err, vehicles) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(vehicles);
-            console.log('Find success!!!');
-        }
-    });
+
+    var data = mainFuntion.vehicle_GetByOwner(req.body._owner);
+    res.status(200).send(data);
 });
 
 router.post('/add', function (req, res) {
@@ -33,6 +22,7 @@ router.post('/add', function (req, res) {
             console.log('Error!');
         }
         else {
+            mainFuntion.vehicle_Add(req.body);
             res.status(200).send('Vehicles created!');
             console.log('Vehicles created!');
         }
@@ -49,6 +39,7 @@ router.post('/adds', function (req, res) {
             console.log('Error!');
         }
         else {
+            mainFuntion.vehicle_Adds(req.body);
             res.status(200).send('Vehicles created!');
             console.log('Vehicles created!');
         }
@@ -73,6 +64,9 @@ router.post('/remove', function (req, res) {
                     if (err)
                         return console.error(err);
                     else {
+                        //vì chưa có giá trị nào khác để xác định ngoài id
+                        //mà add trước đó không hề có id. nên chọn reset lại list
+                        mainFuntion.vehicle_ResetList();
                         res.status(200).send('removed');
                         console.log('Vehicle removed!');
                     }
@@ -107,6 +101,7 @@ router.post('/updatebyid', function (req, res) {
         }
         else {
             if (vehicle) {
+                mainFuntion.vehicle_ResetList();
                 res.status(200).send('updated');
                 console.log('Vehicle successfully updated!');
             }

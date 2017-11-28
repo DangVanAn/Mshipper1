@@ -1,74 +1,43 @@
 var express = require('express');
 var router = express.Router();
 var User = require('../models/User');
+var mainFuntion = require('../routes/MainFuntions');
 var jwt = require("jsonwebtoken");
 var bcrypt = require('bcrypt');
-const saltRounds = 10;
 const keyJWT = 'djs235Ajhs668DDflb';
 
-var listUser = [];
-resetListUser();
-function resetListUser() {
-    listUser = [];
-    User.find({_is_enabled : true}, function (err, users) {
-        if (err)
-            return console.error(err);
-        else {
-            listUser = users;
-            console.log('Find all success!!!');
-        }
-    }).select('-_token -_hashed_password');
-}
-
 router.get('/getall', function (req, res) {
-    res.status(200).send(listUser);
+    res.status(200).send(mainFuntion.user_GetAllUser());
 });
 
 router.post('/getbypermission', function (req, res) {
-    User.find({_permission_id : req.body._permission_id}, function (err, users) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(users);
-            console.log('Find all success!!!');
-        }
-    }).select('-_token -_hashed_password');
+    var subList = mainFuntion.user_GetByPermisstion(req.body._permission_id);
+
+    res.status(200).send(subList);
 });
 
 router.post('/findbyphone', function (req, res) {
-    var listData = [];
-    for(var i = 0; i < listUser.length; i++){
-        var re = new RegExp(req.body._phone, 'g');
-        if(listUser[i]._phone.match(re)){
-            listData.push(listUser[i]);
-        }
-    }
+    var listData = mainFuntion.user_FindByPhone(req.body._phone);
 
     res.status(200).send({success: true, message: "OK", data: JSON.stringify(listData)});
 });
 
 router.post('/getbypermissionandidmanager', function (req, res) {
-    console.log(req.body);
-    User.find({_permission_id : req.body._permission_id, _id_delivery_manager : req.body._id_delivery_manager}, function (err, users) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(users);
-            console.log('Find all success!!!');
-        }
-    }).select('-_token -_hashed_password');
+    var listData = mainFuntion.user_GetByPermissionAndIdManager(req.body._permission_id, req.body._id_delivery_manager);
+
+    res.status(200).send(listData);
 });
 
 router.post('/add', function (req, res) {
 
     User.findOne({
-        _phone: req.body._phone
+        _phone: body._phone
     }).select().exec(function (err, user) {
         if (err)
             return console.error(err);
         else {
             if (!user) {
-                var newUser = new User(req.body);
+                var newUser = new User(body);
 
                 var time = new Date().getTime().toString();
                 newUser._token = (jwt.sign({ bum: time + keyJWT, user: newUser._phone }, keyJWT) + ' ' + time).split(".")[2];
@@ -79,18 +48,17 @@ router.post('/add', function (req, res) {
                         if (err)
                             return console.error(err);
                         else {
-                            res.status(200).send('User created!');
-                            resetListUser();
                             console.log('User created!');
+                            mainFuntion.user_Add(body);
+                            res.status(200).send('User created!');
                         }
                     });
                 });
             }
             else {
+                console.log('Số Điện thoại đã tồn tại!');
                 res.status(200).send("Số điện thoại đã tồn tại!");
             }
-
-
         }
     });
 });
@@ -100,45 +68,31 @@ router.post('/adds', function (req, res) {
     var listData = req.body;
     console.log(listData.length);
 
-    var index = 0;
     var listPhoneExist = '';
 
-    findFuntion(index);
 
-    function findFuntion(index) {
-        User.findOne({_phone: listData[index]._phone
-        }).select().exec(function (err, user) {
-            if (err)
-                return console.error(err);
-            else {
-                if (user) {
-                    listPhoneExist += ' ' + listData[index]._phone;
-                }
-                index++;
-                if(index < listData.length){
-                    findFuntion(index);
-                }
-                else {
-                    bcryptFuntion();
-                }
+    var listUsers = mainFuntion.user_GetAllUser();
+
+    for(var i = 0; i < listUsers.length; i++) {
+        for(var j = 0; j < listData.length; j++) {
+            if(listUsers[i]._phone === listData[j]._phone) {
+                listPhoneExist += ' ' + listData[j]._phone;
             }
-        });
+        }
     }
 
+
     var mainHash = '';
-    function bcryptFuntion() {
-        if(listPhoneExist.length > 0)
-        {
-            res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
-        }
-        else {
-            bcrypt.hash('123456', 10, function(err, hash) {
-                mainHash = hash;
+    if(listPhoneExist.length > 0)
+    {
+        res.status(200).send('Số điện thoại:' +listPhoneExist + ' Đã tồn tại');
+    }
+    else {
+        bcrypt.hash('123456', 10, function(err, hash) {
+            mainHash = hash;
+            saveFuntion();
+        });
 
-                saveFuntion();
-            });
-
-        }
     }
 
     function saveFuntion() {
@@ -156,7 +110,7 @@ router.post('/adds', function (req, res) {
             }
             else {
                 res.status(200).send('Users created!');
-                resetListUser();
+                mainFuntion.user_Adds(listData);
                 console.log('Users created!');
             }
         });
@@ -179,7 +133,7 @@ router.post('/remove', function (req, res) {
                         return console.error(err);
                     else {
                         res.status(200).send('User removed!');
-                        resetListUser();
+                        mainFuntion.user_SetIsEnable(req.body._phone, false);
                         console.log('User removed!');
                     }
                 });
@@ -197,7 +151,7 @@ router.post('/update', function (req, res) {
             return console.error(err);
         else {
             res.status(200).send(user);
-            resetListUser();
+            mainFuntion.user_UpdateById(req.body._identify_card, req.body);
             console.log('User successfully updated!');
         }
     });
@@ -206,14 +160,8 @@ router.post('/update', function (req, res) {
 router.post('/getbyphone', function (req, res) {
     console.log(req.body);
 
-    User.find({ _phone: req.body.phone }, function (err, user) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(user);
-            console.log('Find one success!!!');
-        }
-    }).select('-_token -_hashed_password');
+    var data = mainFuntion.user_FindByPhone(req.body.phone);
+    res.status(200).send(data);
 });
 
 router.post('/updatebyphone', function (req, res) {
@@ -224,7 +172,7 @@ router.post('/updatebyphone', function (req, res) {
             if(user)
             {
                 res.status(200).send('User successfully updated!');
-                resetListUser();
+                mainFuntion.user_UpdateByPhone(req.body._phone, req.body);
                 console.log('User successfully updated!');
             }
             else {
@@ -306,7 +254,7 @@ router.post('/updateDeviceToken', function (req, res) {
                 user.save(function (err, updatedUser) {
                     if (err) {
                         res.status(200).send({ success: false, message: "Update _device_token Failed" });
-                        return
+                        return;
                     }
                 });
 

@@ -1,17 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var Warehouse = require('../models/Warehouse');
+var mainFuntion = require('./MainFuntions');
 
 router.get('/getall', function (req, res) {
-// get all
-    Warehouse.find({_is_enabled : true}, function (err, warehouses) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(warehouses);
-            console.log('Find all success!!!');
-        }
-    });
+    res.status(200).send(mainFuntion.warehouse_GetAll());
 });
 
 router.post('/add', function (req, res) {
@@ -30,6 +23,7 @@ router.post('/add', function (req, res) {
                     if (err)
                         return console.error(err);
                     else {
+                        mainFuntion.warehouse_Add(req.body);
                         res.status(200).send('Warehouse created!');
                         console.log('Warehouse created!');
                     }
@@ -44,52 +38,36 @@ router.post('/add', function (req, res) {
 
 
 router.post('/adds', function (req, res) {
-
-    // console.log(req.body);
     var listData = req.body;
     console.log(listData.length);
 
-    var index = 0;
     var listWarehouseExist = '';
 
-    findFuntion(index);
+    var listWarehouse = mainFuntion.warehouse_GetAll();
 
-    function findFuntion(index) {
-        Warehouse.findOne({_id_warehouse: listData[index]._id_warehouse
-        }).select().exec(function (err, warehouse) {
-            if (err)
-                return console.error(err);
-            else {
-                if (warehouse) {
-                    listWarehouseExist += ' ' + listData[index]._id_warehouse;
-                }
-                index++;
-                if(index < listData.length) {
-                    findFuntion(index);
-                }
-                else{
-                    saveFuntion();
-                }
+    for (var i = 0; i < listWarehouse.length; i++) {
+        for (var j = 0; j < listData.length; j++) {
+            if (listWarehouse[i]._id_warehouse === listData[j]._id_warehouse) {
+                listWarehouseExist += ' ' + listData[j]._id_warehouse;
             }
-        });
+        }
     }
 
-    function saveFuntion() {
-        if(listWarehouseExist.length > 0) {
-            res.status(200).send('Mã kho:' +listWarehouseExist + ' Đã tồn tại');
-        }
-        else {
-            Warehouse.insertMany(listData, function(err, docs) {
-                if(err) {
-                    res.status(200).send('Error!');
-                    console.log('Error!');
-                }
-                else {
-                    res.status(200).send('Warehouses created!');
-                    console.log('Warehouses created!');
-                }
-            });
-        }
+    if (listWarehouseExist.length > 0) {
+        res.status(200).send('Mã kho:' + listWarehouseExist + ' Đã tồn tại');
+    }
+    else {
+        Warehouse.insertMany(listData, function (err, docs) {
+            if (err) {
+                res.status(200).send('Error!');
+                console.log('Error!');
+            }
+            else {
+                mainFuntion.warehouse_Adds(listData);
+                res.status(200).send('Warehouses created!');
+                console.log('Warehouses created!');
+            }
+        });
     }
 });
 
@@ -109,6 +87,7 @@ router.post('/remove', function (req, res) {
                     if (err)
                         return console.error(err);
                     else {
+                        mainFuntion.warehouse_SetIsEnable(req.body._id_warehouse, false);
                         res.status(200).send('Warehouse removed!');
                         console.log('Warehouse removed!');
                     }
@@ -123,15 +102,8 @@ router.post('/remove', function (req, res) {
 
 router.post('/getbyid', function (req, res) {
     console.log(req.body);
-
-    Warehouse.find({_id_warehouse: req.body.id}, function (err, warehouse) {
-        if (err)
-            return console.error(err);
-        else {
-            res.status(200).send(warehouse);
-            console.log('Find one success!!!');
-        }
-    }).select('-_token -_hashed_password -_id');
+    var data = mainFuntion.warehouse_FindByIdWarehouse(req.body.id);
+    res.status(200).send(data);
 });
 
 router.post('/updatebyid', function (req, res) {
@@ -139,8 +111,8 @@ router.post('/updatebyid', function (req, res) {
         if (err)
             return console.error(err);
         else {
-            if(warehouse)
-            {
+            if (warehouse) {
+                mainFuntion.warehouse_Update(req.body._id_warehouse, req.body);
                 res.status(200).send('Warehouse successfully updated!');
                 console.log('Warehouse successfully updated!');
             }
