@@ -89,7 +89,13 @@ router.post('/updatebysumassign', function (req, res) {
 });
 
 router.post('/getallinfo', function (req, res) {
-    var listTrip = mainFuntion.assignDriver_GetAllInfo(req.body.id);
+    var listTrip = mainFuntion.assignDriver_GetAllInfo(req.body._id);
+
+    res.status(200).send({success: true, message: "OK", data: JSON.stringify(listTrip)});
+});
+
+router.post('/gettrip', function (req, res) {
+    var listTrip = mainFuntion.assignDriver_GetTrip(req.body._id);
 
     res.status(200).send({success: true, message: "OK", data: JSON.stringify(listTrip)});
 });

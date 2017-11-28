@@ -281,6 +281,7 @@ router.preOrder_GetByCodeFile = function (code_file) {
 //.PreOrderAssign/////////////////////////////////////////////////////////////////////////////////////////////////////
 var listPreOrdersAssign = [];
 resetLitsPreOrderAssign();
+
 function resetLitsPreOrderAssign() {
     PreOrderAssign.find({}, function (err, preordersassign) {
         if (err)
@@ -460,7 +461,7 @@ router.preOrderSumAssign_GetAll = function () {
     return listPreOrderSumAssign;
 };
 
-router.preOrderSumAssign_GetByIdPreSumAssign = function(bodys){
+router.preOrderSumAssign_GetByIdPreSumAssign = function (bodys) {
     var data = [];
     for (var i = 0; i < bodys.length; i++) {
         for (var j = 0; j < listPreOrderSumAssign.length; j++) {
@@ -473,7 +474,7 @@ router.preOrderSumAssign_GetByIdPreSumAssign = function(bodys){
     return data;
 };
 
-router.preOrderSumAssign_GetByPreSumTime = function(bodys){
+router.preOrderSumAssign_GetByPreSumTime = function (bodys) {
     var data = [];
     for (var i = 0; i < bodys.length; i++) {
         for (var j = 0; j < listPreOrderSumAssign.length; j++) {
@@ -486,21 +487,19 @@ router.preOrderSumAssign_GetByPreSumTime = function(bodys){
     return data;
 };
 
-router.preOrderSumAssign_Add = function(body){
+router.preOrderSumAssign_Add = function (body) {
     listPreOrderSumAssign.push(body);
 };
 
-router.preOrderSumAssign_Update = function(body){
-    for(var i = 0; i < listPreOrderSumAssign.length; i++)
-    {
-        if(listPreOrderSumAssign[i]._pre_sum_assign_time === body._pre_sum_assign_time)
-        {
+router.preOrderSumAssign_Update = function (body) {
+    for (var i = 0; i < listPreOrderSumAssign.length; i++) {
+        if (listPreOrderSumAssign[i]._pre_sum_assign_time === body._pre_sum_assign_time) {
             listPreOrderSumAssign[i] = body;
         }
     }
 };
 
-router.preOrderSumAssign_GetByElementZero = function(elementTrue, elementFalse, id_warehouse){
+router.preOrderSumAssign_GetByElementZero = function (elementTrue, elementFalse, id_warehouse) {
     var listData = [];
     for (var i = 0; i < listPreOrderSumAssign.length; i++) {
         //hiện tại đang set mặc định là chưa có vào trạng thái đó.
@@ -515,7 +514,7 @@ router.preOrderSumAssign_GetByElementZero = function(elementTrue, elementFalse, 
     for (var i = 0; i < listData.length; i++) {
         if (listTrip.indexOf(listData[i]._trip) === -1) {
             listTrip.push(listData[i]._trip);
-            listData_Sub.push({_trip : listData[i]._trip, data : [listData[i]], order : []});
+            listData_Sub.push({_trip: listData[i]._trip, data: [listData[i]], order: []});
         }
         else {
             for (var j = 0; j < listData_Sub.length; j++) {
@@ -539,7 +538,7 @@ router.preOrderSumAssign_GetByElementZero = function(elementTrue, elementFalse, 
     return listData_Sub;
 };
 
-router.preOrderSumAssign_FindByPreSumTime = function(pre_sum_time){
+router.preOrderSumAssign_FindByPreSumTime = function (pre_sum_time) {
     var listData = [];
     for (var i = 0; i < listPreOrderSumAssign.length; i++) {
         if (listPreOrderSumAssign[i]._pre_sum_time === pre_sum_time) {
@@ -609,10 +608,9 @@ router.assignDriver_Adds = function (bodys) {
     }
 };
 
-router.assignDriver_SetIsEnable = function(pre_sum_assign_time, value){
-    for(var i = 0; i < listAssignDriver.length; i++){
-        if(listAssignDriver[i]._pre_sum_assign_time === pre_sum_assign_time)
-        {
+router.assignDriver_SetIsEnable = function (pre_sum_assign_time, value) {
+    for (var i = 0; i < listAssignDriver.length; i++) {
+        if (listAssignDriver[i]._pre_sum_assign_time === pre_sum_assign_time) {
             listAssignDriver[i]._is_enabled = value;
         }
     }
@@ -639,9 +637,16 @@ router.assignDriver_GetAllInfo = function (id_driver) {
     for (var i = 0; i < listData.length; i++) {
         listData[i]._pre_order_sum_assign = [];
         for (var j = 0; j < listPreOrderSumAssign.length; j++) {
-            if (listPreOrderSumAssign[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time) {
+            if (listPreOrderSumAssign[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listPreOrderSumAssign[j]._driver_accept !== 0) {
                 listData[i]._pre_order_sum_assign.push(JSON.parse(JSON.stringify(listPreOrderSumAssign[j])));
             }
+        }
+    }
+
+    for (var i = 0; i < listData.length; i++) {
+        if (listData[i]._pre_order_sum_assign.length === 0) {
+            listData.splice(i, 1);
+            i--;
         }
     }
 
@@ -674,6 +679,67 @@ router.assignDriver_GetAllInfo = function (id_driver) {
     return listTrip;
 };
 
+router.assignDriver_GetTrip = function (id_driver) {
+    var listData = [];
 
+    for (var i = 0; i < listAssignDriver.length; i++) {
+        if (listAssignDriver[i]._driver === id_driver && listAssignDriver[i]._is_enabled === true) {
+            listData.push(JSON.parse(JSON.stringify(listAssignDriver[i])));
+        }
+    }
+
+    for (var i = 0; i < listData.length; i++) {
+        listData[i]._other_driver = [];
+        for (var j = 0; j < listAssignDriver.length; j++) {
+            if (listAssignDriver[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listData[i]._id !== listAssignDriver[j]._id) {
+                listData[i]._other_driver.push(JSON.parse(JSON.stringify(listAssignDriver[j])));
+            }
+        }
+    }
+
+    for (var i = 0; i < listData.length; i++) {
+        listData[i]._pre_order_sum_assign = [];
+        for (var j = 0; j < listPreOrderSumAssign.length; j++) {
+            if (listPreOrderSumAssign[j]._pre_sum_assign_time === listData[i]._pre_sum_assign_time && listPreOrderSumAssign[j]._driver_accept === 0) {
+                listData[i]._pre_order_sum_assign.push(JSON.parse(JSON.stringify(listPreOrderSumAssign[j])));
+            }
+        }
+    }
+
+    for (var i = 0; i < listData.length; i++) {
+        if (listData[i]._pre_order_sum_assign.length === 0) {
+            listData.splice(i, 1);
+            i--;
+        }
+    }
+
+    for (var i = 0; i < listData.length; i++) {
+        for (var ii = 0; ii < listData[i]._pre_order_sum_assign.length; ii++) {
+            listData[i]._pre_order_sum_assign[ii]._pre_order_sum = [];
+            for (var j = 0; j < listPreOrderSum.length; j++) {
+                if (listPreOrderSum[j]._pre_sum_time === listData[i]._pre_order_sum_assign[ii]._pre_sum_time) {
+                    listData[i]._pre_order_sum_assign[ii]._pre_order_sum.push(JSON.parse(JSON.stringify(listPreOrderSum[j])));
+                }
+            }
+        }
+    }
+
+    //tạo data theo số trip
+    var listTrip = [];
+    var listIdTrip = [];
+    for (var i = 0; i < listData.length; i++) {
+        if (listData[i]._pre_order_sum_assign[0]._trip !== undefined && listIdTrip.indexOf(listData[i]._pre_order_sum_assign[0]._trip) === -1) {
+            listIdTrip.push(listData[i]._pre_order_sum_assign[0]._trip);
+            listTrip.push({_trip: listData[i]._pre_order_sum_assign[0]._trip, data: []});
+            for (var j = 0; j < listData.length; j++) {
+                if (listData[j]._pre_order_sum_assign[0]._trip === listData[i]._pre_order_sum_assign[0]._trip) {
+                    listTrip[listTrip.length - 1].data.push(listData[j]);
+                }
+            }
+        }
+    }
+
+    return listTrip;
+};
 
 module.exports = router;
