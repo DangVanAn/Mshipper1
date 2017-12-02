@@ -39,6 +39,7 @@ public class MoreFragment extends BaseFragment {
         if (App.getRoleUser() != DefinedApp.ROLE.GUARD && App.getRoleUser() != DefinedApp.ROLE.MANAGER_WAREHOUSE) {
             more.add(new More(1, "Liên hệ"));
             more.add(new More(2, "Các chuyến hàng"));
+            more.add(new More(3, "Xác nhận chuyến hàng"));
         }
         more.add(new More(0, "Đăng xuất"));
 

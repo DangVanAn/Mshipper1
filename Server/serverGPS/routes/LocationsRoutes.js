@@ -67,25 +67,27 @@ router.saveLocation = function (data) {
     var tempData = JSON.parse(data);
     console.log(tempData);
     var locations = []
-    data._pre_order_sum_assign.forEach(function(element) {
+    for (var i = 0; i < tempData._pre_order_sum_assign.length; i++) {
+        var element = tempData._pre_order_sum_assign[i];
         var locationTemp = {
-            _latitude: data._latitude,
-            _longitude: data._longitude,
-            _timestamp: data._timestamp,
-            _delivery_man: data._delivery_man,
+            _latitude: tempData._latitude,
+            _longitude: tempData._longitude,
+            _timestamp: tempData._timestamp,
+            _delivery_man: tempData._delivery_man,
             _pre_order_sum_assign: element,
-            _number_plate: data._number_plate,
-            _trip: data._trip
+            _number_plate: tempData._number_plate,
+            _trip: tempData._trip
         }
         locations.push(new Locations(locationTemp));
-    }, this);
+    }
 
     Locations.insertMany(locations, function(error, docs) {
-        if (err) {
+        if (error) {
             console.log('Location error!');
         } else {
-            console.log('Location created!');
-            docs.array.forEach(function(element) {
+            console.log('Location created!', docs);
+        
+            docs.forEach(function(element) {
                 insertIntoListGPS(element);
             }, this);
         }

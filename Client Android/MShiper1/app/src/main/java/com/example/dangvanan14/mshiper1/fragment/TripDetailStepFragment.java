@@ -193,14 +193,14 @@ public class TripDetailStepFragment extends BaseFragment implements View.OnClick
         }
     }
 
-    public void postUpdateTimeStep(List<String> id, final String element, final long valueTime) {
+    public void postUpdateTimeStep(List<String> idPreOrderSumAssign, final String element, final long valueTime) {
         elementSelected = element;
         final LoadData<RepPost> loadData = new LoadData<>();
         loadData.loadData(new Callable<Call<RepPost>>() {
             @Override
             public Call<RepPost> call() throws Exception {
                 ParamUpdateStep pram = new ParamUpdateStep();
-                pram._pre_order_sum_assign = id;
+                pram._pre_order_sum_assign = idPreOrderSumAssign;
                 pram.element = element;
                 pram.time = valueTime;
                 pram.userAction = App.getUser().get_id();

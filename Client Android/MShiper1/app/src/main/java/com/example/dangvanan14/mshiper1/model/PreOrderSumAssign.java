@@ -37,6 +37,7 @@ public class PreOrderSumAssign implements Parcelable {
     private double _ton_real;
     private String _trip;
     private long _driver_accept;
+    private long _driver_cancel;
     private List<PreOrderSum> _pre_order_sum;
 
     protected PreOrderSumAssign(Parcel in) {
@@ -71,6 +72,7 @@ public class PreOrderSumAssign implements Parcelable {
         _ton_real = in.readDouble();
         _trip = in.readString();
         _driver_accept = in.readLong();
+        _driver_cancel = in.readLong();
         _pre_order_sum = in.createTypedArrayList(PreOrderSum.CREATOR);
     }
 
@@ -107,6 +109,7 @@ public class PreOrderSumAssign implements Parcelable {
         dest.writeDouble(_ton_real);
         dest.writeString(_trip);
         dest.writeLong(_driver_accept);
+        dest.writeLong(_driver_cancel);
         dest.writeTypedList(_pre_order_sum);
     }
 
@@ -126,6 +129,14 @@ public class PreOrderSumAssign implements Parcelable {
             return new PreOrderSumAssign[size];
         }
     };
+
+    public long get_driver_cancel() {
+        return _driver_cancel;
+    }
+
+    public void set_driver_cancel(long _driver_cancel) {
+        this._driver_cancel = _driver_cancel;
+    }
 
     public long get_in_delivery_customer() {
         return _in_delivery_customer;
