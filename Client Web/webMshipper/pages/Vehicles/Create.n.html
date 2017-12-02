@@ -3,7 +3,7 @@
         <div id="AccountCreateN">
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header">Tạo Danh Sách Mặt Hàng</h1>
+                    <h1 class="page-header">Tạo Danh Sách Phương Tiện</h1>
                 </div>
                 <!-- /.col-lg-12 -->
             </div>
@@ -41,20 +41,20 @@
                                 <tr>
                                     <th>STT</th>
                                     <th>Tên Phương Tiện</th>
+                                    <th>Biển Số Xe</th>
                                     <th>Tải Trọng(kg)</th>
                                     <th>Thể Tích(l)</th>
-                                    <th>Số Lượng</th>
                                     <th>Ghi Chú</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr class="pointer" ng-repeat="x in vehicles">
                                     <td>{{$index + 1}}</td>
-                                    <td>{{x.name}}</td>
-                                    <td>{{x.weigh}}</td>
-                                    <td>{{x.volume}}</td>
-                                    <td>{{x.number}}</td>
-                                    <td>{{x.note}}</td>
+                                    <td>{{x._name}}</td>
+                                    <td>{{x._number_plate}}</td>
+                                    <td>{{x._weigh}}</td>
+                                    <td>{{x._volume}}</td>
+                                    <td>{{x._note}}</td>
                                 </tr>
                                 </tbody>
                             </table>

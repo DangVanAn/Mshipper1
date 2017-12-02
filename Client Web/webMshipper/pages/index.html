@@ -53,20 +53,19 @@
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.18/angular-sanitize.js"></script>
 
     <script src="../js/app.js"></script>
-    <script src="../js/mapquanly.js"></script>
+    <script src="../js/Maps/maps.main.js"></script>
 
     <script src="../js/thongbao.js"></script>
     <script src="../js/Report/reports.main.js"></script>
 
     <script src="../bower_components/dropdown/bsDropdown.js"></script>
 
-    <script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM"></script>
+    <script src="https://maps.google.com/maps/api/js?libraries=placeses,visualization,drawing,geometry,places&key=AIzaSyC_QObl8my6BBcCIOyFf3sPkLjVXsxZUs8"></script>
     <script src="../dist/js/ng-map.js"></script>
+    <script src='http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.5/d3.min.js'></script>
 
     <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-    <script src="../dist/js/angularjs-dropdown-multiselect.min.js"></script>
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.full.min.js"></script>
     <script src="../dist/xlsx-model/xlsx-model.js"></script>
@@ -74,6 +73,14 @@
     <script src="../bower_components/ng-dialog/js/ngDialog.min.js"></script>
 
     <script src="../bower_components/chart.js/dist/Chart.bundle.js"></script>
+
+    <script src="../bower_components/ng-table/ng-table.min.js"></script>
+    <script src="../bower_components/ng-table/ng-infinite-scroll.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/ng-table/ng-table.min.css">
+    <script src="../bower_components/FileSaver/FileSaver.js"></script>
+    <script src="../bower_components/angular-dragdrop/angular-dragdrop.min.js"></script>
+    <script src="../bower_components/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js"></script>
+    <script src="../bower_components/angular-dropdown-multiselect/angularjs-dropdown-multiselect.js"></script>
 
     <script src="../js/Warehouses/warehouses.main.js"></script>
     <script src="../js/Warehouses/warehouses.create.js"></script>
@@ -105,10 +112,18 @@
     <script src="../js/Teams/teams.modal.show.account.js"></script>
     <script src="../js/Teams/teams.modal.show.delete.yesno.js"></script>
 
+    <script src="../js/Orders/orders.main.js"></script>
     <script src="../js/Orders/orders.show.js"></script>
-    <script src="../js/Orders/orders.create.js"></script>
+    <script src="../js/Orders/pre.orders.create.n.js"></script>
+    <script src="../js/Orders/pre.orders.show.js"></script>
+    <script src="../js/Orders/pre.orders.show.list.js"></script>
+    <script src="../js/Orders/pre.orders.sum.create.n.js"></script>
+    <script src="../js/Orders/pre.orders.sum.show.js"></script>
+    <script src="../js/Orders/pre.orders.sum.show.all.js"></script>
     <script src="../js/Orders/orders.modal.show.js"></script>
     <script src="../js/Orders/orders.modal.create.js"></script>
+    <script src="../js/Orders/pre.orders.assign.create.n.js"></script>
+    <script src="../js/Orders/pre.orders.assign.show.js"></script>
 
     <script src="../js/Assigns/assigns.show.js"></script>
     <script src="../js/Assigns/assigns.create.js"></script>
@@ -145,334 +160,352 @@
 <body ng-app="mShipperApp" ng-controller="AppMain">
 
 <div id="wrapper">
-
-    <!-- Navigation -->
-    <nav id="mainIndex" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#dashboard">Mshipper v0.1</a>
-        </div>
-        <!-- /.navbar-header -->
-
-        <div>
-        </div>
-
-        <ul class="nav navbar-top-links navbar-right">
-
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="">
-                    <p class="barUser" id="mainUserName">UserName</p><p class="barUser">-</p><p class="barUser" id="mainUserRole">Chức Vụ</p>
-                    <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
-                    </li>
-                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li><a ng-click="Logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-user -->
-            </li>
-            <!-- /.dropdown -->
-
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-messages">
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <strong>John Smith</strong>
-                                <span class="pull-right text-muted">
-                                        <em>Yesterday</em>
-                                    </span>
-                            </div>
-                            <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...</div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" href="#">
-                            <strong>Read All Messages</strong>
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-messages -->
-            </li>
-            <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-tasks">
-                    <li>
-                        <a href="#">
-                            <div>
-                                <p>
-                                    <strong>Task 1</strong>
-                                    <span class="pull-right text-muted">40% Complete</span>
-                                </p>
-                                <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="40"
-                                         aria-valuemin="0" aria-valuemax="100" style="width: 40%">
-                                        <span class="sr-only">40% Complete (success)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <p>
-                                    <strong>Task 2</strong>
-                                    <span class="pull-right text-muted">20% Complete</span>
-                                </p>
-                                <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-info" role="progressbar" aria-valuenow="20"
-                                         aria-valuemin="0" aria-valuemax="100" style="width: 20%">
-                                        <span class="sr-only">20% Complete</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <p>
-                                    <strong>Task 3</strong>
-                                    <span class="pull-right text-muted">60% Complete</span>
-                                </p>
-                                <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="60"
-                                         aria-valuemin="0" aria-valuemax="100" style="width: 60%">
-                                        <span class="sr-only">60% Complete (warning)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <p>
-                                    <strong>Task 4</strong>
-                                    <span class="pull-right text-muted">80% Complete</span>
-                                </p>
-                                <div class="progress progress-striped active">
-                                    <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="80"
-                                         aria-valuemin="0" aria-valuemax="100" style="width: 80%">
-                                        <span class="sr-only">80% Complete (danger)</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" href="#">
-                            <strong>See All Tasks</strong>
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-tasks -->
-            </li>
-            <!-- /.dropdown -->
-            <li class="dropdown">
-                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
-                </a>
-                <ul class="dropdown-menu dropdown-alerts">
-                    <li>
-                        <a href="#">
-                            <div>
-                                <i class="fa fa-comment fa-fw"></i> New Comment
-                                <span class="pull-right text-muted small">4 minutes ago</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <i class="fa fa-twitter fa-fw"></i> 3 New Followers
-                                <span class="pull-right text-muted small">12 minutes ago</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <i class="fa fa-envelope fa-fw"></i> Message Sent
-                                <span class="pull-right text-muted small">4 minutes ago</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <i class="fa fa-tasks fa-fw"></i> New Task
-                                <span class="pull-right text-muted small">4 minutes ago</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="#">
-                            <div>
-                                <i class="fa fa-upload fa-fw"></i> Server Rebooted
-                                <span class="pull-right text-muted small">4 minutes ago</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a class="text-center" href="#">
-                            <strong>See All Alerts</strong>
-                            <i class="fa fa-angle-right"></i>
-                        </a>
-                    </li>
-                </ul>
-                <!-- /.dropdown-alerts -->
-            </li>
-            <!-- /.dropdown -->
-        </ul>
-        <!-- /.navbar-top-links -->
-
-        <div class="navbar-default sidebar" role="navigation">
-            <div class="sidebar-nav navbar-collapse">
-                <ul class="nav" id="side-menu">
-                    <li class="sidebar-search">
-                        <div class="input-group custom-search-form">
-                            <input type="text" class="form-control" placeholder="Search...">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <!-- /input-group -->
-                    </li>
-                    <li>
-                        <a href="#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
-                    </li>
-                    <li>
-                        <a href="#ordersshow"><i class="fa fa-dashboard fa-fw"></i> Danh sách đơn hàng</a>
-                    </li>
-                    <li>
-                        <a href="#orderscreate"><i class="fa fa-dashboard fa-fw"></i> Thêm danh sách đơn hàng</a>
-                    </li>
-                    <li>
-                        <a href="#assignsshow"><i class="fa fa-dashboard fa-fw"></i> Danh sách phân công</a>
-                    </li>
-                    <li>
-                        <a href="#assignscreate"><i class="fa fa-dashboard fa-fw"></i> Phân công đơn hàng</a>
-                    </li>
-                    <li>
-                        <a href="#productgroupsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý nhóm hàng</a>
-                    </li>
-                    <li>
-                        <a href="#productsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý mặt hàng</a>
-                    </li>
-                    <li>
-                        <a href="#vehiclesmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý Phương Tiện</a>
-                    </li>
-                    <li>
-                        <a href="#accountsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>
-                    </li>
-                    <li>
-                        <a href="#warehousesmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý danh sách kho hàng</a>
-                    </li>
-                    <li>
-                        <a href="#teamsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý đội</a>
-                    </li>
-                    <li>
-                        <a href="#tablethongbao"><i class="fa fa-dashboard fa-fw"></i> Quản lý thông báo</a>
-                    </li>
-                    <li>
-                        <a href="#mapquanly"><i class="fa fa-dashboard fa-fw"></i> Bản đồ</a>
-                    </li>
-                    <li>
-                        <a href="#reportsmain"><i class="fa fa-dashboard fa-fw"></i> Biểu đồ thống kê</a>
-                    </li>
-                    <li>
-                        <a href="#table"><i class="fa fa-table fa-fw"></i> Tables</a>
-                    </li>
-                    <li>
-                        <a href="#forms"><i class="fa fa-edit fa-fw"></i> Forms</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>
-                        <ul class="nav nav-second-level">
-                            <li>
-                                <a href="#panels-wells">Panels and Wells</a>
-                            </li>
-                            <li>
-                                <a href="#buttons">Buttons</a>
-                            </li>
-                            <li>
-                                <a href="#notifications">Notifications</a>
-                            </li>
-                            <li>
-                                <a href="#typography">Typography</a>
-                            </li>
-                            <li>
-                                <a href="#icons"> Icons</a>
-                            </li>
-                            <li>
-                                <a href="#grid">Grid</a>
-                            </li>
-                        </ul>
-                        <!-- /.nav-second-level -->
-                    </li>
-                </ul>
+    <div id="AppMainStyle">
+        <nav id="mainIndex" class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#dashboard">Mshipper v0.1</a>
             </div>
-            <!-- /.sidebar-collapse -->
-        </div>
-        <!-- /.navbar-static-side -->
-    </nav>
 
-    <div ng-view></div>
+            <div class="navbar-header navbar-brand">
+                <div class="dropdown">
+                    <button class="dropbtn">{{$root.selectedLink}}</button>
+                    <div class="dropdown-content">
+                        <a ng-repeat="row in linkSelects" href="#{{row.id}}">{{row.name}}</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="">
+                        <p class="barUser" id="mainUserName">UserName</p>
+                        <p class="barUser">-</p>
+                        <p class="barUser" id="mainUserRole">Chức Vụ</p>
+                        <i class="fa fa-user fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-user">
+                        <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                        </li>
+                        <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li><a ng-click="Logout()"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-user -->
+                </li>
+                <!-- /.dropdown -->
+
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-envelope fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-messages">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <strong>John Smith</strong>
+                                    <span class="pull-right text-muted">
+                                        <em>Yesterday</em>
+                                    </span>
+                                </div>
+                                <div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque eleifend...
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>Read All Messages</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-messages -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-tasks fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-tasks">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 1</strong>
+                                        <span class="pull-right text-muted">40% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-success" role="progressbar"
+                                             aria-valuenow="40"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 40%">
+                                            <span class="sr-only">40% Complete (success)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 2</strong>
+                                        <span class="pull-right text-muted">20% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-info" role="progressbar"
+                                             aria-valuenow="20"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 20%">
+                                            <span class="sr-only">20% Complete</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 3</strong>
+                                        <span class="pull-right text-muted">60% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-warning" role="progressbar"
+                                             aria-valuenow="60"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 60%">
+                                            <span class="sr-only">60% Complete (warning)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <p>
+                                        <strong>Task 4</strong>
+                                        <span class="pull-right text-muted">80% Complete</span>
+                                    </p>
+                                    <div class="progress progress-striped active">
+                                        <div class="progress-bar progress-bar-danger" role="progressbar"
+                                             aria-valuenow="80"
+                                             aria-valuemin="0" aria-valuemax="100" style="width: 80%">
+                                            <span class="sr-only">80% Complete (danger)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Tasks</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-tasks -->
+                </li>
+                <!-- /.dropdown -->
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <i class="fa fa-bell fa-fw"></i> <i class="fa fa-caret-down"></i>
+                    </a>
+                    <ul class="dropdown-menu dropdown-alerts">
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-comment fa-fw"></i> New Comment
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-twitter fa-fw"></i> 3 New Followers
+                                    <span class="pull-right text-muted small">12 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-envelope fa-fw"></i> Message Sent
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-tasks fa-fw"></i> New Task
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="#">
+                                <div>
+                                    <i class="fa fa-upload fa-fw"></i> Server Rebooted
+                                    <span class="pull-right text-muted small">4 minutes ago</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a class="text-center" href="#">
+                                <strong>See All Alerts</strong>
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                    <!-- /.dropdown-alerts -->
+                </li>
+                <!-- /.dropdown -->
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <!--<div class="navbar-default sidebar" role="navigation">-->
+            <!--<div class="sidebar-nav navbar-collapse">-->
+            <!--<ul class="nav" id="side-menu">-->
+            <!--<li class="sidebar-search">-->
+            <!--<div class="input-group custom-search-form">-->
+            <!--<input type="text" class="form-control" placeholder="Search...">-->
+            <!--<span class="input-group-btn">-->
+            <!--<button class="btn btn-default" type="button">-->
+            <!--<i class="fa fa-search"></i>-->
+            <!--</button>-->
+            <!--</span>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /input-group &ndash;&gt;-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#dashboard"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#ordermain"><i class="fa fa-dashboard fa-fw"></i> Quản Lý Đơn Hàng</a>-->
+            <!--</li>-->
+
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#ordersshow"><i class="fa fa-dashboard fa-fw"></i> Danh sách đơn hàng</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#assignsshow"><i class="fa fa-dashboard fa-fw"></i> Danh sách phân công</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#assignscreate"><i class="fa fa-dashboard fa-fw"></i> Phân công đơn hàng</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#productgroupsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý nhóm hàng</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#productsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý mặt hàng</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+
+            <!--<li>-->
+            <!--<a href="#vehiclesmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý Phương Tiện</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#accountsmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý tài khoản</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#warehousesmain"><i class="fa fa-dashboard fa-fw"></i> Quản lý danh sách kho hàng</a>-->
+            <!--</li>-->
+            <!--&lt;!&ndash;<li>&ndash;&gt;-->
+            <!--&lt;!&ndash;<a href="#teamsshow"><i class="fa fa-dashboard fa-fw"></i> Quản lý đội</a>&ndash;&gt;-->
+            <!--&lt;!&ndash;</li>&ndash;&gt;-->
+            <!--<li>-->
+            <!--<a href="#tablethongbao"><i class="fa fa-dashboard fa-fw"></i> Quản lý thông báo</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#mapsmain"><i class="fa fa-dashboard fa-fw"></i> Bản đồ</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#reportsmain"><i class="fa fa-dashboard fa-fw"></i> Biểu đồ thống kê</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#table"><i class="fa fa-table fa-fw"></i> Tables</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#forms"><i class="fa fa-edit fa-fw"></i> Forms</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#"><i class="fa fa-wrench fa-fw"></i> UI Elements<span class="fa arrow"></span></a>-->
+            <!--<ul class="nav nav-second-level">-->
+            <!--<li>-->
+            <!--<a href="#panels-wells">Panels and Wells</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#buttons">Buttons</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#notifications">Notifications</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#typography">Typography</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#icons"> Icons</a>-->
+            <!--</li>-->
+            <!--<li>-->
+            <!--<a href="#grid">Grid</a>-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--&lt;!&ndash; /.nav-second-level &ndash;&gt;-->
+            <!--</li>-->
+            <!--</ul>-->
+            <!--</div>-->
+            <!--&lt;!&ndash; /.sidebar-collapse &ndash;&gt;-->
+            <!--</div>-->
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div ng-view></div>
+    </div>
+    <!-- Navigation -->
 
 </div>
 

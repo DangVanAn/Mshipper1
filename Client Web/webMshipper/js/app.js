@@ -41,13 +41,29 @@ function httpGet($http, url, success, error) {
         error(response);
     });
 }
-angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'ngDialog', 'angularjs-dropdown-multiselect', 'xlsx-model', 'ui.select', 'ngSanitize'])
+angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dropdown', 'ngCsvImport', 'hljs', 'ngMap', 'ngDialog', 'angularjs-dropdown-multiselect', 'xlsx-model', 'ui.select', 'ngSanitize', 'ngTable','infinite-scroll', 'ngDragDrop', 'dndLists'])
     .controller('AppMain', function ($scope, $rootScope, $cookieStore, $location) {
 
         $scope.Logout = function () {
             $rootScope.globals = {};
             $cookieStore.remove('globals');
             $location.path('/Login');
+        };
+
+        $rootScope.selectedLink = 'Quản L';
+
+        $scope.linkSelects = [
+            {id: 'ordermain', name: 'Quản Lý Đơn Hàng'},
+            {id: 'vehiclesmain', name: 'Quản Lý Phương Tiện'},
+            {id: 'accountsmain', name: 'Quản Lý Tài Khoản'},
+            {id: 'warehousesmain', name: 'Quản Lý Kho Hàng'},
+            {id: 'reportsmain', name: 'Biểu Đồ Báo Cáo'}];
+        $scope.selectedLinkSelect = [];
+        $scope.selectedLinkSelect.selected = $scope.linkSelects[0];
+
+        $scope.selectLinkSelect = function (item) {
+            console.log(item);
+            $location.path('/' + item.id);
         }
     })
 
@@ -66,11 +82,35 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when('/Login', {
                     template: '<login></login>',
                 })
+                .when("/ordermain", {
+                    template: '<order-main></order-main>',
+                })
                 .when("/ordersshow", {
                     template: '<order-show></order-show>',
                 })
-                .when("/orderscreate", {
-                    template: '<order-create></order-create>',
+                .when("/orderscreate.n", {
+                    template: '<order-create-n></order-create-n>',
+                })
+                .when("/preordersshow/:code_file", {
+                    template: '<pre-order-show></pre-order-show>',
+                })
+                .when("/preordersshowlist", {
+                    template: '<pre-order-show-list></pre-order-show-list>',
+                })
+                .when("/ordersassigncreate.n", {
+                    template: '<order-assign-create-n></order-assign-create-n>',
+                })
+                .when("/preordersassignshow", {
+                    template: '<pre-order-assign-show></pre-order-assign-show>',
+                })
+                .when("/preorderssumcreate.n", {
+                    template: '<pre-order-sum-create-n></pre-order-sum-create-n>',
+                })
+                .when("/preorderssumshow", {
+                    template: '<pre-order-sum-show></pre-order-sum-show>',
+                })
+                .when("/preorderssumshowall", {
+                    template: '<pre-order-sum-show-all></pre-order-sum-show-all>',
                 })
                 .when("/packagetypesshow", {
                     template: '<packagetype-show></packagetype-show>',
@@ -177,8 +217,8 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 .when("/reportsmain", {
                     template: '<reports-main></reports-main>',
                 })
-                .when("/mapquanly", {
-                    template: '<map-quan-ly></map-quan-ly>',
+                .when("/mapsmain", {
+                    template: '<maps-main></maps-main>',
                 })
                 .when("/flot", {
                     templateUrl: "flot.html",
@@ -350,9 +390,87 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
         };
     })
 
+    .directive('excelExport', function () {
+            return {
+                restrict: 'A',
+                scope: {
+                    fileName: "@",
+                    data: "&exportData"
+                },
+                replace: true,
+                template: '<button class="btn btn-primary btn-ef btn-ef-3 btn-ef-3c mb-10" ng-click="download()">Export to Excel <i class="fa fa-download"></i></button>',
+                link: function (scope, element) {
+
+                    scope.download = function() {
+
+                        function datenum(v, date1904) {
+                            if(date1904) v+=1462;
+                            var epoch = Date.parse(v);
+                            return (epoch - new Date(Date.UTC(1899, 11, 30))) / (24 * 60 * 60 * 1000);
+                        };
+
+                        function getSheet(data, opts) {
+                            var ws = {};
+                            var range = {s: {c:10000000, r:10000000}, e: {c:0, r:0 }};
+                            for(var R = 0; R != data.length; ++R) {
+                                for(var C = 0; C != data[R].length; ++C) {
+                                    if(range.s.r > R) range.s.r = R;
+                                    if(range.s.c > C) range.s.c = C;
+                                    if(range.e.r < R) range.e.r = R;
+                                    if(range.e.c < C) range.e.c = C;
+                                    var cell = {v: data[R][C] };
+                                    if(cell.v == null) continue;
+                                    var cell_ref = XLSX.utils.encode_cell({c:C,r:R});
+
+                                    if(typeof cell.v === 'number') cell.t = 'n';
+                                    else if(typeof cell.v === 'boolean') cell.t = 'b';
+                                    else if(cell.v instanceof Date) {
+                                        cell.t = 'n'; cell.z = XLSX.SSF._table[14];
+                                        cell.v = datenum(cell.v);
+                                    }
+                                    else cell.t = 's';
+
+                                    ws[cell_ref] = cell;
+                                }
+                            }
+                            if(range.s.c < 10000000) ws['!ref'] = XLSX.utils.encode_range(range);
+                            return ws;
+                        };
+
+                        function Workbook() {
+                            if(!(this instanceof Workbook)) return new Workbook();
+                            this.SheetNames = [];
+                            this.Sheets = {};
+                        }
+
+                        var wb = new Workbook(), ws = getSheet(scope.data());
+                        /* add worksheet to workbook */
+                        wb.SheetNames.push(scope.fileName);
+                        wb.Sheets[scope.fileName] = ws;
+                        var wbout = XLSX.write(wb, {bookType:'xlsx', bookSST:true, type: 'binary'});
+
+                        function s2ab(s) {
+                            var buf = new ArrayBuffer(s.length);
+                            var view = new Uint8Array(buf);
+                            for (var i=0; i!=s.length; ++i) view[i] = s.charCodeAt(i) & 0xFF;
+                            return buf;
+                        }
+
+                        saveAs(new Blob([s2ab(wbout)],{type:"application/octet-stream"}), scope.fileName+'.xlsx');
+
+                    };
+
+                }
+            };
+        }
+    )
+
     .run(['$rootScope', '$location', '$cookieStore', '$http',
         function ($rootScope, $location, $cookieStore) {
             $rootScope.api_url = {
+
+                getPreOrderShow: 'http://localhost:9999/preorders/getall',
+                getPreOrderSumShow: 'http://localhost:9999/preorderssum/getall',
 
                 postAccountLogin: 'http://localhost:9999/users/login',
                 postAccountCreate: 'http://localhost:9999/users/add',
@@ -361,6 +479,8 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 getAccountPhone : 'http://localhost:9999/users/getbyphone',
                 postAccountUpdate : 'http://localhost:9999/users/updatebyphone',
                 postAccountRemove : 'http://localhost:9999/users/remove',
+                getAccountByPermission : 'http://localhost:9999/users/getbypermission',
+                getAccountByPermissionAndIdManager : 'http://localhost:9999/users/getbypermissionandidmanager',
 
                 getTeamShow: 'http://localhost:9999/teamlists/getall',
                 postTeamCreate: 'http://localhost:9999/teamlists/adds',
@@ -396,12 +516,14 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                 postProductUpdate : 'http://localhost:9999/products/updatebyid',
 
                 getVehicle: 'http://localhost:9999/vehicles/getall',
-                getVehicleByPhone: 'http://localhost:9999/vehicles/getbyphone',
+                getVehicleByOwner: 'http://localhost:9999/vehicles/getbyowner',
                 postVehicleCreate: 'http://localhost:9999/vehicles/add',
                 postVehicleCreate_N: 'http://localhost:9999/vehicles/adds',
                 postVehicleRemove : 'http://localhost:9999/vehicles/remove',
                 getVehicleId : 'http://localhost:9999/vehicles/getbyid',
                 postVehicleUpdate : 'http://localhost:9999/vehicles/updatebyid',
+
+                getLocation: 'http://localhost:9999/locations/getall',
             };
 
             $rootScope.globals = $cookieStore.get('globals') || {};
@@ -413,7 +535,7 @@ angular.module('mShipperApp', ['ngRoute', 'ngCookies', 'ui.bootstrap', 'ng.bs.dr
                     $location.path('/Login');
                     return;
                 }
-                if ($rootScope.globals.currentUser.role === "Quản Lý Điều Phối") {
+                if ($rootScope.globals.currentUser.permission === "A001" || $rootScope.globals.currentUser.permission === "C001") {
 
                     console.log('conco1', $rootScope.globals.currentUser);
 

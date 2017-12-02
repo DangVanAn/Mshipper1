@@ -1,0 +1,68 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="OrderCreateN">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Danh sách đơn hàng</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-2">
+                                    <input id="fileButton" type="file" ng-click="uploadFile()" xlsx-model="excel" style="display: none;">
+                                    <button style="width: 150px" type="button" class="btn btn-primary" onclick="document.getElementById('fileButton').click();">Nhập tập tin</button>
+                                    <div  ng-if="excel" ng-init="GetImport()"></div>
+                                </div>
+
+                                <div class="col-sm-2">
+                                    <button style="width: 150px; float: left" type="button" class="btn btn-primary" ng-click="saveOrders()">Lưu đơn hàng</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <br>
+
+                        <div class="panel-body">
+                            <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
+                                <tr ng-repeat="row in $data">
+                                    <td data-title="'Đơn Hàng'" filter="{_id_order: 'text'}" sortable="'_id_order'">{{row._id_order}}</td>
+                                    <td data-title="'Trip'" filter="{_trip: 'text'}" sortable="'_trip'">{{row._trip}}</td>
+                                    <td data-title="'Kho Hàng'" filter="{_id_warehouse: 'text'}" sortable="'_id_warehouse'">{{row._id_warehouse}}</td>
+                                    <td data-title="'Điểm Giao Hàng'" filter="{_id_delivery: 'text'}" sortable="'_id_delivery'">{{row._id_delivery}}</td>
+                                    <td data-title="'Nhà Phân Phối'" filter="{_id_customer: 'text'}" sortable="'_id_customer'">{{row._id_customer}}</td>
+                                    <td data-title="'Địa Chỉ'" filter="{_address: 'text'}" sortable="'_address'">{{row._address}}</td>
+                                    <td data-title="'Mã Hoàng Hóa'" filter="{_id_product: 'text'}" sortable="'_id_product'">{{row._id_product}}</td>
+                                    <td data-title="'Tên Hàng Hóa'" filter="{_name_product: 'text'}" sortable="'_name_product'">{{row._name_product}}</td>
+                                    <td data-title="'Số Lượng'" filter="{_number: 'number'}" sortable="'_number'">{{row._number}}</td>
+                                    <td data-title="'Số Tấn'" filter="{_ton: 'number'}" sortable="'_number'">{{row._ton}}</td>
+                                    <td data-title="'Loại Xe Vận Chuyển'" filter="{_type_product: 'text'}" sortable="'_type_product'">{{row._type_product}}</td>
+                                    <td data-title="'Nhóm Hàng'" filter="{_id_product_group: 'text'}" sortable="'_id_product_group'">{{row._id_product_group}}</td>
+                                    <td data-title="'Số Xe'" filter="{_number_plate: 'text'}" sortable="'_number_plate'">{{row._number_plate}}</td>
+                                    <td data-title="'Tên Nhà Xe'" filter="{_id_delivery_manager: 'text'}" sortable="'_id_delivery_manager'">{{row._id_delivery_manager}}</td>
+                                    <td data-title="'ETD'" filter="{_etd: 'text'}" sortable="'_etd'">{{row._etd}}</td>
+                                    <td data-title="'ETA'" filter="{_eta: 'text'}" sortable="'_eta'">{{row._eta}}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+
+    </div>
+    <!-- /#page-wrapper -->
+</div>

@@ -4,6 +4,7 @@ angular.module('mShipperApp').component('accountMain', {
         $(document).ready(function () {
             init();
         });
+        $rootScope.selectedLink = "Quản Lý Tài Khoản";
 
         function init() {
             //load info user all

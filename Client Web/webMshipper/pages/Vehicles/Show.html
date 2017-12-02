@@ -37,69 +37,116 @@
                         <br>
                         <br>
                         <div class="panel-body">
-                            <table width="100%" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>
-                                        <a href="#" ng-click="sortType = 'stt'; sortReverse = !sortReverse">
-                                            STT
-                                            <span ng-show="sortType == 'stt' && !sortReverse"
-                                                  class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == 'stt' && sortReverse"
-                                                  class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="#" ng-click="sortType = '_name'; sortReverse = !sortReverse">
-                                            Tên Phương Tiện
-                                            <span ng-show="sortType == '_name' && !sortReverse"
-                                                  class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_name' && sortReverse"
-                                                  class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="#" ng-click="sortType = '_weigh'; sortReverse = !sortReverse">
-                                            Tải Trọng(kg)
-                                            <span ng-show="sortType == '_weigh' && !sortReverse"
-                                                  class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_weigh' && sortReverse"
-                                                  class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="#" ng-click="sortType = '_volume'; sortReverse = !sortReverse">
-                                            Thể Tích(l)
-                                            <span ng-show="sortType == '_volume' && !sortReverse"
-                                                  class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_volume' && sortReverse"
-                                                  class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th>
-                                        <a href="#" ng-click="sortType = '_note'; sortReverse = !sortReverse">
-                                            Ghi Chú
-                                            <span ng-show="sortType == '_note' && !sortReverse"
-                                                  class="fa fa-caret-down"></span>
-                                            <span ng-show="sortType == '_note' && sortReverse"
-                                                  class="fa fa-caret-up"></span>
-                                        </a>
-                                    </th>
-                                    <th>Xóa phương tiện</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr ng-repeat="x in vehicles | orderBy:sortType:sortReverse | filter:{ _permission: selectedRole.selected.name }">
-                                    <td>{{$index + 1}}</td>
-                                    <td><a href="#/vehiclescreate/{{x._id}}">{{x._name}}</a></td>
-                                    <td>{{x._weigh}}</td>
-                                    <td>{{x._volume}}</td>
-                                    <td>{{x._note}}</td>
-                                    <td>
-                                        <button ng-click="remove(x)">Xóa</button>
+                            <!--<table width="100%" class="table table-bordered table-hover">-->
+                                <!--<thead>-->
+                                <!--<tr>-->
+                                    <!--<th>-->
+                                        <!--<a href="#" ng-click="sortType = 'stt'; sortReverse = !sortReverse">-->
+                                            <!--STT-->
+                                            <!--<span ng-show="sortType == 'stt' && !sortReverse"-->
+                                                  <!--class="fa fa-caret-down"></span>-->
+                                            <!--<span ng-show="sortType == 'stt' && sortReverse"-->
+                                                  <!--class="fa fa-caret-up"></span>-->
+                                        <!--</a>-->
+                                    <!--</th>-->
+                                    <!--<th>-->
+                                        <!--<a href="#" ng-click="sortType = '_name'; sortReverse = !sortReverse">-->
+                                            <!--Tên Phương Tiện-->
+                                            <!--<span ng-show="sortType == '_name' && !sortReverse"-->
+                                                  <!--class="fa fa-caret-down"></span>-->
+                                            <!--<span ng-show="sortType == '_name' && sortReverse"-->
+                                                  <!--class="fa fa-caret-up"></span>-->
+                                        <!--</a>-->
+                                    <!--</th>-->
+                                    <!--<th>-->
+                                        <!--<a href="#" ng-click="sortType = '_weigh'; sortReverse = !sortReverse">-->
+                                            <!--Tải Trọng(kg)-->
+                                            <!--<span ng-show="sortType == '_weigh' && !sortReverse"-->
+                                                  <!--class="fa fa-caret-down"></span>-->
+                                            <!--<span ng-show="sortType == '_weigh' && sortReverse"-->
+                                                  <!--class="fa fa-caret-up"></span>-->
+                                        <!--</a>-->
+                                    <!--</th>-->
+                                    <!--<th>-->
+                                        <!--<a href="#" ng-click="sortType = '_volume'; sortReverse = !sortReverse">-->
+                                            <!--Thể Tích(l)-->
+                                            <!--<span ng-show="sortType == '_volume' && !sortReverse"-->
+                                                  <!--class="fa fa-caret-down"></span>-->
+                                            <!--<span ng-show="sortType == '_volume' && sortReverse"-->
+                                                  <!--class="fa fa-caret-up"></span>-->
+                                        <!--</a>-->
+                                    <!--</th>-->
+                                    <!--<th>-->
+                                        <!--<a href="#" ng-click="sortType = '_note'; sortReverse = !sortReverse">-->
+                                            <!--Ghi Chú-->
+                                            <!--<span ng-show="sortType == '_note' && !sortReverse"-->
+                                                  <!--class="fa fa-caret-down"></span>-->
+                                            <!--<span ng-show="sortType == '_note' && sortReverse"-->
+                                                  <!--class="fa fa-caret-up"></span>-->
+                                        <!--</a>-->
+                                    <!--</th>-->
+                                    <!--<th>Xóa phương tiện</th>-->
+                                <!--</tr>-->
+                                <!--</thead>-->
+                                <!--<tbody>-->
+                                <!--<tr ng-repeat="x in vehicles | orderBy:sortType:sortReverse | filter:{ _permission: selectedRole.selected.name }">-->
+                                    <!--<td>{{$index + 1}}</td>-->
+                                    <!--<td><a href="#/vehiclescreate/{{x._id}}">{{x._name}}</a></td>-->
+                                    <!--<td>{{x._weigh}}</td>-->
+                                    <!--<td>{{x._volume}}</td>-->
+                                    <!--<td>{{x._note}}</td>-->
+                                    <!--<td>-->
+                                        <!--<button ng-click="remove(x)">Xóa</button>-->
+                                    <!--</td>-->
+                                <!--</tr>-->
+                                <!--</tbody>-->
+                            <!--</table>-->
+
+                            <table ng-table="tableParams" class="table table-bordered table-hover table-condensed editable-table demoTable" ng-form="tableForm" disable-filter="isAdding">
+                                <tr ng-repeat="row in $data" ng-form="rowForm">
+                                    <td title="'Tên Xe'" filter="{_name: 'text'}" sortable="'_name'" ng-switch="row.isEditing" ng-class="_name.$dirty ? 'bg-warning' : ''" ng-form="_name">
+                                        <span ng-switch-default class="editable-text">{{row._name}}</span>
+                                        <div class="controls" ng-class="_name.$invalid && _name.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_name" ng-model="row._name" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Biển Số Xe'" filter="{_number_plate: 'text'}" sortable="'_number_plate'" ng-switch="row.isEditing" ng-class="_number_plate.$dirty ? 'bg-warning' : ''" ng-form="_number_plate">
+                                        <span ng-switch-default class="editable-text">{{row._number_plate}}</span>
+                                        <div class="controls" ng-class="_number_plate.$invalid && _number_plate.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_number_plate" ng-model="row._number_plate" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Tải Trọng'" filter="{_weigh: 'text'}" sortable="'_weigh'" ng-switch="row.isEditing" ng-class="_weigh.$dirty ? 'bg-warning' : ''" ng-form="_weigh">
+                                        <span ng-switch-default class="editable-text">{{row._weigh}}</span>
+                                        <div class="controls" ng-class="_weigh.$invalid && _weigh.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_weigh" ng-model="row._weigh" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Thể Tích'" filter="{_volume: 'text'}" sortable="'_volume'" ng-switch="row.isEditing" ng-class="_volume.$dirty ? 'bg-warning' : ''" ng-form="_volume">
+                                        <span ng-switch-default class="editable-text">{{row._volume}}</span>
+                                        <div class="controls" ng-class="_volume.$invalid && _volume.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_volume" ng-model="row._volume" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Ghi Chú'" filter="{_note: 'text'}" sortable="'_note'" ng-switch="row.isEditing" ng-class="_note.$dirty ? 'bg-warning' : ''" ng-form="_note">
+                                        <span ng-switch-default class="editable-text">{{row._note}}</span>
+                                        <div class="controls" ng-class="_note.$invalid && _note.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_note" ng-model="row._note" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Tài Xế'" filter="{_name_driver: 'text'}" sortable="'_name_driver'" >
+                                        <span ng-show="!row.isEditing">{{row._name_driver}}</span>
+                                        <div ng-show="row.isEditing" class="buttonTable buttonTableBtn">
+                                            <div ng-dropdown-multiselect="" options="multiDriverData" selected-model="selectedDriverData" extra-settings="multiSelectSettings" translation-texts="multiSelectCustomTexts"></div>
+                                        </div>
+                                    </td>
+                                    <td style="width: 90px">
+                                        <button style="display: inline-block;" class="btn btn-primary btn-sm" ng-click="save(row, rowForm)" ng-if="row.isEditing" ><span class="glyphicon glyphicon-ok"></span></button>
+                                        <button style="display: inline-block;" class="btn btn-default btn-sm" ng-click="cancel(row, rowForm)" ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span></button>
+                                        <button style="display: inline-block;" class="btn btn-default btn-sm" ng-click="edit(row, rowForm)" ng-if="!row.isEditing"><span class="glyphicon glyphicon-pencil"></span></button>
+                                        <button style="display: inline-block;" class="btn btn-danger btn-sm" ng-click="del(row)" ng-if="!row.isEditing"><span class="glyphicon glyphicon-trash"></span></button>
                                     </td>
                                 </tr>
-                                </tbody>
                             </table>
                         </div>
                         <!-- /.panel-body -->

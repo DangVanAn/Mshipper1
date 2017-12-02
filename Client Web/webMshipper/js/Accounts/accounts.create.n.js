@@ -1,7 +1,7 @@
 angular.module('mShipperApp')
     .component('accountCreateN', {
         templateUrl: './Accounts/Create.n.html',
-        controller: function DsDonHangController($rootScope, $scope, $http, $filter, ngDialog, $location, $timeout, $parse, modalOrderCreate, NgMap) {
+        controller: function DsDonHangController($rootScope, $scope, $http, $filter, ngDialog, $location, $timeout, $parse, modalOrderCreate, NgMap, NgTableParams) {
             $(document).ready(function () {
                 init();
             });
@@ -13,6 +13,7 @@ angular.module('mShipperApp')
             $scope.b_company = false;
             $scope.b_driverLicense = false;
             $scope.b_deliveryAddress = false;
+            $scope.b_delivery_manager = false;
 
             $scope.selectRole = function (item) {
                 console.log(item);
@@ -21,21 +22,25 @@ angular.module('mShipperApp')
                     $scope.b_company = false;
                     $scope.b_driverLicense = false;
                     $scope.b_deliveryAddress = false;
+                    $scope.b_delivery_manager = false;
                 }
                 if (item.id == 'C001') {
                     $scope.b_company = true;
                     $scope.b_driverLicense = false;
                     $scope.b_deliveryAddress = false;
+                    $scope.b_delivery_manager = true;
                 }
                 if (item.id == 'C002') {
                     $scope.b_company = false;
                     $scope.b_driverLicense = true;
                     $scope.b_deliveryAddress = false;
+                    $scope.b_delivery_manager = true;
                 }
                 if (item.id == 'B001') {
                     $scope.b_company = true;
                     $scope.b_driverLicense = false;
                     $scope.b_deliveryAddress = true;
+                    $scope.b_delivery_manager = false;
 
                     //Nếu chưa get LatLng thì lấy LatLng về
                     if (countListLatLng == 0) {
@@ -45,6 +50,7 @@ angular.module('mShipperApp')
             };
 
             function init() {
+                $scope.accounts = [];
             }
 
             $scope.uploadFile = function () {
@@ -53,20 +59,36 @@ angular.module('mShipperApp')
                 console.log('26', new Date().getTime());
             };
 
-
-            var listOrders, rootListOrders;
             $scope.GetImport = function () {
-
-                var tempOrders = [];
+                $scope.accounts = [];
                 var json = $scope.excel;
 
                 console.log('36', new Date().getTime());
                 console.log(json);
-                $scope.accounts = json.Sheet1;
-                for (var i = 0; i < $scope.accounts.length; i++) {
-                    $scope.accounts[i].stt = i + 1;
-                    console.log($scope.accounts[i].stt, isValidDate($scope.accounts[i].BirthDay));
-                    if (!isValidDate($scope.accounts[i].BirthDay)) {
+                for (var i = 0; i < json.Sheet1.length; i++) {
+                    var obj =  json.Sheet1[i];
+
+                    var data = {
+                        stt : i + 1,
+                        _identify_card: obj['Số Thẻ Căn Cước'],
+                        _name: obj['Họ Và Tên'],
+                        _email: obj['Email'],
+                        _date_of_birth: obj['Ngày Sinh'],
+                        _address: obj['Địa Chỉ'],
+                        _phone: obj['Số Điện Thoại'],
+                        _gender: obj['Giới Tính'],
+                        _driverLicenseNumber : obj['Số Bằng Lái Xe'],
+                        _driverLicenseName : obj['Bằng Lái Xe'],
+                        _id_delivery : obj['Mã Điểm Giao Hàng'],
+                        _name_customer : obj['Tên Nhà Phân Phối'],
+                        _id_customer : obj['Mã Nhà Phân Phối'],
+                        _company : obj['Tên Công Ty'],
+                        _deliveryAddress : obj['Địa Chỉ Giao Hàng'],
+                        _name_delivery_manager : obj['Tên Nhà Xe'],
+                        _id_delivery_manager : obj['Mã Nhà Xe'],
+                    };
+
+                    if (!isValidDate(data._date_of_birth)) {
                         $scope.show = "Sai ngày sinh tại dòng thứ " + $scope.accounts[i].stt;
                         iAlert(ngDialog, $scope);
 
@@ -74,7 +96,14 @@ angular.module('mShipperApp')
                         return;
                     }
 
+                    $scope.accounts.push(data);
                 }
+
+                console.log($scope.accounts);
+
+                $scope.tableAccouts = new NgTableParams({}, {
+                    dataset: $scope.accounts
+                });
 
                 //Nếu là khách hàng thì chuyển địa chỉ giao hàng ra thành LatLng
                 if ($scope.selectedRole.selected.id == 'B001') {
@@ -82,7 +111,6 @@ angular.module('mShipperApp')
                 }
             };
 
-            var details = [];
             var countListLatLng = 0;
 
             function convertAddressToLatLng() {
@@ -93,26 +121,12 @@ angular.module('mShipperApp')
             function getLatLng() {
                 if (countListLatLng < $scope.accounts.length) {
                     $http.get('https://maps.googleapis.com/maps/api/geocode/json?address=' +
-                        $scope.accounts[countListLatLng].DeliveryAddress + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
+                        $scope.accounts[countListLatLng]._deliveryAddress + '&key=AIzaSyCbMGRUwcqKjlYX4h4-P6t-xcDryRYLmCM')
                         .then(function (coord_results) {
                                 $scope.queryResults = coord_results.data.results;
                                 $scope.geodata = $scope.queryResults[0].geometry;
 
                                 console.log($scope.queryResults[0].formatted_address);
-
-                                // //Chuyển đổi lấy quận và thành phố.
-                                // var area = getArea($scope.queryResults[0].formatted_address);
-                                // $scope.accounts[countListLatLng]._area_id = '';
-                                // for(var i = 0; i < listAreas.length; i++)
-                                // {
-                                //     if(listAreas[i]._city === area.city && listAreas[i]._district === area.district)
-                                //     {
-                                //         $scope.accounts[countListLatLng]._area_id = listAreas[i]._area
-                                //     }
-                                // }
-                                //
-                                // if($scope.accounts[countListLatLng]._area_id === '') $scope.accounts[countListLatLng]._area_id = "Chưa xác định";
-
                                 console.log("geo : " + JSON.stringify($scope.queryResults[0].geometry.location));
 
                                 $scope.accounts[countListLatLng]._latitude = JSON.stringify($scope.queryResults[0].geometry.location.lat);
@@ -164,7 +178,7 @@ angular.module('mShipperApp')
 
                 //3 điểm mới tạo thành một vùng
                 if ($scope.path1.length >= 3) {
-                    $scope.accounts[clickingRow].polygon = JSON.stringify($scope.path1);
+                    $scope.accounts[clickingRow]._polygon = JSON.stringify($scope.path1);
                 }
 
                 $scope.showMaps = false;
@@ -229,7 +243,7 @@ angular.module('mShipperApp')
                 $scope.addressCenter = [x._latitude, x._longitude];
                 clickingX = x;
 
-                $scope.path = JSON.parse(x.polygon);
+                $scope.path = JSON.parse(x._polygon);
                 if ($scope.path.length > 1) {
                     $scope.selectedTypeSelect.selected = $scope.typeSelects[1];
                     $scope.addressCenter = $scope.path[0];
@@ -265,7 +279,7 @@ angular.module('mShipperApp')
 
             $scope.createImage = function () {
 
-                $scope.accounts[clickingRow].image = $scope.srcImage;
+                $scope.accounts[clickingRow]._image = $scope.srcImage;
                 $scope.showImage = false;
 
             };
@@ -295,49 +309,62 @@ angular.module('mShipperApp')
                     iAlert(ngDialog, $scope);
                 }
                 else {
-                    // console.log($scope.accounts);
-
-                    var listData = [];
                     for (var i = 0; i < $scope.accounts.length; i++) {
-                        var splitDate = $scope.accounts[i].BirthDay.split('/');
-                        var date = new Date(splitDate[2], splitDate[1] - 1, splitDate[0]);
 
-                        var data = {
-                            _identify_card: $scope.accounts[i].IdNumber,
-                            _name: $scope.accounts[i].FullName,
-                            _email: $scope.accounts[i].Email,
-                            _date_of_birth: date.getTime(),
-                            _address: $scope.accounts[i].Address,
-                            _phone: $scope.accounts[i].PhoneNumber,
-                            _gender: $scope.accounts[i].Gender,
-                            _permission_id: $scope.selectedRole.selected.id,
-                            _is_enabled: true,
-                            _image: $scope.accounts[i].image,
-
-                        };
+                        $scope.accounts[i]._permission_id = $scope.selectedRole.selected.id;
+                        $scope.accounts[i]._is_enabled =  true;
 
                         var item = $scope.selectedRole.selected;
 
+                        if (item.id == 'A001' || item.id == 'A002' || item.id == 'A003' || item.id == 'A004') {
+                            $scope.accounts[i]._company = '';
+                            $scope.accounts[i]._driverLicenseName = '';
+                            $scope.accounts[i]._driverLicenseNumber = '';
+                            $scope.accounts[i]._id_delivery = '';
+                            $scope.accounts[i]._deliveryAddress = '';
+                            $scope.accounts[i]._id_customer = '';
+                            $scope.accounts[i]._name_customer = '';
+                            $scope.accounts[i]._name_delivery_manager = '';
+                            $scope.accounts[i]._id_delivery_manager = '';
+                            $scope.accounts[i]._latitude = '';
+                            $scope.accounts[i]._longitude = '';
+                            $scope.accounts[i]._radius = 0;
+                            $scope.accounts[i]._polygon = '';
+                            $scope.accounts[i]._image = '';
+                        }
                         if (item.id == 'C001') {
-                            data._company = $scope.accounts[i].CompanyName;
+                            $scope.accounts[i]._id_customer = '';
+                            $scope.accounts[i]._name_customer = '';
+                            $scope.accounts[i]._driverLicenseName = '';
+                            $scope.accounts[i]._driverLicenseNumber = '';
+                            $scope.accounts[i]._id_delivery = '';
+                            $scope.accounts[i]._deliveryAddress = '';
+                            $scope.accounts[i]._latitude = '';
+                            $scope.accounts[i]._longitude = '';
+                            $scope.accounts[i]._radius = 0;
+                            $scope.accounts[i]._polygon = '';
+                            $scope.accounts[i]._image = '';
                         }
                         if (item.id == 'C002') {
-                            data._driverLicenseNumber = $scope.accounts[i].DriverLicenseNumber;
-                            data._driverLicenseName = $scope.accounts[i].DriverLicenseName;
-                            data._company = $scope.accounts[i].CompanyName;
+                            $scope.accounts[i]._id_customer = '';
+                            $scope.accounts[i]._name_customer = '';
+                            $scope.accounts[i]._company = '';
+                            $scope.accounts[i]._id_delivery = '';
+                            $scope.accounts[i]._deliveryAddress = '';
+                            $scope.accounts[i]._latitude = '';
+                            $scope.accounts[i]._longitude = '';
+                            $scope.accounts[i]._radius = 0;
+                            $scope.accounts[i]._polygon = '';
                         }
                         if (item.id == 'B001') {
-                            data._deliveryAddress = $scope.accounts[i].DeliveryAddress;
-                            data._latitude = $scope.accounts[i]._latitude;
-                            data._longitude = $scope.accounts[i]._longitude;
-                            data._radius = 50;
-                            data._polygon = $scope.accounts[i].polygon;
+                            $scope.accounts[i]._driverLicenseName = '';
+                            $scope.accounts[i]._driverLicenseNumber = '';
+                            $scope.accounts[i]._name_delivery_manager = '';
+                            $scope.accounts[i]._id_delivery_manager = '';
+                            $scope.accounts[i]._radius = 50;
+                            $scope.accounts[i]._image = '';
                         }
-
-                        listData.push(data);
                     }
-
-                    console.log(listData);
 
                     $urll = $rootScope.api_url.postAccountCreate_N;
 
@@ -345,7 +372,7 @@ angular.module('mShipperApp')
                         method: 'POST',
                         url: $urll,
                         headers: {'Content-Type': 'application/json'},
-                        data: listData
+                        data: $scope.accounts
                     }).then(function successCallback(response) {
                         console.log(response.data);
                         $scope.show = response.data;

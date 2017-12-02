@@ -6,7 +6,7 @@ var permissionTypeListSchema = mongoose.Schema({
         type: String,
         required: true
     },
-     _name: {
+    _name: {
         type: String,
         required: true
     },

@@ -1,0 +1,87 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="OrderCreateN">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Đơn hàng chưa phân công</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+                        <br>
+
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="col-sm-2">
+                                    <button style="width: 150px; float: left" type="button" class="btn btn-primary" ng-click="create()">Tạo mới</button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                        <div class="panel-body">
+                            <table ng-table="tableParams" class="table table-bordered table-hover table-condensed editable-table demoTable" disable-filter="isAdding">
+                                <tr ng-repeat="row in $data">
+                                    <td title="'Mã tập tin'" filter="{_code_file: 'text'}" sortable="'_code_file'" ng-switch="row.isEditing" ng-class="_code_file.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._code_file}}</span>
+                                        <div class="controls" ng-class="_code_file.$invalid && _code_file.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_code_file" ng-model="row._code_file" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Số Đơn Hàng'" filter="{_number: 'text'}" sortable="'_number'" ng-switch="row.isEditing" ng-class="_number.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._number}}</span>
+                                        <div class="controls" ng-class="_number.$invalid && _number.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_number" ng-model="row._number" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Số Tấn'" filter="{_ton: 'text'}" sortable="'_ton'" ng-switch="row.isEditing" ng-class="_ton.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._ton | number}}</span>
+                                        <div class="controls" ng-class="_ton.$invalid && _ton.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_ton" ng-model="row._ton" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Trạng Thái'" filter="{_status: 'text'}" sortable="'_status'" ng-switch="row.isEditing" ng-class="_status.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._status}}</span>
+                                        <div class="controls" ng-class="_status.$invalid && _status.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_status" ng-model="row._status" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Ngày Tạo'" filter="{_create_time: 'text'}" sortable="'_create_time'" ng-switch="row.isEditing" ng-class="_create_time.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._create_time | date:"dd/MM/yyyy 'at' HH:mm"}}</span>
+                                        <div class="controls" ng-class="_create_time.$invalid && _create_time.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_create_time" ng-model="row._create_time" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td title="'Người Tạo'" filter="{_create_user_name: 'text'}" sortable="'_create_user_name'" ng-switch="row.isEditing" ng-class="_create_user_name.$dirty ? 'bg-warning' : ''">
+                                        <span ng-switch-default class="editable-text">{{row._create_user_name}}</span>
+                                        <div class="controls" ng-class="_create_user_name.$invalid && _create_user_name.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="text" name="_create_user_name" ng-model="row._create_user_name" class="editable-input form-control input-sm" required />
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button ng-show="false" class="btn btn-primary btn-sm" ng-click="save(row)" ><span class="glyphicon glyphicon-ok"></span></button>
+                                        <button ng-show="false" class="btn btn-default btn-sm" ng-click="cancel(row)" ><span class="glyphicon glyphicon-remove"></span></button>
+                                        <button ng-show="true" class="btn btn-default btn-sm" ng-click="edit(row)" ><span class="glyphicon glyphicon-pencil"></span></button>
+                                        <button ng-show="false" class="btn btn-danger btn-sm" ng-click="del(row)" ><span class="glyphicon glyphicon-trash"></span></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+
+    </div>
+    <!-- /#page-wrapper -->
+</div>

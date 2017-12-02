@@ -1,0 +1,255 @@
+<div id="wrapper">
+    <div id="page-wrapper">
+        <div id="OrderCreateN">
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="page-header">Quản Lý Đơn Hàng Tổng</h1>
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Bảng dữ liệu
+                        </div>
+
+                        <div class="panel-body">
+                            <table ng-table="tableVerifyRequest" class="table table-condensed table-bordered table-td-center">
+                                <tr ng-repeat="row in $data track by $index">
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} style="text-align: center" data-title="'STT'" sortable="'stt'">{{$index + 1}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Địa Chỉ Lấy Hàng'" filter="{_address_warehouse: 'text'}" sortable="'_address_warehouse'">{{row._address_warehouse}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Địa Chỉ Giao Hàng'" filter="{_address_delivery: 'text'}" sortable="'_address_delivery'">{{row._address_delivery}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Thực Hiện'" filter="{_ton: 'number'}" sortable="'_ton'">{{row._ton | number}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Chưa Chia'" filter="{_ton_remain: 'number'}" sortable="'_ton_remain'">{{row._ton_remain | number}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Nhà Vận Tải Từ Chối'" filter="{_id_delivery_manager: 'text'}" sortable="'_id_delivery_manager'">{{row._id_delivery_manager}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Chỉ Nhận'" filter="{_ton_action: 'number'}" sortable="'_ton_action'">{{row._ton_action | number}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'Loại Xe'" filter="{_type_product: 'text'}" sortable="'_type_product'">{{row._type_product}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'ETD'" filter="{_etd: 'text'}" sortable="'_etd'">{{row._etd}}</td>
+                                    <td ng-show="row.showInfo" rowspan={{row.rowspan}} data-title="'ETA'" filter="{_eta: 'text'}" sortable="'_eta'">{{row._eta}}</td>
+                                    <td data-title="'Nhà Vận Tải'" class="" style="position: relative">
+                                        <div style="display: inline-block;" ng-show="row.showInfoDetail">
+                                            {{row._name_delivery_manager}} | {{row._ton_for_delivery | number}} tấn
+                                        </div>
+
+                                        <div ng-show="row.showSelectDelivery" class="buttonTableSelect" style="position: absolute; top: 10%; left: 1%; z-index: 100">
+                                            <ui-select style="width: 100%" ng-model="row.selectedDeliverySelect.selected" theme="bootstrap" on-select = "selectVehicleSelect($item, row)">
+                                                <ui-select-match placeholder="Chọn Nhà Vận Tải">{{$select.selected.name}}
+                                                </ui-select-match>
+                                                <ui-select-choices
+                                                        repeat="item as item in deliverySelects | filter: $select.search">
+                                                    <div ng-bind-html="item.info | highlight: $select.search"></div>
+                                                </ui-select-choices>
+                                            </ui-select>
+                                        </div>
+
+                                        <input ng-show="row.showInputTon" style="width: 160px; margin-left: 165px" type="number" class="form-control" ng-model="row.tonPerDelivery">
+
+                                    <td>
+                                        <button ng-show="row.showEdit"  class="btn btn-default btn-sm buttonTable buttonTablePad" ng-click="edit2(row, $index)">
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </button>
+                                        <button ng-show="row.showAdd" class="btn btn-success btn-sm buttonTable buttonTablePad" ng-click="add2(row, $index)">
+                                            <span class="glyphicon glyphicon-plus"></span>
+                                        </button>
+
+                                        <button ng-show="row.showAccept" class="btn btn-primary btn-sm  buttonTable buttonTablePad" ng-click="accept2(row, $index)">
+                                            <span class="glyphicon glyphicon-ok"></span>
+                                        </button>
+
+                                        <button ng-show="row.showDelete" class="btn btn-danger btn-sm  buttonTable buttonTablePad" ng-click="delete2(row, $index)">
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+
+                        <br>
+                        <br>
+
+                        <div class="panel-body">
+                            <table ng-table="tableParams"
+                                   class="table table-bordered table-hover table-condensed editable-table demoTable"
+                                   ng-form="tableForm" disable-filter="isAdding" demo-tracked-table="tableTracker">
+                                <tr ng-repeat="row in $data" ng-form="rowForm" demo-tracked-table-row="row">
+
+                                    <td title="'STT'" ng-switch="row.isEditing"
+                                        ng-class="_address_warehouse.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_address_warehouse">
+                                        <span ng-switch-default class="editable-text">{{$index + 1}}</span>
+                                    </td>
+
+                                    <td title="'Nhà Vận Tải'" filter="{_id_delivery_manager: 'text'}"
+                                        sortable="'_id_delivery_manager'" ng-switch="row.isEditing"
+                                        ng-class="_id_delivery_manager.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_id_delivery_manager" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._id_delivery_manager}}</span>
+                                        <div class="controls"
+                                             ng-class="_id_delivery_manager.$invalid && _id_delivery_manager.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_id_delivery_manager"
+                                                   ng-model="row._id_delivery_manager"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+
+                                    <td title="'Địa Chỉ Lấy Hàng'" filter="{_address_warehouse: 'text'}"
+                                        sortable="'_address_warehouse'" ng-switch="row.isEditing"
+                                        ng-class="_address_warehouse.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_address_warehouse" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._address_warehouse}}</span>
+                                        <div class="controls"
+                                             ng-class="_address_warehouse.$invalid && _address_warehouse.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_address_warehouse"
+                                                   ng-model="row._address_warehouse"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Địa Chỉ Giao Hàng'" filter="{_address_delivery: 'text'}"
+                                        sortable="'_address_delivery'" ng-switch="row.isEditing"
+                                        ng-class="_address_delivery.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_address_delivery" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._address_delivery}}</span>
+                                        <div class="controls"
+                                             ng-class="_address_delivery.$invalid && _address_delivery.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_address_delivery" ng-model="row._address_delivery"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Vân Tải Xác Nhận'" filter="{_time_accept: 'text'}"
+                                        sortable="'_time_accept'" ng-switch="row.isEditing"
+                                        ng-class="_time_accept.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_time_accept" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._time_accept | date:"dd/MM/yyyy 'at' hh:mma"}}</span>
+                                        <div class="controls"
+                                             ng-class="_time_accept.$invalid && _time_accept.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_time_accept" ng-model="row._time_accept"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Vân Tải Từ Chối'" filter="{_time_refuse: 'text'}"
+                                        sortable="'_time_refuse'" ng-switch="row.isEditing"
+                                        ng-class="_time_refuse.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_time_refuse" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._time_refuse | date:"dd/MM/yyyy 'at' hh:mma"}}</span>
+                                        <div class="controls"
+                                             ng-class="_time_refuse.$invalid && _time_refuse.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_time_refuse" ng-model="row._time_refuse"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Hủy Kế Hoạch'" filter="{_time_cancel: 'text'}"
+                                        sortable="'_time_cancel'" ng-switch="row.isEditing"
+                                        ng-class="_time_cancel.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_time_cancel" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._time_cancel | date:"dd/MM/yyyy 'at' hh:mma"}}</span>
+                                        <div class="controls"
+                                             ng-class="_time_cancel.$invalid && _time_refuse.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_time_cancel" ng-model="row._time_cancel"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Số Tấn'" filter="{_ton: 'number'}" sortable="'_ton'"
+                                        ng-switch="row.isEditing" ng-class="_ton.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_ton" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._ton}}</span>
+                                        <div class="controls" ng-class="_ton.$invalid && _ton.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="number" name="_ton" ng-model="row._ton"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Số Tấn Đã Chia'" filter="{_ton_assign: 'number'}" sortable="'_ton_assign'"
+                                        ng-switch="row.isEditing" ng-class="_ton_assign.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_ton_assign" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._ton_assign}}</span>
+                                        <div class="controls" ng-class="_ton_assign.$invalid && _ton_assign.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="number" name="_ton_assign" ng-model="row._ton_assign"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Danh Sách Xe'" filter="{_list_vehicle: 'number'}" sortable="'_list_vehicle'"
+                                        ng-switch="row.isEditing" ng-class="_list_vehicle.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_list_vehicle" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._list_vehicle}}</span>
+                                        <div class="controls" ng-class="_list_vehicle.$invalid && _list_vehicle.$dirty ? 'has-error' : ''" ng-switch-when="true">
+                                            <input type="number" name="_list_vehicle" ng-model="row._list_vehicle"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'Loại Xe'" filter="{_type_product: 'text'}"
+                                        sortable="'_type_product'" ng-switch="row.isEditing"
+                                        ng-class="_type_product.$dirty ? 'bg-warning' : ''" ng-form="_type_product"
+                                        demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._type_product}}</span>
+                                        <div class="controls"
+                                             ng-class="_type_product.$invalid && _type_product.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_type_product" ng-model="row._type_product"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'ETD'" filter="{_etd: 'text'}" sortable="'_etd'"
+                                        ng-switch="row.isEditing" ng-class="_etd.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_etd" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._etd}}</span>
+                                        <div class="controls" ng-class="_etd.$invalid && _etd.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_etd" ng-model="row._etd"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td title="'ETA'" filter="{_eta: 'text'}" sortable="'_eta'"
+                                        ng-switch="row.isEditing" ng-class="_eta.$dirty ? 'bg-warning' : ''"
+                                        ng-form="_eta" demo-tracked-table-cell>
+                                        <span ng-switch-default class="editable-text">{{row._eta}}</span>
+                                        <div class="controls" ng-class="_eta.$invalid && _eta.$dirty ? 'has-error' : ''"
+                                             ng-switch-when="true">
+                                            <input type="text" name="_eta" ng-model="row._eta"
+                                                   class="editable-input form-control input-sm" required/>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" ng-click="save(row, rowForm)"
+                                                ng-if="row.isEditing"
+                                                ng-disabled="rowForm.$pristine || rowForm.$invalid"><span
+                                                class="glyphicon glyphicon-ok"></span></button>
+                                        <button class="btn btn-default btn-sm" ng-click="cancel(row, rowForm)"
+                                                ng-if="row.isEditing"><span class="glyphicon glyphicon-remove"></span>
+                                        </button>
+                                        <!--<button class="btn btn-default btn-sm" ng-click="edit(row, rowForm)"-->
+                                                <!--ng-if="!row.isEditing"><span class="glyphicon glyphicon-pencil"></span>-->
+                                        <!--</button>-->
+                                        <!--<button class="btn btn-primary btn-sm" ng-click="accept(row)"-->
+                                                <!--ng-if="!row.isEditing"><span class="glyphicon glyphicon-ok"></span>-->
+                                        <!--</button>-->
+                                        <button class="btn btn-danger btn-sm" ng-click="cancel(row)"
+                                                ng-if="row.showCancel"><span class="glyphicon glyphicon-trash"></span>
+                                        </button>
+                                        <!--<button class="btn btn-danger btn-sm" ng-click="del(row)"-->
+                                                <!--ng-if="!row.isEditing"><span class="glyphicon glyphicon-trash"></span>-->
+                                        <!--</button>-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- /.panel -->
+                </div>
+                <!-- /.col-lg-12 -->
+            </div>
+            <!-- /.row -->
+        </div>
+
+    </div>
+    <!-- /#page-wrapper -->
+</div>

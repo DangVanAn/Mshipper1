@@ -4,6 +4,7 @@ angular.module('mShipperApp').component('vehiclesMain', {
         $(document).ready(function () {
             init();
         });
+        $rootScope.selectedLink = "Quản Lý Phương Tiện";
 
         function init() {
             //load info user all

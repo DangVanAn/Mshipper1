@@ -12,10 +12,10 @@ angular.module('mShipperApp')
             $scope.showNumber = true;
 
             $scope.name = '';
+            $scope.numberPlate = '';
             $scope.weigh = 0;
             $scope.volume = 0;
             $scope.note = '';
-            $scope.number = 1;
 
             $scope.submit = function () {
 
@@ -24,35 +24,28 @@ angular.module('mShipperApp')
                     iAlert(ngDialog, $scope);
                 }
                 else {
-                    console.log('26', $scope.number);
-                    if($scope.number == undefined){
-                        $scope.show = "Số lượng xe lớn hơn 0!";
-                        iAlert(ngDialog, $scope);
-                    }
-                    else {
-                        var data = {
-                            _name: $scope.name,
-                            _owner : $rootScope.globals.currentUser.phone,
-                            _weigh: $scope.weigh,
-                            _volume: $scope.volume,
-                            _note: $scope.note,
-                            _number : $scope.number,
-                            _is_enabled: true
-                        };
+                    var data = {
+                        _name: $scope.name,
+                        _owner : $rootScope.globals.currentUser.phone,
+                        _number_plate : $scope.numberPlate,
+                        _weigh: $scope.weigh,
+                        _volume: $scope.volume,
+                        _note: $scope.note,
+                        _is_enabled: true
+                    };
 
-                        $url = $rootScope.api_url.postVehicleCreate;
+                    $url = $rootScope.api_url.postVehicleCreate;
 
-                        httpPost($http, $url, data,
-                            function (response) {
-                                console.log("info::" + response.data.message);
-                                $scope.show = response.data;
-                                iAlert(ngDialog, $scope);
-                            }, function (response) {
-                                $scope.statustext = 'error';
-                            });
+                    httpPost($http, $url, data,
+                        function (response) {
+                            console.log("info::" + response.data.message);
+                            $scope.show = response.data;
+                            iAlert(ngDialog, $scope);
+                        }, function (response) {
+                            $scope.statustext = 'error';
+                        });
 
-                        console.log(JSON.stringify(data));
-                    }
+                    console.log(JSON.stringify(data));
                 }
             };
         }

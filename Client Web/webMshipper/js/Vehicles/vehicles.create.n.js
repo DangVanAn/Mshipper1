@@ -18,9 +18,18 @@ angular.module('mShipperApp')
                 var json = $scope.excel;
                 console.log('36', new Date().getTime());
                 console.log(json);
-                $scope.vehicles = json.Sheet1;
-                for (var i = 0; i < $scope.vehicles.length; i++) {
-                    $scope.vehicles[i].stt = i + 1;
+                for (var i = 0; i < json.Sheet1.length; i++) {
+                    var obj = json.Sheet1[i];
+                    var data = {
+                        _name : obj['Tên Xe'],
+                        _number_plate : obj['Biển Số Xe'],
+                        _owner : $rootScope.globals.currentUser.id_delivery_manager,
+                        _weigh : obj['Tải Trọng'],
+                        _volume : obj['Thể Tích'],
+                        _note : obj['Ghi Chú'],
+                        _is_enabled : true
+                    };
+                    $scope.vehicles.push(data);
                 }
             };
 
@@ -31,31 +40,13 @@ angular.module('mShipperApp')
                     iAlert(ngDialog, $scope);
                 }
                 else {
-
-                        var listData = [];
-                        for (var i = 0; i < $scope.vehicles.length; i++) {
-                            var data = {
-                                _name: $scope.vehicles[i].name,
-                                _owner : $rootScope.globals.currentUser.phone,
-                                _weigh: $scope.vehicles[i].weigh,
-                                _volume: $scope.vehicles[i].volume,
-                                _number : $scope.vehicles[i].number,
-                                _note: $scope.vehicles[i].note,
-                                _is_enabled : true
-                            };
-
-                            listData.push(data);
-                        }
-
-                        console.log(listData);
-
                         $urll = $rootScope.api_url.postVehicleCreate_N;
 
                         $http({
                             method: 'POST',
                             url: $urll,
                             headers: {'Content-Type': 'application/json'},
-                            data: listData
+                            data: $scope.vehicles
                         }).then(function successCallback(response) {
                             console.log(response.data);
                             $scope.show = response.data;

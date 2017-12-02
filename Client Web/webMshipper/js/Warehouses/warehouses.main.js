@@ -4,6 +4,7 @@ angular.module('mShipperApp').component('warehousesMain', {
         $(document).ready(function () {
             init();
         });
+        $rootScope.selectedLink = "Quản Lý Kho Hàng";
 
         function init() {
             //load info user all

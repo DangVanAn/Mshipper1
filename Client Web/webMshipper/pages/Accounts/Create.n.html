@@ -126,39 +126,27 @@
 
                         <!-- /.panel-heading -->
                         <div class="panel-body">
-                            <table width="100%" class="table table-bordered table-hover">
-                                <thead>
-                                <tr>
-                                    <th>STT</th>
-                                    <th>SĐT</th>
-                                    <th>Họ và Tên</th>
-                                    <th>Ngày Sinh</th>
-                                    <th ng-if="b_driverLicense">Bằng Lái</th>
-                                    <th>Số Chứng Minh</th>
-                                    <th>Địa Chỉ</th>
-                                    <th ng-if="b_deliveryAddress">Địa Chỉ Giao Hàng</th>
-                                    <th>Email</th>
-                                    <th ng-if="b_company">Công Ty</th>
-                                    <th>Giới Tính</th>
-                                    <th>Ảnh</th>
+                            <table ng-table="tableAccouts" class="table table-condensed table-bordered table-striped">
+                                <tr ng-repeat="row in $data">
+                                    <td data-title="'STT'" sortable="'stt'">{{$index + 1}}</td>
+                                    <td data-title="'SĐT'" filter="{_phone: 'text'}" sortable="'_phone'">{{row._phone}}</td>
+                                    <td data-title="'Họ Và Tên'" filter="{_name: 'text'}" sortable="'_name'">{{row._name}}</td>
+                                    <td data-title="'Ngày Sinh'" filter="{_date_of_birth: 'text'}" sortable="'_date_of_birth'">{{row._date_of_birth}}</td>
+                                    <td ng-if="b_driverLicense" data-title="'Bằng Lái Xe'"  filter="{_driverLicenseName: 'text'}" sortable="'_driverLicenseName'">{{row._driverLicenseName}}</td>
+                                    <td ng-if="b_driverLicense" data-title="'Số Bằng Lái Xe'" filter="{_driverLicenseNumber: 'text'}" sortable="'_driverLicenseNumber'">{{row._driverLicenseNumber}}</td>
+                                    <td data-title="'Số Thẻ Căn Cước'" filter="{_identify_card: 'text'}" sortable="'_identify_card'">{{row._identify_card}}</td>
+                                    <td data-title="'Địa Chỉ'" filter="{_address: 'text'}" sortable="'_address'">{{row._address}}</td>
+                                    <td ng-if="b_deliveryAddress" data-title="'Mã Điểm Giao Hàng'" filter="{_id_delivery: 'text'}" sortable="'_id_delivery'">{{row._id_delivery}}</td>
+                                    <td ng-if="b_deliveryAddress" data-title="'Địa Chỉ Giao Hàng'" filter="{_deliveryAddress: 'text'}" sortable="'_deliveryAddress'"><a href="" ng-click="clickShowMaps(row)">{{row._deliveryAddress}}</a></td>
+                                    <td data-title="'Email'" filter="{_email: 'text'}" sortable="'_email'">{{row._email}}</td>
+                                    <td ng-if="b_company" data-title="'Công Ty'" filter="{_company: 'text'}" sortable="'_company'">{{row._company}}</td>
+                                    <td ng-if="b_deliveryAddress" data-title="'Mã Nhà Phân Phối'" filter="{_id_customer: 'text'}" sortable="'_id_customer'">{{row._id_customer}}</td>
+                                    <td ng-if="b_deliveryAddress" data-title="'Tên Nhà Phân Phối'" filter="{_name_customer: 'text'}" sortable="'_name_customer'">{{row._name_customer}}</td>
+                                    <td ng-if="b_delivery_manager" data-title="'Tên Nhà Xe'" filter="{_name_delivery_manager: 'text'}" sortable="'_name_delivery_manager'">{{row._name_delivery_manager}}</td>
+                                    <td ng-if="b_delivery_manager" data-title="'Mã Nhà Xe'" filter="{_id_delivery_manager: 'text'}" sortable="'_id_delivery_manager'">{{row._id_delivery_manager}}</td>
+                                    <td data-title="'Giới Tính'" filter="{_gender: 'text'}" sortable="'_gender'">{{row._gender}}</td>
+                                    <td ng-if="b_driverLicense" data-title="'Ảnh'" filter="{_id_order: 'text'}" sortable="'_id_order'"><button ng-click="showImageButton(row)">Xem</button></td>
                                 </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="pointer" ng-repeat="x in accounts">
-                                    <td>{{$index + 1}}</td>
-                                    <td>{{x.PhoneNumber}}</td>
-                                    <td>{{x.FullName}}</td>
-                                    <td>{{x.BirthDay}}</td>
-                                    <td ng-if="b_driverLicense">{{x.DriverLicenseNumber}}</td>
-                                    <td>{{x.IdNumber}}</td>
-                                    <td>{{x.Address}}</td>
-                                    <td ng-if="b_deliveryAddress"><a href="" ng-click="clickShowMaps(x)">{{x.DeliveryAddress}}</a></td>
-                                    <td>{{x.Email}}</td>
-                                    <td ng-if="b_company">{{x.CompanyName}}</td>
-                                    <td>{{x.Gender}}</td>
-                                    <td><button ng-click="showImageButton(x)">Xem</button></td>
-                                </tr>
-                                </tbody>
                             </table>
                         </div>
                     </div>

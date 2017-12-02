@@ -1,0 +1,23 @@
+#MapsMain html,
+#MapsMain body,
+#MapsMain #map {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+#MapsMain .stations,
+#MapsMain .stations svg {
+  position: absolute;
+}
+#MapsMain .stations svg {
+  font: 10px sans-serif;
+}
+#MapsMain .stations circle {
+  fill: #bf3f24;
+  stroke: rgba(191, 63, 36, 0.5);
+  stroke-width: 5px;
+}
+#MapsMain .stations text {
+  fill: #fff;
+}

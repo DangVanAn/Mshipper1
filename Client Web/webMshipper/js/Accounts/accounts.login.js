@@ -17,12 +17,12 @@ angular.module('mShipperApp').component('login', {
                     switch (response.data._permission_id) {
                         case "A001":
                             // Manager điều phối
-                            AuthenticationService.SetCredentials('Quản Lý Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone);
+                            AuthenticationService.SetCredentials(response.data._id, 'Quản Lý Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone, response._id_delivery_manager);
                             $location.path('/accountsmain');
                             break;
                         case "A002":
                             // Điều phối
-                            AuthenticationService.SetCredentials('Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone);
+                            AuthenticationService.SetCredentials(response.data._id, 'Điều Phối', response.data._permission_id, response.data._token, response.data._name, response.data._phone, response.data._id_delivery_manager);
                             $location.path('/accountsmain');
                             break;
                         case "A003":
@@ -45,9 +45,8 @@ angular.module('mShipperApp').component('login', {
                             break;
                         case "C001":
                             // Manager vận tải
-                            $scope.show = "Bạn không có quyền truy cập website";
-                            $scope.type = "danger";
-                            iAlert(ngDialog, $scope);
+                            AuthenticationService.SetCredentials(response.data._id, 'Quản Lý Vận Tải', response.data._permission_id, response.data._token, response.data._name, response.data._phone, response.data._id_delivery_manager);
+                            $location.path('/accountsmain');
                             break;
                         case "C002":
                             // Tài xế
@@ -101,15 +100,17 @@ angular.module('mShipperApp')
                         });
                 };
 
-                service.SetCredentials = function (role, permission, token, name, phone) {
+                service.SetCredentials = function (_id, role, permission, token, name, phone, _id_delivery_manager) {
                     console.log('conco2', name);
                     $rootScope.globals = {
                         currentUser: {
+                            id : _id,
                             phone: phone,
                             token: token,
                             name: name,
                             role: role,
-                            permission: permission
+                            permission: permission,
+                            id_delivery_manager : _id_delivery_manager
                         }
                     };
 
