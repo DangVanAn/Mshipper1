@@ -24,5 +24,15 @@
         android:id="@+id/rv_confirm_trip"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         tools:listitem="@layout/item_confirm_trip" />
+
+    <Button
+        android:id="@+id/btnConfirmAll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:backgroundTint="@android:color/holo_green_light"
+        android:text="Xác nhận tất cả"
+        android:textColor="#fff" />
 </LinearLayout>

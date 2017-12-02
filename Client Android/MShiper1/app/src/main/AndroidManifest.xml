@@ -102,6 +102,10 @@
             android:theme="@style/MyNoActionBar" />
 
         <activity
+            android:name=".activity.ConfirmTripActivity"
+            android:theme="@style/MyNoActionBar" />
+
+        <activity
             android:name=".activity.TripActivity"
             android:theme="@style/MyNoActionBar" />
 
@@ -147,16 +151,17 @@
         <!--android:exported="false">-->
         <!--</service>-->
 
-        <receiver android:name=".receiver.LocationReceiver"
+        <receiver
+            android:name=".receiver.LocationReceiver"
             android:permission="SEND">
             <intent-filter>
-                <action android:name="mshipper.SEND_GPS"/>
+                <action android:name="mshipper.SEND_GPS" />
             </intent-filter>
         </receiver>
 
         <service
             android:name=".service.TrackingService"
-            android:exported="false"/>
+            android:exported="false" />
 
         <service android:name=".service.MyFirebaseMessagingService">
             <intent-filter>
